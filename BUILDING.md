@@ -1,28 +1,47 @@
-# Build and test Dex
+# Build Dex Explorer
 
-Run these commands from the repo root. `python build.py` also opens an interactive menu.
+You need Python 3. Run the commands below from the project folder. On Windows, double-click `build.bat` to open the same menu as `python build.py`.
+
+## Build
 
 ```powershell
-python build.py setup
-python build.py test
 python build.py build
-python build.py output
 ```
 
-Setup installs Luau, StyLua, and Selene. The build writes `out.lua` by default. Run that file in your executor to try your changes. Use `python build.py watch` to rebuild when you save.
+The builder prints the path to the build. The default is `out.lua` in the project folder. Run `python build.py output` to see the current path, or pass it a new path to change where builds go.
 
-| Path | What lives there |
+Use `python build.py watch` to rebuild when you save changes. Press Ctrl+C to stop.
+
+## Run checks
+
+```powershell
+python build.py test
+```
+
+This runs the Luau tests and checks the hosted loader. It downloads Luau if needed. Run `python build.py setup` to install Luau, StyLua, and Selene under `.tools/bin`. [tools.lock.json](tools.lock.json) lists the versions.
+
+| Command | What it checks |
+| --- | --- |
+| `python build.py check` | Luau compilation |
+| `python build.py format --check` | Formatting |
+| `python build.py lint` | Common code errors |
+
+## Source layout
+
+| Path | Contents |
 | --- | --- |
 | [main.lua](main.lua) | Startup, settings, and the tool menu |
-| [src/Apps](src/Apps) | Individual Dex tools |
+| [src/Apps](src/Apps) | Dex tools |
 | [src/Shared](src/Shared) | Shared UI and runtime code |
-| [src/Runtime](src/Runtime) | Module loader |
+| [src/Runtime](src/Runtime) | Hosted loader |
 | [mcp](mcp) | Dex MCP server |
 | [tests](tests) | Tests and fixtures |
 
-Give each Luau module a unique filename. To build the modular runtime locally, run `python scripts/package_runtime.py`. Its files go in `dist/github`.
+Give each `.lua` module under `src` a unique filename. The loader uses the filename without its extension as the module name.
 
-To view performance counters and recent slow frames, call `getgenv().DexPlus.Main.Performance.Snapshot()` in a running Dex session. Slow-frame timings include the entire Roblox client.
+Run `python scripts/package_runtime.py` to generate the hosted files in `dist/github`. This also updates the root `manifest.json`.
+
+In a running Dex session, `getgenv().DexPlus.Main.Performance.Snapshot()` returns counters and recent slow frames. Frame timings cover the whole Roblox client.
 
 ## Third-party licenses
 

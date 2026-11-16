@@ -30,35 +30,27 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 <p align="center">
   <a href="docs/explorer-preview.webp">
-    <img src="docs/explorer-preview.webp" width="760" alt="Dex Explorer showing search results and properties for a selected pumpkin in Roblox">
+    <img src="docs/explorer-preview.webp" width="760" alt="Explorer search results and the Properties panel in Roblox">
   </a>
 </p>
 
 ## Tools
 
-- **Explorer and Properties** let you search for objects and edit several at once. Try `is:BasePart and Anchored=false` to find unanchored parts.
-- **Script Editor** has Luau autocomplete and shows types when you hover over code. Ctrl-click a name to jump to its definition.
-- **Find in Place** searches across scripts. Click a result to go to that line, or use **Replace All** to edit matches in the editor.
-- **Asset Manager** previews images, sounds, meshes, and animations and shows where they're used. Open a model in **3D Viewer** to see it on its own.
+- **Explorer and Properties** let you find objects and edit them together. Search `is:BasePart and Anchored=false` to find unanchored parts.
+- **Script Editor** has Luau autocomplete and type hints on hover. Ctrl-click a name to jump to its definition.
+- **Find in Place** searches across scripts. Click a match to jump to that line, or use **Replace All** to edit the matches in your tabs.
+- **Asset Manager** previews images, sounds, meshes, and animations. It also shows which objects use them. **3D Viewer** lets you inspect a model from any angle.
 - **Console** shows client logs and has a Luau command bar.
-- **Input Macros** record and replay keyboard and mouse input. Change the speed, edit delays, or loop the recording. Press **F8** to stop.
+- **Input Macros** record keyboard and mouse input. Edit delays, change the playback speed, or loop a recording. Press **F8** to stop.
 
 <details>
 <summary>More tools</summary>
 
-- Pick a part or UI element to select it in Explorer. Move, rotate, or resize it with the transform handles.
+- Pick parts and UI elements on screen, then move, rotate, or resize them with the transform tools.
 - Right-click an object to find references to it or watch it for changes.
 - **Save Instance** exports objects to a file. **Reconstructor** shows inferred paths and where they came from.
 
 </details>
-
-## Guides
-
-- [Plugins](docs/PLUGINS.md) for adding buttons, windows, shortcuts, and right-click actions to Dex.
-- [Dex MCP](docs/mcp/SETUP.md) for connecting Codex or another MCP client. Use **Commands** to choose which tools it can call and **Activity** to see what they returned.
-- [Build from source](BUILDING.md) for building and testing Dex locally.
-
-Script source, file saves, and input playback depend on your executor.
 
 ## Performance
 
@@ -71,15 +63,23 @@ Script source, file saves, and input playback depend on your executor.
 <details>
 <summary>Test details</summary>
 
-The first search, asset filters, and script highlighting times are medians of three runs on sample data, on an Intel i7-12700H.
+The first search, asset filters, and script highlighting were each tested three times with sample data on an Intel i7-12700H. The table shows the middle time for each.
 
 The repeat search used the same unchanged tree in both versions. Moon's Dex took 126 ms per search. Dex Explorer reused the previous results in 0.04 ms. Both figures are medians of five batches.
 
-- [Object search](tests/search_engine.spec.luau)
-- [Asset filters](tests/asset_query.spec.luau)
-- [Script highlighting](tests/editor_highlight_checks.py)
+- [70,000-match search fixture](tests/search_engine.spec.luau)
+- [Asset filter test](tests/asset_query.spec.luau)
+- [Script highlighting test](tests/editor_highlight_checks.py)
 
 </details>
+
+## Guides
+
+- [Install or write a plugin](docs/PLUGINS.md)
+- [Set up Dex MCP](docs/mcp/SETUP.md)
+- [Build and test Dex](BUILDING.md)
+
+Script source, file saves, and input playback depend on your executor.
 
 ## Credits
 
