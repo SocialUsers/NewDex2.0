@@ -1,8 +1,8 @@
 --!strict
 
-local ref="5c7f8afa5a3e4f365f747a4c41af77f3566b994c"
+local ref="fbf120fafea300415d775a0a7b3945161d908d42"
 local base="https://raw.githubusercontent.com/wooxps/dex-explorer/"..ref.."/"
-local path="dex/runtime/"..ref..".lua"
+local path="dex-explorer/runtime/"..ref..".lua"
 local chunk
 if type(readfile)=="function" then
  local ok,data=pcall(readfile,path)
@@ -17,7 +17,7 @@ if not chunk then
  local problem
  chunk,problem=loadstring(data,"@DexExplorer/Bootstrap")
  assert(chunk,"Dex Explorer bootstrap failed: "..tostring(problem))
- if type(makefolder)=="function" then pcall(makefolder,"dex") pcall(makefolder,"dex/runtime") end
+ if type(makefolder)=="function" then pcall(makefolder,"dex-explorer") pcall(makefolder,"dex-explorer/runtime") end
  if type(writefile)=="function" then pcall(writefile,path,data) end
 end
 return chunk()(base)
