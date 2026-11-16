@@ -75,6 +75,12 @@ local sound for _,record in ipairs(records) do if record.Kind=="Sounds" then sou
 assert(#sound.Uses==2 and sound.Search:find("other",1,true) and sound.Search:find("music",1,true))
 assert(catalog.IsCurrent(sound,sound.Uses[1])) sound.Uses[1].Object.SoundId="rbxassetid://999" assert(not catalog.IsCurrent(sound,sound.Uses[1]))
 assert(catalog.Scan(objects,function() return false end)==nil)
+local live=table.clone(objects)
+local snapshotRecords,snapshotStats=catalog.Scan(live,function(count)
+ if count==0 then table.clear(live) end
+ return true
+end)
+assert(snapshotStats.Objects==5 and #snapshotRecords>=5,"live registry removals do not interrupt an asset scan")
 local download=modules.AssetDownload local calls,writes=0,0 local saved
 local png="\137PNG\13\10\26\10data"
 services.HttpService.JSONDecode=function(_,body) if body=="packet" then return {locations={{location="https://test.rbxcdn.com/bytes"}}} end error("not json") end

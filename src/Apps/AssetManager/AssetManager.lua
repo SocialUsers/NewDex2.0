@@ -57,15 +57,17 @@ local function CreateModule()
 		report("Scanning assets...")
 		task.spawn(function()
 			local deadline = os.clock() + 0.002
+			local nextProgress = os.clock() + 0.25
 			local ok, found, stats = pcall(Apps.AssetCatalog.Scan, Apps.Explorer.GetNodes(), function(count, total)
 				if token ~= revision or Main.Alive == false then
 					return false
 				end
-				if Main.Performance then
-					if not Main.Performance.Checkpoint("assets") then
-						return false
-					end
-				elseif os.clock() >= deadline then
+				local now = os.clock()
+				if now >= nextProgress then
+					report(string.format("Scanning assets... %d objects, %d assets", count, total))
+					nextProgress = now + 0.25
+				end
+				if now >= deadline then
 					task.wait()
 					deadline = os.clock() + 0.002
 				end
@@ -632,11 +634,7 @@ local function CreateModule()
 					if token ~= filtering or Main.Alive == false then
 						return false
 					end
-					if Main.Performance then
-						if not Main.Performance.Checkpoint("assets") then
-							return false
-						end
-					elseif os.clock() >= deadline then
+					if os.clock() >= deadline then
 						task.wait()
 						deadline = os.clock() + 0.002
 					end

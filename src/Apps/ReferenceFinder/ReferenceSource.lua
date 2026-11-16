@@ -1,11 +1,11 @@
 --!strict
 
-local Apps, env
+local Apps, env, clock
 
 ------------------------------ Initialization ------------------------------
 
 local function InitDeps(d)
-	Apps, env = d.Apps, d.env
+	Apps, env, clock = d.Apps, d.env, d.Clock or os.clock
 end
 ------------------------------ Module ------------------------------
 
@@ -17,6 +17,7 @@ local function Main()
 	local revision = 0
 	local literalBytes = 0
 	local paused = false
+	local pendingRead
 	local order = {}
 	local queued = {}
 	local remove
@@ -72,15 +73,17 @@ local function Main()
 	end
 	function Reader.BeginPass()
 		paused = false
-		for index = #order, 1, -1 do
-			local object = order[index]
+		local retained = 0
+		for _, object in ipairs(order) do
 			if object.Parent == nil then
 				remove(object)
-				table.remove(order, index)
+			else
+				retained += 1
+				order[retained] = object
 			end
 		end
-		while #order > 32768 do
-			remove(table.remove(order, 1))
+		for index = #order, retained + 1, -1 do
+			order[index] = nil
 		end
 	end
 	function Reader.ClearBytecode()
@@ -95,7 +98,7 @@ local function Main()
 	function Reader.Peek(object)
 		return sources[object]
 	end
-	function Reader.Read(object, checkpoint, yieldNative, pass)
+	function Reader.Read(object, checkpoint, yieldNative, pass, bounded)
 		if literals[object] then
 			return { Literals = literals[object], SourceKind = "Cached bytecode" }
 		end
@@ -127,10 +130,37 @@ local function Main()
 		if checkpoint and not checkpoint() then
 			return { Cancelled = true }
 		end
-		local started = os.clock()
-		local good, bytes = pcall(env.getscriptbytecode, object)
-		local duration = os.clock() - started
-		if not pass and duration > 0.02 then
+		local started = clock()
+		local good, bytes, duration
+		local yielded = false
+		if bounded then
+			if pendingRead then
+				return { Unavailable = "A bytecode read is still pending" }
+			end
+			local read = {}
+			pendingRead = read
+			task.spawn(function()
+				read.Good, read.Bytes = pcall(env.getscriptbytecode, object)
+				read.Duration = clock() - started
+				pendingRead = nil
+			end)
+			yielded = pendingRead == read
+			while pendingRead == read do
+				if clock() - started >= 0.5 then
+					paused = true
+					return { Unavailable = "Bytecode read timed out" }
+				end
+				yieldNative(true)
+				if checkpoint and not checkpoint() then
+					return { Cancelled = true }
+				end
+			end
+			good, bytes, duration = read.Good, read.Bytes, read.Duration
+		else
+			good, bytes = pcall(env.getscriptbytecode, object)
+			duration = clock() - started
+		end
+		if not pass and not yielded and duration > 0.02 then
 			paused = true
 		end
 		if yieldNative then

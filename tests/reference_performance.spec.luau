@@ -20,7 +20,7 @@ for index = 1, 12000 do
 	objects[object] = true
 end
 for index = 1, 512 do
-	local object = Instance.new("LocalScript")
+	local object = Instance.new("LocalScript", workspace)
 	object.Name = "Script" .. index
 	objects[object] = true
 end

@@ -129,7 +129,8 @@ local function Main()
 			classes[name] = list
 			return list
 		end
-		for object in pairs(options.Objects or {}) do
+		local snapshot = table.clone(options.Objects or {})
+		for object in pairs(snapshot) do
 			if not check() then
 				return results
 			end

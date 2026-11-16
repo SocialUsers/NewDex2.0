@@ -11,11 +11,11 @@ cli.add_argument('--benchmark', action='store_true')
 args = cli.parse_args()
 root = Path(__file__).resolve().parents[1]
 # Reuse the numerical/lifecycle harness's window and input doubles.
-parts = [(root / 'tests/roblox_mock.luau').read_text(), (root / 'tests/preview_mock.luau').read_text(), 'local referenceEnv={}']
+parts = [(root / 'tests/roblox_mock.luau').read_text(), (root / 'tests/preview_mock.luau').read_text(), 'local referenceEnv={} local referenceClock=os.clock task.spawn=function(fn) fn() end']
 for name in ['BytecodeStrings', 'ReferenceSource', 'ReferenceScan', 'ReferenceFinder']:
     source = next((root / 'src').rglob(name + '.lua')).read_text()
     parts.append('do local control=(function()\n' + source + '\nend)()\n'
-                 'control.InitDeps({API=API,Main=Main,Lib=Lib,Apps=Apps,service=service,env=referenceEnv})\n'
+                 'control.InitDeps({API=API,Main=Main,Lib=Lib,Apps=Apps,service=service,env=referenceEnv,Clock=function() return referenceClock() end})\n'
                  'Apps.' + name + '=control.Main() end\n')
 with tempfile.TemporaryDirectory(prefix='dex-references-') as folder:
     fixture = Path(folder) / 'fixture.luau'

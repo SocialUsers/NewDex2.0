@@ -312,6 +312,12 @@ local function CreateModule()
 			+ (stats.UnavailableScripts or 0)
 			+ (stats.LargeScripts or 0)
 		status.Text = status.Text .. "  |  " .. checked .. " scripts checked"
+		if worker then
+			status.Text ..= "  |  " .. (stats.Objects or 0) .. " objects"
+		end
+		if (stats.UnavailableScripts or 0) > 0 then
+			status.Text ..= " (" .. stats.UnavailableScripts .. " unavailable)"
+		end
 		stop.Interactable = worker ~= nil
 		stop.Icon.ImageTransparency = worker and 0 or 0.65
 		if renderedScripts ~= #results.Scripts or renderedDirect ~= #results.Direct or renderedQuery ~= filter.Text then
@@ -354,18 +360,18 @@ local function CreateModule()
 		if force then
 			Apps.ReferenceSource.ClearBytecode()
 		end
-		Apps.ReferenceSource.BeginPass()
-		local cached = sources()
 		local steps = 0
 		worker = coroutine.create(function()
+			Apps.ReferenceSource.BeginPass()
+			local cached = sources()
 			local found = Apps.ReferenceScan.Run({
 				Target = target,
 				Objects = Finder.GetObjects(),
 				Sources = cached,
 				ReadScript = function(object, check)
-					return Apps.ReferenceSource.Read(object, check, function()
-						coroutine.yield("native")
-					end)
+					return Apps.ReferenceSource.Read(object, check, function(pending)
+						coroutine.yield(pending == true and "pending" or "native")
+					end, nil, true)
 				end,
 				Checkpoint = function(current)
 					results = current
@@ -572,7 +578,7 @@ local function CreateModule()
 			if not active then
 				return
 			end
-			if worker and (not Main.Performance or Main.Performance.Available()) then
+			if worker then
 				local started = os.clock()
 				local nativeCalls = 0
 				repeat
@@ -590,13 +596,16 @@ local function CreateModule()
 						modified = true
 						break
 					end
+					if reason == "pending" then
+						break
+					end
 					if reason == "native" then
 						nativeCalls += 1
 						if nativeCalls >= 32 then
 							break
 						end
 					end
-				until os.clock() - started >= 0.002 or (Main.Performance and not Main.Performance.Available())
+				until os.clock() - started >= 0.002
 			end
 			elapsed += dt
 			if modified and (not worker or elapsed >= 0.1) then

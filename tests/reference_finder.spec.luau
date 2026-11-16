@@ -308,6 +308,52 @@ for _, name in ipairs({ "Door", ".", "x Door", "α" }) do
 	end
 end
 target.Name = "Door"
+
+local pending
+local mockTime = 0
+referenceClock = function() return mockTime end
+local spawn = task.spawn
+task.spawn = function(fn)
+	pending = coroutine.create(fn)
+	assert(coroutine.resume(pending))
+end
+referenceEnv.getscriptbytecode = function()
+	coroutine.yield()
+	return referenceBytecode
+end
+local stall = Instance.new("LocalScript", workspace)
+local liveRegistry = { [stall] = true, [value] = true }
+value.Value = target
+referenceNodes = liveRegistry
+Main.Performance = { Available = function() return false end }
+finder.Open(target)
+service.RunService.Heartbeat:Fire(0.1)
+assert(pending and coroutine.status(pending) == "suspended")
+table.clear(liveRegistry)
+mockTime = 1
+for _ = 1, 10 do
+	service.RunService.Heartbeat:Fire(0.1)
+end
+assert(not finder.Status.Text:find("Searching", 1, true), "a stalled bytecode read must not hold the scan open")
+assert(finder.Results.Stats.UnavailableScripts == 1 and #finder.Results.Direct == 1)
+assert(coroutine.resume(pending))
+assert(#finder.Results.Scripts == 0, "late bytecode must not change completed results")
+local nextScript = Instance.new("LocalScript", workspace)
+referenceNodes = { [stall] = true, [nextScript] = true }
+finder.Open(target)
+service.RunService.Heartbeat:Fire(0.1)
+for _ = 1, 2 do
+	mockTime += 0.1
+	assert(coroutine.resume(pending))
+	service.RunService.Heartbeat:Fire(0.1)
+end
+for _ = 1, 3 do
+	service.RunService.Heartbeat:Fire(0.1)
+end
+assert(#finder.Results.Scripts == 2, "yielding reads that finish in time keep full script coverage")
+task.spawn = spawn
+referenceClock = os.clock
+Main.Performance = nil
 print(
 	"PASS: direct reference identity, aliases/inheritance, text evidence, source precedence, cancellation/budgets, long lines, virtual rows and stale-link navigation"
 )

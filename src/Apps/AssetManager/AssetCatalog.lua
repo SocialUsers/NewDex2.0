@@ -134,13 +134,14 @@ local function Main()
 		local records, index = {}, {}
 		local checked = 0
 		local unreadable = 0
-		for object in pairs(objects) do
+		local snapshot = table.clone(objects)
+		for object in pairs(snapshot) do
 			if checkpoint and not checkpoint(checked, #records) then
 				return nil, "Cancelled"
 			end
 			checked += 1
 			local ok, class = pcall(readProperty, object, "ClassName")
-			if not ok then
+			if not ok or type(class) ~= "string" then
 				continue
 			end
 			local name
@@ -152,7 +153,10 @@ local function Main()
 				end
 				local uri, id = Catalog.Normalize(value)
 				if uri then
-					name = name or object.Name
+					if not name then
+						local named, value = pcall(readProperty, object, "Name")
+						name = named and type(value) == "string" and value or class
+					end
 					local key = kind .. ":" .. uri
 					local record = index[key]
 					if not record then

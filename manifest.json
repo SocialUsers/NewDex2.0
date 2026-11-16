@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "854050e9f307368cfc0c",
+  "release": "05545519def8f1da5db4",
   "entry": "main.lua",
   "assets": "studio_assets.lua",
   "react": "src/Packages/React/Loader.luau",
@@ -294,9 +294,9 @@
       "sha256": "425f8e8be6076f4910484635159052736c29fd06321ae8e3e3ed59210ae2030f"
     },
     "src/Apps/AssetManager/AssetCatalog.lua": {
-      "bytes": 5734,
-      "checksum": 119975925,
-      "sha256": "ef31f62d009a88d04d2ebd2715096e6d0c6e968672efe79d583ff1af40d8aef3"
+      "bytes": 5930,
+      "checksum": 1665133939,
+      "sha256": "ee46cdb527d3805d0a6711639df71e51b3829819ff7b0ec6e3282a351f503e37"
     },
     "src/Apps/AssetManager/AssetDownload.lua": {
       "bytes": 3568,
@@ -304,9 +304,9 @@
       "sha256": "b9cc3eed67a8c4b50bf662e280c95a42be47b400e20b3bc068ead4b349abc04f"
     },
     "src/Apps/AssetManager/AssetManager.lua": {
-      "bytes": 23671,
-      "checksum": 475466162,
-      "sha256": "e57fe6850f348a5b6d68ae7ac17dfb52f18707d3da6684650d4ca684023c6736"
+      "bytes": 23653,
+      "checksum": 125502631,
+      "sha256": "1a4f397c578cdd814cf01b0925df256b7623ce1d62d2e344024872207fe3dd89"
     },
     "src/Apps/AssetManager/AssetPlayback.lua": {
       "bytes": 2263,
@@ -694,19 +694,19 @@
       "sha256": "93061803656f7eb8a3f0dc2505807728deccae37b2878ac03794be3b864352be"
     },
     "src/Apps/ReferenceFinder/ReferenceFinder.lua": {
-      "bytes": 19486,
-      "checksum": 3205897064,
-      "sha256": "251709410a19eae01d0678fc4ef01bd3dd5abed21656c61e2f32dc4a1395922c"
+      "bytes": 19686,
+      "checksum": 770396109,
+      "sha256": "f8b475882b7980eb215be6b04191fb62e9ae5adb0047964986b76831f97a8bd8"
     },
     "src/Apps/ReferenceFinder/ReferenceScan.lua": {
-      "bytes": 9444,
-      "checksum": 311605478,
-      "sha256": "b02e3f672ddfbbd465f173daf5bea9b321e5d2e9404db4b52b6617a1854fdb9a"
+      "bytes": 9485,
+      "checksum": 3616196386,
+      "sha256": "d21340e49935520eb5d11d1153142160ac80a46897fff0a718bc243d2b6bde93"
     },
     "src/Apps/ReferenceFinder/ReferenceSource.lua": {
-      "bytes": 4427,
-      "checksum": 36272720,
-      "sha256": "a3e8a1d67ad6944fbf8f18f5839e9d1528d47aa88a2d053ada6a744e39fdad3d"
+      "bytes": 5254,
+      "checksum": 4231166043,
+      "sha256": "dc8634aad64704c57da41c2e5a2b7e058f39d3578709441e56c9a0b79b4fcd85"
     },
     "src/Apps/SaveInstance/SaveBackend.lua": {
       "bytes": 2359,
