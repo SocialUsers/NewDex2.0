@@ -15,13 +15,11 @@
 
 ## Run Dex
 
-With Roblox open, paste this into your executor.
+Paste this into your executor.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/main/loader.lua"))()
 ```
-
-Open the Dex menu to switch tools. Right-click an object in Explorer to see its actions.
 
 ## Tools
 
