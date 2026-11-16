@@ -22,9 +22,9 @@ local connection = run.Heartbeat:Connect(function(dt)
 	end
 end)
 local function save()
-	pcall(makefolder, "dex")
-	pcall(makefolder, "dex/validation")
-	writefile("dex/validation/inference-profile.json", http:JSONEncode(report))
+	pcall(makefolder, "dex-explorer")
+	pcall(makefolder, "dex-explorer/validation")
+	writefile("dex-explorer/validation/inference-profile.json", http:JSONEncode(report))
 end
 local ok, problem = xpcall(function()
 	if dex.Apps.Reconstructor.Session then

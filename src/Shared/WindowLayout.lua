@@ -154,7 +154,7 @@ local function CreateModule()
 		return true
 	end
 	function Layout.Create(windows, sides, update)
-		local self = { Path = "dex/window-layout.json", Restoring = false }
+		local self = { Path = "dex-explorer/window-layout.json", Restoring = false }
 		local previous, scheduled, stopped = nil, false, false
 		function self:Save()
 			if stopped or self.Restoring or not env.writefile then

@@ -10,7 +10,7 @@ local function Main()
 	local Documentation = {}
 	local sourceUrl =
 		"https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/api-docs/en-us.json"
-	local cachePath = "dex/cache/studio-api-docs-en-us.json"
+	local cachePath = "dex-explorer/cache/studio-api-docs-en-us.json"
 	local refreshPeriod = 24 * 60 * 60
 	local records, loading, retryAfter = nil, false, -math.huge
 	local checkedAt, generation = 0, 0
@@ -84,8 +84,8 @@ local function Main()
 					generation += 1
 					if env.writefile then
 						if env.makefolder then
-							pcall(env.makefolder, "dex")
-							pcall(env.makefolder, "dex/cache")
+							pcall(env.makefolder, "dex-explorer")
+							pcall(env.makefolder, "dex-explorer/cache")
 						end
 						if pcall(env.writefile, cachePath, data) then
 							pcall(env.writefile, cachePath .. ".timestamp", tostring(now))

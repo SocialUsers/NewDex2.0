@@ -13,7 +13,7 @@ local http = { JSONEncode = encode, JSONDecode = decode }
 local ran, cleaned, clicked = 0, 0, 0
 local fixture = { schema = 1, id = "example.test", name = "Test Plugin", version = "1.0", source = "fixture" }
 local packageText = encode(http, fixture)
-local listed = { "dex/plugins/installed.json", "dex/plugins/example.dexplugin" }
+local listed = { "dex-explorer/plugins/installed.json", "dex-explorer/plugins/example.dexplugin" }
 local scans = 0
 local env = {
 	listfiles = function()
@@ -93,7 +93,7 @@ local function verifyPlugins()
 	assert(toolbar.Title.Text == "Plugins")
 	local add = toolbar.AddPlugin
 	assert(add.NativeIcon.Image == "mockasset://native/plugins/add")
-	files["dex/plugins/example.dexplugin"] = packageText
+	files["dex-explorer/plugins/example.dexplugin"] = packageText
 	assert(not runtime.ReadImport("../example.dexplugin"))
 	assert(not runtime.ReadLink("http://example.com/my.dexplugin"))
 	local linked = assert(runtime.ReadLink("https://example.com/my.dexplugin"))
@@ -157,14 +157,14 @@ local function verifyPlugins()
 	local original = entries.File1
 	flushTasks()
 	assert(entries.File1 == original, "unchanged directory retains file rows")
-	listed = { "dex/plugins/example.dexplugin", "dex/plugins/new.dexplugin" }
+	listed = { "dex-explorer/plugins/example.dexplugin", "dex-explorer/plugins/new.dexplugin" }
 	flushTasks()
 	assert(entries.File2.Package.Text == "new.dexplugin" and fileInput.Text == "example.dexplugin")
 	assert(entries.File1.Package.BackgroundColor3 == Settings.Theme.Focus)
-	listed = { "dex/plugins/example.dexplugin", "dex/plugins/renamed.dexplugin" }
+	listed = { "dex-explorer/plugins/example.dexplugin", "dex-explorer/plugins/renamed.dexplugin" }
 	flushTasks()
 	assert(entries.File2.Package.Text == "renamed.dexplugin", "same-count rename updates the list")
-	listed = { "dex/plugins/example.dexplugin" }
+	listed = { "dex-explorer/plugins/example.dexplugin" }
 	flushTasks()
 	assert(not entries:FindFirstChild("File2"))
 	footer.Buttons.Review.Activated:Fire()
@@ -175,7 +175,7 @@ local function verifyPlugins()
 	footer.Install.Activated:Fire()
 	assert(footer.Enable and footer.Cancel.Text == "Keep Disabled")
 	assert(runtime.Get(fixture.id).Enabled == false and ran == 0)
-	assert(written == "dex/plugins/installed.json" and stored ~= packageText)
+	assert(written == "dex-explorer/plugins/installed.json" and stored ~= packageText)
 	flushTasks()
 	local button = toolbar.Buttons:FindFirstChild("example.test/open")
 	assert(button and button.Icon.ImageTransparency > 0)

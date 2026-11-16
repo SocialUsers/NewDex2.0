@@ -17,10 +17,10 @@ local ok, problem = xpcall(function()
 		old.Main.Shutdown()
 	end
 	local bootstrap =
-		assert(loadstring(readfile("dex/development/src/Runtime/Bootstrap.luau"), "@DexExplorer/IconValidation"))()
+		assert(loadstring(readfile("dex-explorer/development/src/Runtime/Bootstrap.luau"), "@DexExplorer/IconValidation"))()
 	bootstrap("local-development/", {
 		Fetch = function(path)
-			return readfile("dex/development/" .. path)
+			return readfile("dex-explorer/development/" .. path)
 		end,
 	})
 	local runtime = assert(global.DexPlus)
@@ -85,14 +85,14 @@ if runtime and runtime.Apps and runtime.Apps.Explorer then
 		end
 	end)
 end
-for _, path in ipairs({ "dex", "dex/validation" }) do
+for _, path in ipairs({ "dex-explorer", "dex-explorer/validation" }) do
 	pcall(makefolder, path)
 end
-writefile("dex/validation/icons.json", game:GetService("HttpService"):JSONEncode(report))
+writefile("dex-explorer/validation/icons.json", game:GetService("HttpService"):JSONEncode(report))
 print(
 	"[Dex Explorer] Icon validation: "
 		.. (ok and "Passed" or "Differences found")
-		.. "; saved dex/validation/icons.json"
+		.. "; saved dex-explorer/validation/icons.json"
 )
 if not ok then
 	warn(problem)

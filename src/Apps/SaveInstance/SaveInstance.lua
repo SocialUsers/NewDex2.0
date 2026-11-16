@@ -16,7 +16,7 @@ local function CreateModule()
 	local scope = "Place"
 	local status, saveButton, filename, scopeButton, provider
 	local providerMenu, scopeMenu
-	local preferences = "dex/save-instance.json"
+	local preferences = "dex-explorer/save-instance.json"
 	local function node(class, props)
 		local item = Instance.new(class)
 		for key, value in pairs(props) do

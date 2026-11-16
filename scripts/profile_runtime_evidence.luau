@@ -4,14 +4,14 @@ local global = getgenv and getgenv() or _G
 local dex = assert(global.DexPlus, "Load Dex Explorer first")
 local paths = assert(
 	loadstring(
-		readfile("dex/development/src/Apps/Reconstructor/Services/BytecodePaths.lua"),
+		readfile("dex-explorer/development/src/Apps/Reconstructor/Services/BytecodePaths.lua"),
 		"@DexExplorer/RuntimeEvidenceProfile"
 	)
 )().Main()
 local http = game:GetService("HttpService")
 local report = { Started = os.time(), Steps = {}, Functions = {}, Errors = {} }
 local function save()
-	writefile("dex/validation/runtime-evidence-profile.json", http:JSONEncode(report))
+	writefile("dex-explorer/validation/runtime-evidence-profile.json", http:JSONEncode(report))
 end
 local function measure(name, fn)
 	report.Stage = name

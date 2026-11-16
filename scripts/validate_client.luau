@@ -11,7 +11,7 @@ local ok, problem = xpcall(function()
 	if getgenv then
 		getgenv().DexPlus = nil
 	end
-	local root = "dex/development/"
+	local root = "dex-explorer/development/"
 	assert(type(readfile) == "function", "Stage the development runtime with python scripts/stage_client.py")
 	report.source = "local-development"
 	local source = readfile(root .. "src/Runtime/Bootstrap.luau")
@@ -199,12 +199,12 @@ if current and current.Apps then
 	end)
 end
 if type(makefolder) == "function" then
-	pcall(makefolder, "dex")
-	pcall(makefolder, "dex/validation")
+	pcall(makefolder, "dex-explorer")
+	pcall(makefolder, "dex-explorer/validation")
 end
 local json = http:JSONEncode(report)
 if type(writefile) == "function" then
-	writefile("dex/validation/latest.json", json)
+	writefile("dex-explorer/validation/latest.json", json)
 end
 print(
 	"[Dex Explorer validation] "
@@ -213,7 +213,7 @@ print(
 		.. string.format("%.3fs", report.loadSeconds)
 		.. "; "
 		.. report.rowCount
-		.. " rows. Report: dex/validation/latest.json"
+		.. " rows. Report: dex-explorer/validation/latest.json"
 )
 print(
 	"[Dex Explorer UI audit] "

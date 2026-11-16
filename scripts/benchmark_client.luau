@@ -2,7 +2,7 @@
 
 local global = getgenv()
 local http = game:GetService("HttpService")
-local root = "dex/development/"
+local root = "dex-explorer/development/"
 assert(type(readfile) == "function", "Stage the development runtime with python scripts/stage_client.py")
 local report = { version = 1, started = os.time(), loads = {}, search = {}, errors = {} }
 local originalRead = readfile
@@ -23,7 +23,7 @@ local function load(mode)
 	local chunk = assert(loadstring(fetch("src/Runtime/Bootstrap.luau")))
 	local environment = setmetatable({
 		readfile = function(path)
-			if mode == "cold" and path:sub(1, 18) == "dex/cache/modules/" then
+			if mode == "cold" and path:find("dex-explorer/cache/modules/", 1, true) == 1 then
 				error("benchmark cold cache")
 			end
 			assert(type(originalRead) == "function", "File API unavailable")
@@ -87,11 +87,11 @@ end, debug.traceback)
 if not ok then
 	report.errors[#report.errors + 1] = tostring(problem)
 end
-for _, path in ipairs({ "dex", "dex/validation" }) do
+for _, path in ipairs({ "dex-explorer", "dex-explorer/validation" }) do
 	pcall(makefolder, path)
 end
-writefile("dex/validation/performance.json", http:JSONEncode(report))
-print("[Dex Explorer] Performance report saved to dex/validation/performance.json")
+writefile("dex-explorer/validation/performance.json", http:JSONEncode(report))
+print("[Dex Explorer] Performance report saved to dex-explorer/validation/performance.json")
 if not ok then
 	warn(problem)
 end

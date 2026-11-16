@@ -70,7 +70,7 @@ def loader(ref):
 
 local ref="'''+ref+'''"
 local base="https://raw.githubusercontent.com/wooxps/dex-explorer/"..ref.."/"
-local path="dex/runtime/"..ref..".lua"
+local path="dex-explorer/runtime/"..ref..".lua"
 local chunk
 if type(readfile)=="function" then
  local ok,data=pcall(readfile,path)
@@ -85,7 +85,7 @@ if not chunk then
  local problem
  chunk,problem=loadstring(data,"@DexExplorer/Bootstrap")
  assert(chunk,"Dex Explorer bootstrap failed: "..tostring(problem))
- if type(makefolder)=="function" then pcall(makefolder,"dex") pcall(makefolder,"dex/runtime") end
+ if type(makefolder)=="function" then pcall(makefolder,"dex-explorer") pcall(makefolder,"dex-explorer/runtime") end
  if type(writefile)=="function" then pcall(writefile,path,data) end
 end
 return chunk()(base)

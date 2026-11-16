@@ -713,7 +713,7 @@ local function Main()
 			executorFunction("setclipboard")(args.text)
 			return { copied = true, bytes = #args.text }
 		end)
-		local fileRoot = "dex/bridge-files"
+		local fileRoot = "dex-explorer/bridge-files"
 		local function workspacePath(path: string): string
 			assert(type(path) == "string" and #path >= 1 and #path <= 180, "INVALID_ARGUMENT: invalid workspace path")
 			local parts = string.split(path, "/")
@@ -737,8 +737,8 @@ local function Main()
 		local function ensureFileRoot(): ()
 			local isFolder = executorFunction("isfolder")
 			local makeFolder = executorFunction("makefolder")
-			if not isFolder("dex") then
-				makeFolder("dex")
+			if not isFolder("dex-explorer") then
+				makeFolder("dex-explorer")
 			end
 			if not isFolder(fileRoot) then
 				makeFolder(fileRoot)

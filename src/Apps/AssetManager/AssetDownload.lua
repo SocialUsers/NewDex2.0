@@ -95,10 +95,10 @@ local function Main()
 		)
 		local extension = Download.Extension(body)
 		if env.makefolder then
-			pcall(env.makefolder, "dex")
-			pcall(env.makefolder, "dex/assets")
+			pcall(env.makefolder, "dex-explorer")
+			pcall(env.makefolder, "dex-explorer/assets")
 		end
-		local path = "dex/assets/" .. record.Kind .. "_" .. record.Id .. "_" .. os.date("%Y%m%d_%H%M%S") .. extension
+		local path = "dex-explorer/assets/" .. record.Kind .. "_" .. record.Id .. "_" .. os.date("%Y%m%d_%H%M%S") .. extension
 		if env.isfile then
 			local base = path
 			local suffix = 1

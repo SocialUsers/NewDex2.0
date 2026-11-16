@@ -43,6 +43,14 @@ Run `python scripts/package_runtime.py` to generate the hosted files in `dist/gi
 
 In a running Dex session, `getgenv().DexPlus.Main.Performance.Snapshot()` returns counters and recent slow frames. Frame timings cover the whole Roblox client.
 
+## Workspace files
+
+Dex Explorer keeps its settings in `dex-explorer/settings.json` inside the executor workspace. Plugins, macros, layouts, and caches also live under `dex-explorer/`.
+
+If an older Dex build stops at a `ShowAttributes` error after using Dex Explorer, close Roblox and rename the workspace's `DexSettings.json` to `DexSettings.backup.json`. Reopen Roblox and start the older Dex again. This lets it start with its defaults.
+
+To bring over your Dex Explorer data, copy files you want to keep from the old `dex/` folder into `dex-explorer/`. Copy your `.dexplugin` files into `dex-explorer/plugins/`, then install them from the menu. If the backed-up settings came from Dex Explorer, you can copy that file to `dex-explorer/settings.json` while Dex is closed.
+
 ## Third-party licenses
 
 - [Luau](docs/LUAU-LICENSE.txt)

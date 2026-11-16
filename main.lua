@@ -990,7 +990,7 @@ Main = (function()
 				local hashfunc = (syn and syn.crypt.hash) or function()
 					return ""
 				end
-				local filePath = "dex/ModuleCache/" .. name .. ".lua"
+				local filePath = "dex-explorer/ModuleCache/" .. name .. ".lua"
 				local s, moduleStr = pcall(env.readfile, filePath)
 
 				if s and hashfunc(moduleStr) == hashs[name] then
@@ -1355,6 +1355,8 @@ Main = (function()
 		end
 	end
 
+	local settingsPath = "dex-explorer/settings.json"
+
 	Main.SaveSettings = function()
 		if not env.writefile then
 			return false
@@ -1363,15 +1365,15 @@ Main = (function()
 		if not json then
 			return false
 		end
-		return pcall(env.writefile, "DexSettings.json", json)
+		return pcall(env.writefile, settingsPath, json)
 	end
 
 
 	Main.LoadSettings = function()
-		local s, data = pcall(env.readfile or error, "DexSettings.json")
-		if s and data and data ~= "" then
+		local s, data = pcall(env.readfile or error, settingsPath)
+		if s and type(data) == "string" and data ~= "" then
 			local s, decoded = pcall(service.HttpService.JSONDecode, service.HttpService, data)
-			if s and decoded then
+			if s and type(decoded) == "table" then
 				local function recur(tbl)
 					local newTbl = {}
 					for i, v in pairs(tbl) do
@@ -1387,9 +1389,11 @@ Main = (function()
 				local deserializedData = recur(decoded)
 				local function merge(target, source)
 					for k, v in pairs(source) do
-						if type(v) == "table" and type(target[k]) == "table" then
-							merge(target[k], v)
-						else
+						if type(target[k]) == "table" then
+							if type(v) == "table" then
+								merge(target[k], v)
+							end
+						elseif target[k] == nil or typeof(v) == typeof(target[k]) then
 							target[k] = v
 						end
 					end
@@ -1452,7 +1456,7 @@ Main = (function()
 		end
 		if Main.Elevated then
 			if Main.LocalDepsUpToDate() then
-				local localAPI = Lib.ReadFile("dex/rbx_api.dat")
+				local localAPI = Lib.ReadFile("dex-explorer/rbx_api.dat")
 				api = decode(localAPI)
 				if api then
 					rawAPI = localAPI
@@ -1655,7 +1659,7 @@ Main = (function()
 		local rawXML
 		if Main.Elevated then
 			if Main.LocalDepsUpToDate() then
-				local localRMD = Lib.ReadFile("dex/rbx_rmd.dat")
+				local localRMD = Lib.ReadFile("dex-explorer/rbx_rmd.dat")
 				if localRMD then
 					rawXML = localRMD
 				else
@@ -3385,7 +3389,7 @@ Main = (function()
 			return
 		end
 		if env.makefolder then
-			for _, path in ipairs({ "dex", "dex/assets", "dex/assets/studio" }) do
+			for _, path in ipairs({ "dex-explorer", "dex-explorer/assets", "dex-explorer/assets/studio" }) do
 				pcall(env.makefolder, path)
 			end
 		end
@@ -3403,7 +3407,7 @@ Main = (function()
 			return nil
 		end
 		local filename = (StudioAssetData.version .. "_" .. key):gsub("[^%w%._%-]", "_") .. ".png"
-		local path = "dex/assets/studio/" .. filename
+		local path = "dex-explorer/assets/studio/" .. filename
 		local ok, asset = pcall(function()
 			if not env.isfile or not env.isfile(path) then
 				env.writefile(path, data)
@@ -3423,13 +3427,15 @@ Main = (function()
 			return
 		end
 
-		local writefile, makefolder = env.writefile, env.makefolder
-
-		makefolder("dex")
-		makefolder("dex/assets")
-		makefolder("dex/saved")
-		makefolder("dex/plugins")
-		makefolder("dex/ModuleCache")
+		for _, path in ipairs({
+			"dex-explorer",
+			"dex-explorer/assets",
+			"dex-explorer/saved",
+			"dex-explorer/plugins",
+			"dex-explorer/ModuleCache",
+		}) do
+			pcall(env.makefolder, path)
+		end
 	end
 
 	Main.LocalDepsUpToDate = function()
@@ -3449,14 +3455,9 @@ Main = (function()
 			local a = game:GetService("CoreGui"):GetFullName()
 		end)
 
-		if writefile and isfile and not isfile("DexSettings.json") then
-			writefile("DexSettings.json", Main.ExportSettings())
-		end
-
 		Main.InitEnv()
-		Main.LoadSettings()
-
 		Main.SetupFilesystem()
+		Main.LoadSettings()
 		Main.SetupStudioAssets()
 		finishPhase("environment")
 
@@ -3530,7 +3531,7 @@ Main = (function()
 
 		intro.SetProgress("Checking Roblox version", 0.3)
 		if Main.Elevated then
-			local fileVer = Lib.ReadFile("dex/deps_version.dat")
+			local fileVer = Lib.ReadFile("dex-explorer/deps_version.dat")
 			Main.ClientVersion = Version()
 			if fileVer then
 				Main.DepsVersionData = string.split(fileVer, "\n")
@@ -3571,9 +3572,9 @@ Main = (function()
 		finishPhase("metadata")
 
 		if Main.Elevated and env.writefile and not Main.LocalDepsUpToDate() then
-			env.writefile("dex/deps_version.dat", Main.ClientVersion .. "\n" .. Main.RobloxVersion)
-			env.writefile("dex/rbx_api.dat", Main.RawAPI)
-			env.writefile("dex/rbx_rmd.dat", Main.RawRMD)
+			env.writefile("dex-explorer/deps_version.dat", Main.ClientVersion .. "\n" .. Main.RobloxVersion)
+			env.writefile("dex-explorer/rbx_api.dat", Main.RawAPI)
+			env.writefile("dex-explorer/rbx_rmd.dat", Main.RawRMD)
 		end
 
 		intro.SetProgress("Loading tools", 0.75)
@@ -3613,7 +3614,7 @@ Main = (function()
 			if Main.Alive then
 				Apps.PluginRuntime.Start()
 				if type(env.isfile) == "function" then
-					local ok, exists = pcall(env.isfile, "dex/input-macros.json")
+					local ok, exists = pcall(env.isfile, "dex-explorer/input-macros.json")
 					if ok and exists then
 						Apps.InputMacros.Init()
 					end

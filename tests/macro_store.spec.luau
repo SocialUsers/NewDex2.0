@@ -2,7 +2,7 @@
 local raw, decoded, readFails, writeFails
 local env = {
 	isfile = function(path)
-		assert(path == "dex/input-macros.json")
+		assert(path == "dex-explorer/input-macros.json")
 		return raw ~= nil
 	end,
 	readfile = function()

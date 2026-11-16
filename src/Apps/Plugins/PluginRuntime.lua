@@ -17,7 +17,7 @@ local maxActions = 40
 local maxOutputRows = 120
 local maxOutputBytes = 1024 * 1024
 local surfaces = { Explorer = true, Editor = true, Global = true }
-local storePath = "dex/plugins/installed.json"
+local storePath = "dex-explorer/plugins/installed.json"
 
 local function validId(value)
 	return type(value) == "string" and #value <= 80 and value:match("^[a-z0-9][a-z0-9._%-]*$") ~= nil
@@ -56,7 +56,7 @@ local function importPath(value)
 			return nil
 		end
 	end
-	return if path:find("/", 1, true) then path else "dex/plugins/" .. path
+	return if path:find("/", 1, true) then path else "dex-explorer/plugins/" .. path
 end
 
 local function buttonDefinition(id, name, image, tooltip)
@@ -327,7 +327,7 @@ local function CreateModule()
 		if type(env.listfiles) ~= "function" then
 			return result
 		end
-		local ok, paths = pcall(env.listfiles, "dex/plugins")
+		local ok, paths = pcall(env.listfiles, "dex-explorer/plugins")
 		if not ok or type(paths) ~= "table" then
 			return result
 		end

@@ -35,10 +35,10 @@ local function CreateModule()
 				)
 				local data = Main.LoadModule("AssetRigData")[kind]
 				if env.makefolder then
-					pcall(env.makefolder, "dex")
-					pcall(env.makefolder, "dex/assets")
+					pcall(env.makefolder, "dex-explorer")
+					pcall(env.makefolder, "dex-explorer/assets")
 				end
-				local path = "dex/assets/reference-" .. kind .. ".rbxmx"
+				local path = "dex-explorer/assets/reference-" .. kind .. ".rbxmx"
 				env.writefile(path, data)
 				objects = (oldgame or game):GetObjects(env.getcustomasset(path))
 			end

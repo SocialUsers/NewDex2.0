@@ -17,5 +17,5 @@ if session.Worker then
 	report.Worker = ok and state or "unavailable"
 end
 local json = game:GetService("HttpService"):JSONEncode(report)
-writefile("dex/validation/server-tree-status.json", json)
+writefile("dex-explorer/validation/server-tree-status.json", json)
 print("[Dex Explorer] Current server-tree status saved: " .. json)

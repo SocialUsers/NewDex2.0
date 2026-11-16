@@ -12,7 +12,7 @@ end
 local function CreateModule()
 	local Workspace = {}
 	function Workspace.Attach(viewer, remember)
-		local path = "dex/editor-workspace-" .. tostring(game.PlaceId) .. ".json"
+		local path = "dex-explorer/editor-workspace-" .. tostring(game.PlaceId) .. ".json"
 		local pending, stopped, previous, saving = false, false, nil, false
 		local function save()
 			if stopped or not env.writefile then

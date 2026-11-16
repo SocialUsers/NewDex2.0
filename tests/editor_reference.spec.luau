@@ -580,7 +580,7 @@ do
 		end)
 		flushTasks()
 		assert(requests == 1)
-		local cacheFile = "dex/cache/studio-api-docs-en-us.json"
+		local cacheFile = "dex-explorer/cache/studio-api-docs-en-us.json"
 		cache[cacheFile .. ".timestamp"] = "0"
 		deps.env.request = function()
 			requests += 1

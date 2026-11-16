@@ -7,11 +7,11 @@ local ok, problem = xpcall(function()
 	if current and current.Main then
 		current.Main.Shutdown()
 	end
-	local source = readfile("dex/development/src/Runtime/Bootstrap.luau")
+	local source = readfile("dex-explorer/development/src/Runtime/Bootstrap.luau")
 	local boot = assert(loadstring(source, "@DexExplorer/ReconstructorValidation"))()
 	boot("local-development/", {
 		Fetch = function(path)
-			return readfile("dex/development/" .. path)
+			return readfile("dex-explorer/development/" .. path)
 		end,
 	})
 	current = assert(global.DexPlus, "Dex Explorer did not initialize")
@@ -102,16 +102,16 @@ local ok, problem = xpcall(function()
 			report.Passed and "[Dex Explorer] Reconstructor scans completed; report saved."
 				or "[Dex Explorer] Reconstructor scan incomplete or failed; report saved."
 		)
-		writefile("dex/validation/server-tree.json", game:GetService("HttpService"):JSONEncode(report))
+		writefile("dex-explorer/validation/server-tree.json", game:GetService("HttpService"):JSONEncode(report))
 	end)
 end, debug.traceback)
 if not ok then
 	report.Errors[#report.Errors + 1] = tostring(problem)
 end
 local http = game:GetService("HttpService")
-pcall(makefolder, "dex")
-pcall(makefolder, "dex/validation")
-writefile("dex/validation/server-tree.json", http:JSONEncode(report))
+pcall(makefolder, "dex-explorer")
+pcall(makefolder, "dex-explorer/validation")
+writefile("dex-explorer/validation/server-tree.json", http:JSONEncode(report))
 if ok then
 	print(
 		"[Dex Explorer] Reconstructor validation started. Wait for the completion message; startup alone is not a pass. No game remotes were invoked."

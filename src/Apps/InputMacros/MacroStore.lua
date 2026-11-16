@@ -7,7 +7,7 @@ local function InitDeps(deps)
 end
 
 local function Main()
-	local Store = { MaxMacros = 32, Path = "dex/input-macros.json" }
+	local Store = { MaxMacros = 32, Path = "dex-explorer/input-macros.json" }
 	local maxBytes = 4 * 1024 * 1024
 
 	function Store.Available()

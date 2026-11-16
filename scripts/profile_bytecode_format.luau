@@ -6,7 +6,7 @@ local deps = dex.Main.GetInitDeps()
 local env = deps.env
 local paths = assert(
 	loadstring(
-		readfile("dex/development/src/Apps/Reconstructor/Services/BytecodePaths.lua"),
+		readfile("dex-explorer/development/src/Apps/Reconstructor/Services/BytecodePaths.lua"),
 		"@DexExplorer/BytecodeFormat"
 	)
 )().Main()
@@ -16,9 +16,9 @@ local report = {
 	Capabilities = { DumpBytecode = type(dumpbytecode), GetScriptClosure = type(getscriptclosure) },
 }
 local http = game:GetService("HttpService")
-pcall(makefolder, "dex/validation/bytecode")
+pcall(makefolder, "dex-explorer/validation/bytecode")
 local function save()
-	writefile("dex/validation/bytecode-format.json", http:JSONEncode(report))
+	writefile("dex-explorer/validation/bytecode-format.json", http:JSONEncode(report))
 end
 save()
 local candidates = dex.Apps.Explorer.GetInferenceCandidates()
@@ -44,7 +44,7 @@ for obj, node in pairs(candidates) do
 			limit += 1
 			local sample = { Bytes = #bytes, ReadSeconds = seconds, Version = bytes:byte(1), Types = bytes:byte(2) }
 			report.Samples[#report.Samples + 1] = sample
-			local file = "dex/validation/bytecode/sample-" .. limit .. ".bin"
+			local file = "dex-explorer/validation/bytecode/sample-" .. limit .. ".bin"
 			writefile(file, bytes)
 			sample.File = file
 			local claims = 0

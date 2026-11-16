@@ -663,7 +663,7 @@ local function CreateModule()
 			ui:Text(
 				header,
 				"Location",
-				"dex/plugins",
+				"dex-explorer/plugins",
 				UDim2.fromOffset(locationX, 0),
 				UDim2.new(1, -locationX - 130, 1, 0),
 				false,

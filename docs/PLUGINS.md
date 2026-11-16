@@ -5,7 +5,7 @@ Plugins add tools to the Dex menu. A `.dexplugin` file contains JSON with the pl
 ## Install a plugin
 
 1. Open the Dex menu and click **+** next to **Plugins**.
-2. Choose a `.dexplugin` file from `dex/plugins` in your executor workspace. For an HTTPS link or the contents of a package, use **Import From**.
+2. Choose a `.dexplugin` file from `dex-explorer/plugins` in your executor workspace. For an HTTPS link or the contents of a package, use **Import From**.
 3. Click **Review** to check the package details. Use **Copy Source** if you want to read the code and your executor supports clipboard access.
 4. Click **Install**, then **Enable**. The plugin's buttons appear under **Plugins**.
 

@@ -36,7 +36,7 @@ return function(baseUrl, options)
 	end
 
 	local nativeSha256 = verifiedSha256(crypt) or verifiedSha256(type(syn) == "table" and syn.crypt)
-	local directory = "dex/cache/modules"
+	local directory = "dex-explorer/cache/modules"
 	local function checksum(data)
 		local a, b = 1, 0
 		local byte = string.byte
@@ -58,7 +58,7 @@ return function(baseUrl, options)
 		return b * 65536 + a
 	end
 	if type(makefolder) == "function" then
-		for _, path in ipairs({ "dex", "dex/cache", directory }) do
+		for _, path in ipairs({ "dex-explorer", "dex-explorer/cache", directory }) do
 			pcall(makefolder, path)
 		end
 	end

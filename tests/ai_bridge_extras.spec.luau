@@ -106,7 +106,7 @@ do
 	assert(not pcall(call, "dex_write_file", { path = "folder\\outside", text = "x" }, execute))
 	assert(call("dex_write_file", { path = path.path, text = "return " }, execute).written)
 	assert(call("dex_append_file", { path = path.path, text = "42" }, execute).appended)
-	assert(files["dex/bridge-files/test.luau"] == "return 42")
+	assert(files["dex-explorer/bridge-files/test.luau"] == "return 42")
 	assert(call("dex_read_file", path, execute).text == "return 42")
 	assert(call("dex_file_exists", path, execute).file)
 	local run = call("dex_load_file", path, execute)

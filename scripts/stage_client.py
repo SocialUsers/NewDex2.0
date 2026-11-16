@@ -4,7 +4,7 @@ import shutil
 from package_runtime import package, ROOT, OUT
 
 manifest=package()
-destination=Path.home()/'AppData/Local/Potassium/workspace/dex/development'
+destination=Path.home()/'AppData/Local/Potassium/workspace/dex-explorer/development'
 destination.mkdir(parents=True,exist_ok=True)
 for path in [*manifest['files'],'manifest.json','src/Runtime/Bootstrap.luau',manifest['bundle']['path'],
              *(part['path'] for part in manifest.get('bundles', []))]:

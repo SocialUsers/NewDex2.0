@@ -499,6 +499,39 @@ parts += ['do\nlocal writes,handles=0,0\nlocal disk={}\nlocal env={makefolder=fu
  'local splashControl=(function()\n'+module_file('LoadingSplash').read_text(encoding='utf-8')+'\nend)()\nsplashControl.InitDeps({Main=Main,Settings=Settings,service={},createSimple=createSimple})\nlocal splash=splashControl.Main()\nMain.LoadModule=function(name) assert(name=="LoadingSplash") return splash end\n',
  main_source[main_source.index('\tMain.CreateIntro = function'):main_source.index('\n\tMain.CreateApp')],
  'Main.SetupStudioAssets()\nassert(writes==0 and handles==0,"asset setup does no eager file or handle work")\nassert(Main.GetStudioAsset("used"))\nassert(Main.GetStudioAsset("used"))\nassert(writes==1 and handles==1,"requested asset materializes once")\nMain.GetStudioAsset("other")\nassert(writes==2 and handles==2,"unused assets remain untouched")\nlocal status=Main.CreateIntro("Loading")\nlocal card=securedGui.Status\nassert(card.AnchorPoint.X==.5 and card.AnchorPoint.Y==.5 and card.Position==UDim2.fromScale(.5,.5),"splash is centered")\nlocal constraint=card:FindFirstChildOfClass("UISizeConstraint")\nassert(constraint.MaxSize.X==488 and constraint.MaxSize.Y==280 and card.Size.X.Scale==1 and card.Size.X.Offset==-32,"compact card fits narrow screens")\nassert(card.Brand.Reveal.LogoFallback and card.Message.Text=="Loading","branding fallback works without asset APIs")\nstatus.SetProgress("Loading tools",.75)\nassert(card.Message.Text=="Loading tools" and card.Percent.Text=="75%" and card.Progress.Fill.Size.X.Scale==.75,"real stages update progress")\nstatus.SetProgress(nil,.2) status.SetProgress(nil,0/0) status.SetProgress(nil,math.huge)\nassert(card.Percent.Text=="75%","invalid or older values cannot reverse progress")\nstatus.SetProgress("Ready",2)\nassert(card.Percent.Text=="100%" and card.Progress.Fill.Size.X.Scale==1,"progress is clamped")\nstatus.Close() status.Close() status.SetProgress("Late",0)\nassert(securedGui.Destroyed and card.Message.Text=="Ready","close is idempotent and late updates are ignored")\nStudioAssetData.files["branding/dex/toolbar-white-v1"]="logo"\nlocal again=Main.CreateIntro("Loading")\nassert(securedGui.Status.Brand.Reveal.Logo and not securedGui.Status.Brand.Reveal:FindFirstChild("LogoFallback"),"existing Dex mark is used when available")\ncleanup() again.Close()\nassert(securedGui.Destroyed,"shutdown owns splash cleanup")\nprint("PASS: lazy assets, centered compact splash, branding fallback, real bounded progress and close/shutdown cleanup")\nend']
+parts += [r'''
+do
+local Main = {}
+local DefaultSettings = { StudioThemeVersion = 4, Properties = { _Recurse = true, ShowAttributes = true } }
+local Settings = { StudioThemeVersion = 4, Properties = { ShowAttributes = true } }
+local legacy = "DexSettings.json"
+local current = "dex-explorer/settings.json"
+local files = { [legacy] = "legacy settings" }
+local decoded
+local service = { HttpService = {
+    JSONDecode = function(_, raw) assert(raw == files[current]) return decoded end,
+} }
+local env = {
+    readfile = function(path) assert(path == current) return files[path] end,
+    writefile = function(path, value) assert(path == current) files[path] = value end,
+}
+local function deserialize(value) return value end
+local function copySettings(value) return table.clone(value) end
+Main.ExportSettings = function() return "new settings" end
+''',
+ main_source[main_source.index('\tlocal settingsPath = '):main_source.index('\n\tMain.FetchAPI = function')],
+ r'''
+Main.LoadSettings()
+assert(Settings.Properties.ShowAttributes and files[legacy] == "legacy settings")
+assert(Main.SaveSettings() and files[current] == "new settings" and files[legacy] == "legacy settings")
+decoded = { StudioThemeVersion = 4, Properties = false }
+Main.LoadSettings()
+assert(Settings.Properties.ShowAttributes, "bad settings cannot replace the Properties table")
+decoded = { StudioThemeVersion = 4, Properties = { ShowAttributes = false } }
+Main.LoadSettings()
+assert(Settings.Properties.ShowAttributes == false, "isolated settings still load saved preferences")
+end
+''']
 with tempfile.TemporaryDirectory(prefix='dex-checks-') as temp:
     harness = Path(temp) / 'smoke.luau'
     harness.write_text('\n'.join(parts), encoding='utf-8')
