@@ -1940,7 +1940,13 @@ Main = (function()
 		return control
 	end
 
-	local creditsCanvasHeight = 216
+	local contributors = {
+		{ "Wooxps", "Dex Explorer" },
+		{ "Toon", "IY DeX and contributions" },
+		{ "Moon", "DeX" },
+		{ "Cazan", "3D Viewer" },
+	}
+	local creditsCanvasHeight = 90 + #contributors * 42
 	local function resizeMainMenu(animate)
 		local viewport = Main.MainGui.AbsoluteSize
 		local width = math.clamp(viewport.X - 16, 1, 268)
@@ -2680,7 +2686,6 @@ Main = (function()
 		local version = string.split(Main.Version or "", " · ")[1]
 		creditText(credits, "Version", version, titleX, 30, 17, 12, false, true)
 
-		local contributors = { { "Toon", "IY DeX and contributions" }, { "Moon", "DeX" }, { "Cazan", "3D Viewer" } }
 		local contributionList = createSimple("Frame", {
 			Name = "Contributors",
 			Parent = credits,

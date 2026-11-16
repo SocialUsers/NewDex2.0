@@ -478,7 +478,7 @@ assert(menu.Credits.Visible and not Main.AppsFrame.Visible and Main.MainGuiOpen,
 local credits=menu.Credits
 assert(credits.Logo.Image=="mockasset://branding/dex/toolbar-white-v1" and credits.ProductName.Text=="Dex Explorer")
 assert(credits.Version.Text=="2.2")
-for _,name in ipairs({"Toon","Moon","Cazan"}) do
+for _,name in ipairs({"Wooxps","Toon","Moon","Cazan"}) do
  assert(credits.Contributors[name].ContributorName.Text==name and credits.Contributors[name].Contribution.Text~="")
 end
 assert(credits.Contributors.Position.Y.Offset+credits.Contributors.Size.Y.Offset<=credits.CanvasSize.Y.Offset)
