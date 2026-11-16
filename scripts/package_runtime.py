@@ -68,7 +68,6 @@ def loader(ref):
     assert len(ref) == 40 and all(c in '0123456789abcdef' for c in ref)
     return '''--!strict
 
--- Dex Explorer: modules are pinned to a single tested source commit.
 local ref="'''+ref+'''"
 local base="https://raw.githubusercontent.com/wooxps/dex-explorer/"..ref.."/"
 local path="dex/runtime/"..ref..".lua"
