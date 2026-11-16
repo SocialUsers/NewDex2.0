@@ -1,0 +1,652 @@
+--!strict
+
+local Apps
+
+local function Main()
+	local Bits = Apps.SearchBits
+	local Results = {}
+	local function write(words, position)
+		local word = (position - 1) // 32
+		words[word] = bit32.bor(words[word] or 0, bit32.lshift(1, (position - 1) % 32))
+	end
+
+	local createView
+
+	function Results.CreateLayout(roots, context, checkpoint)
+		local estimate = math.clamp(context.Estimate or 0, 0, 250000)
+		local nodes, names = table.create(estimate), table.create(estimate)
+		local ends, depths, parents = table.create(estimate), table.create(estimate), table.create(estimate)
+		local positions, top = {}, {}
+		local readName, readChildren = context.Name, context.Children
+		local count = 0
+		local function visit(node, parent, depth)
+			if node.Del then
+				return
+			end
+			count += 1
+			if count % 128 == 0 then
+				checkpoint()
+			end
+			local position = count
+			nodes[position], names[position] = node, readName(node)
+			parents[position], depths[position] = parent, depth
+			positions[node] = position
+			if parent == 0 then
+				top[#top + 1] = position
+			end
+			if #node > 0 then
+				for _, child in ipairs(readChildren(node, checkpoint)) do
+					if child.Parent == node then
+						visit(child, position, depth + 1)
+					end
+				end
+			end
+			ends[position] = count
+		end
+		for _, node in ipairs(readChildren(roots[1], checkpoint)) do
+			if node.Parent == roots[1] then
+				visit(node, 0, 1)
+			end
+		end
+		if roots[2] then
+			visit(roots[2], 0, 1)
+		end
+		return {
+			Nodes = nodes,
+			Names = names,
+			Ends = ends,
+			Depths = depths,
+			Parents = parents,
+			Widths = {},
+			Positions = positions,
+			Top = top,
+			NilRoot = roots[2],
+		}
+	end
+
+	local charLanes, lowBits, highBits = {}, {}, {}
+	for lane = 1, 36 do
+		local bit = bit32.lshift(1, (lane - 1) % 32)
+		if lane <= 26 then
+			charLanes[96 + lane] = lane
+			charLanes[64 + lane] = lane
+		else
+			charLanes[21 + lane] = lane
+		end
+		if lane <= 32 then
+			lowBits[bit] = lane
+		else
+			highBits[bit] = lane
+		end
+	end
+
+	function Results.PrepareCharacters(layout, checkpoint)
+		local nodes, names = layout.Nodes, layout.Names
+		local parents, depths = layout.Parents, layout.Depths
+		local columns, matchWords, ancestorWords = table.create(36), table.create(36, 0), table.create(36, 0)
+		for lane = 1, 36 do
+			columns[lane] = { Match = Bits.Dense(#nodes), Context = Bits.Dense(#nodes), Width = 0, Depth = 1 }
+		end
+		local pendingLow, pendingHigh, nameMasks = {}, {}, {}
+		local cacheCount = 0
+		local bor, band, bnot, lshift = bit32.bor, bit32.band, bit32.bnot, bit32.lshift
+		local highUnit = 4294967296
+		local function nameMask(name)
+			local cached = nameMasks[name]
+			if cached then
+				return cached % highUnit, cached // highUnit
+			end
+			local lo, hi = 0, 0
+			for index = 1, #name do
+				local lane = charLanes[string.byte(name, index)]
+				if lane then
+					if lane <= 32 then
+						lo = bor(lo, lshift(1, lane - 1))
+					else
+						hi = bor(hi, lshift(1, lane - 33))
+					end
+				end
+			end
+			if cacheCount < 4096 then
+				nameMasks[name] = lo + hi * highUnit
+				cacheCount += 1
+			end
+			return lo, hi
+		end
+		for position = #nodes, 1, -1 do
+			local node, name = nodes[position], names[position]
+			local ownLow, ownHigh = 0, 0
+			if node ~= layout.NilRoot then
+				ownLow, ownHigh = nameMask(name)
+			end
+			local childLow, childHigh = pendingLow[position], pendingHigh[position]
+			local lo, hi = ownLow, ownHigh
+			if childLow then
+				pendingLow[position] = nil
+				lo = bor(lo, childLow)
+				childLow = band(childLow, bnot(ownLow))
+			end
+			if childHigh then
+				pendingHigh[position] = nil
+				hi = bor(hi, childHigh)
+				childHigh = band(childHigh, bnot(ownHigh))
+			end
+			local parent = parents[position]
+			if parent > 0 then
+				if lo ~= 0 then
+					pendingLow[parent] = bor(pendingLow[parent] or 0, lo)
+				end
+				if hi ~= 0 then
+					pendingHigh[parent] = bor(pendingHigh[parent] or 0, hi)
+				end
+			end
+			local index = (position - 1) % 32
+			local rowBit = lshift(1, index)
+			local width, depth = node.NameWidth or math.min(100, #name) * 14, depths[position]
+			while ownLow ~= 0 do
+				local lowBit = band(ownLow, -ownLow)
+				local lane = lowBits[lowBit]
+				local column = columns[lane]
+				matchWords[lane] = bor(matchWords[lane], rowBit)
+				if width > column.Width then
+					column.Width = width
+				end
+				if depth > column.Depth then
+					column.Depth = depth
+				end
+				ownLow = band(ownLow, ownLow - 1)
+			end
+			while ownHigh ~= 0 do
+				local lowBit = band(ownHigh, -ownHigh)
+				local lane = highBits[lowBit]
+				local column = columns[lane]
+				matchWords[lane] = bor(matchWords[lane], rowBit)
+				if width > column.Width then
+					column.Width = width
+				end
+				if depth > column.Depth then
+					column.Depth = depth
+				end
+				ownHigh = band(ownHigh, ownHigh - 1)
+			end
+			while childLow and childLow ~= 0 do
+				local lowBit = band(childLow, -childLow)
+				local lane = lowBits[lowBit]
+				local column = columns[lane]
+				ancestorWords[lane] = bor(ancestorWords[lane], rowBit)
+				if width > column.Width then
+					column.Width = width
+				end
+				if depth > column.Depth then
+					column.Depth = depth
+				end
+				childLow = band(childLow, childLow - 1)
+			end
+			while childHigh and childHigh ~= 0 do
+				local lowBit = band(childHigh, -childHigh)
+				local lane = highBits[lowBit]
+				local column = columns[lane]
+				ancestorWords[lane] = bor(ancestorWords[lane], rowBit)
+				if width > column.Width then
+					column.Width = width
+				end
+				if depth > column.Depth then
+					column.Depth = depth
+				end
+				childHigh = band(childHigh, childHigh - 1)
+			end
+			if index == 0 then
+				local offset = (position - 1) // 32 * 4
+				for lane, column in ipairs(columns) do
+					local matchWord = matchWords[lane]
+					local ancestorWord = ancestorWords[lane]
+					if matchWord ~= 0 or ancestorWord ~= 0 then
+						buffer.writeu32(column.Match.Data, offset, matchWord)
+						buffer.writeu32(column.Context.Data, offset, bor(matchWord, ancestorWord))
+						matchWords[lane], ancestorWords[lane] = 0, 0
+					end
+				end
+				checkpoint()
+			end
+		end
+		layout.Characters = columns
+	end
+
+	function Results.CreateIndexed(layout, term, context, checkpoint)
+		local lane = #term == 1 and charLanes[string.byte(term)]
+		local column = lane and layout.Characters and layout.Characters[lane]
+		if not column then
+			return nil
+		end
+		if not column.Match.Prefix then
+			column.Match:Prepare(checkpoint)
+		end
+		if not column.Context.Prefix then
+			column.Context:Prepare(checkpoint)
+		end
+		local top = {}
+		for index, at in ipairs(layout.Top) do
+			if column.Context:Has(at) then
+				top[#top + 1] = at
+			end
+			if index % 128 == 0 then
+				checkpoint()
+			end
+		end
+		return createView(
+			layout,
+			context,
+			checkpoint,
+			layout.Positions,
+			top,
+			column.Match,
+			column.Context,
+			column.Width,
+			column.Depth
+		)
+	end
+
+	function Results.CreatePredicate(layout, predicate, context, checkpoint, roots, matchNode, className)
+		layout = layout or Results.CreateLayout(roots, context, checkpoint)
+		if not layout.Positions then
+			local positions = {}
+			for i, node in ipairs(layout.Nodes) do
+				positions[node] = i
+				if i % 256 == 0 then
+					checkpoint()
+				end
+			end
+			layout.Positions = positions
+		end
+		local cache = layout.ClassResults
+		local result = className and cache and cache[className]
+		if not result then
+			local nodes, names, ends, depths, parents = layout.Nodes, layout.Names, layout.Ends, layout.Depths, layout.Parents
+			local allMatches, allContext = Bits.Dense(#nodes), Bits.Dense(#nodes)
+			local top, width, depth = {}, 0, 1
+			local object = context.Object
+			local bor, band, lshift = bit32.bor, bit32.band, bit32.lshift
+			local queryable = layout.NilRoot
+			for first = 1, #nodes, 32 do
+				local matchWord = 0
+				for i = first, math.min(first + 31, #nodes) do
+					local node = nodes[i]
+					if node ~= queryable then
+						local hit
+						if matchNode then
+							hit = matchNode(node)
+						else
+							local ok, value = pcall(predicate, if object then object(node) else node.Obj)
+							hit = ok and value
+						end
+						if hit then
+							matchWord = bor(matchWord, lshift(1, i - first))
+						end
+					end
+				end
+				buffer.writeu32(allMatches.Data, (first - 1) // 8, matchWord)
+				if first % 128 == 1 then
+					checkpoint()
+				end
+			end
+
+			local nextMatch = math.huge
+			for word = (#nodes + 31) // 32 - 1, 0, -1 do
+				local offset = word * 4
+				local matchWord = buffer.readu32(allMatches.Data, offset)
+				local contextWord = 0
+				local first = word * 32 + 1
+				for i = math.min(first + 31, #nodes), first, -1 do
+					local bit = lshift(1, i - first)
+					if band(matchWord, bit) ~= 0 then
+						nextMatch = i
+					end
+					if nextMatch <= ends[i] then
+						contextWord = bor(contextWord, bit)
+						width = math.max(width, nodes[i].NameWidth or math.min(100, #names[i]) * 14)
+						depth = math.max(depth, depths[i])
+						if parents[i] == 0 then
+							top[#top + 1] = i
+						end
+					end
+				end
+				buffer.writeu32(allContext.Data, offset, contextWord)
+				if word % 4 == 0 then
+					checkpoint()
+				end
+			end
+			allMatches:Prepare(checkpoint)
+			allContext:Prepare(checkpoint)
+			result = { Match = allMatches, Context = allContext, Top = top, Width = width, Depth = depth }
+			if className then
+				cache = layout.ClassResults or {}
+				local order = layout.ClassOrder or {}
+				if #order >= 4 then
+					cache[table.remove(order, 1)] = nil
+				end
+				order[#order + 1] = className
+				cache[className] = result
+				layout.ClassResults, layout.ClassOrder = cache, order
+			end
+		end
+		return createView(layout, context, checkpoint, layout.Positions, result.Top, result.Match, result.Context, result.Width, result.Depth)
+	end
+
+	function Results.CreateCold(roots, terms, context, checkpoint, layout)
+		local estimate = math.clamp(context.Estimate or 0, 0, 250000)
+		local nodes = layout and layout.Nodes or table.create(estimate)
+		local names = layout and layout.Names or table.create(estimate)
+		local ends = layout and layout.Ends or table.create(estimate)
+		local depths = layout and layout.Depths or table.create(estimate)
+		local parents = layout and layout.Parents or table.create(estimate)
+		local widths = layout and layout.Widths or {}
+		local positions, top = {}, {}
+		local matchWords, contextWords = {}, {}
+		local work, width, maxDepth = 0, 0, 1
+		local firstTerm, termCount = terms[1], #terms
+		local function matchesName(name)
+			local lower = string.lower(name)
+			if not string.find(lower, firstTerm, 1, true) then
+				return false
+			end
+			for index = 2, termCount do
+				if not string.find(lower, terms[index], 1, true) then
+					return false
+				end
+			end
+			return true
+		end
+		local function include(position, node, parent, depth, name)
+			positions[node] = position
+			write(contextWords, position)
+			if parent == 0 then
+				top[#top + 1] = position
+			end
+			maxDepth = math.max(maxDepth, depth)
+			width = math.max(width, node.NameWidth or math.min(100, #name) * 14)
+		end
+		local readName, readChildren = context.Name, context.Children
+		local nodeCount = #nodes
+		local function visit(node, parent, depth, queryable)
+			if node.Del then
+				return
+			end
+			work += 1
+			if work % 128 == 0 then
+				checkpoint()
+			end
+			nodeCount += 1
+			local position = nodeCount
+			local name = readName(node)
+			nodes[position], names[position] = node, name
+			depths[position], parents[position] = depth, parent
+			local hit = queryable and matchesName(name)
+			if hit then
+				write(matchWords, position)
+			end
+			local included = hit
+			if #node > 0 then
+				for _, child in ipairs(readChildren(node, checkpoint)) do
+					if child.Parent == node and visit(child, position, depth + 1, true) then
+						included = true
+					end
+				end
+			end
+			ends[position] = nodeCount
+			if included then
+				include(position, node, parent, depth, name)
+			end
+			return included
+		end
+		if layout then
+			for position = #nodes, 1, -1 do
+				local node, name = nodes[position], names[position]
+				local hit = node ~= roots[2] and matchesName(name)
+				if hit then
+					write(matchWords, position)
+				end
+				local bit = bit32.lshift(1, (position - 1) % 32)
+				if hit or bit32.band(contextWords[(position - 1) // 32] or 0, bit) ~= 0 then
+					local parent = parents[position]
+					include(position, node, parent, depths[position], name)
+					if parent > 0 then
+						write(contextWords, parent)
+					end
+				end
+				if position % 128 == 0 then
+					checkpoint()
+				end
+			end
+		else
+			for _, node in ipairs(readChildren(roots[1], checkpoint)) do
+				if node.Parent == roots[1] then
+					visit(node, 0, 1, true)
+				end
+			end
+			if roots[2] then
+				visit(roots[2], 0, 1, false)
+			end
+		end
+		local function pack(words)
+			local bits = Bits.Dense(#nodes)
+			for word, value in pairs(words) do
+				buffer.writeu32(bits.Data, word * 4, value)
+				if word % 128 == 0 then
+					checkpoint()
+				end
+			end
+			return bits:Prepare(checkpoint)
+		end
+		local allMatches, allContext = pack(matchWords), pack(contextWords)
+		layout = layout or {
+			Nodes = nodes,
+			Names = names,
+			Ends = ends,
+			Depths = depths,
+			Parents = parents,
+			Widths = widths,
+			NilRoot = roots[2],
+		}
+		return createView(layout, context, checkpoint, positions, top, allMatches, allContext, width, maxDepth)
+	end
+
+	createView = function(layout, context, checkpoint, positions, top, allMatches, allContext, width, maxDepth)
+		local nodes, names, ends, depths, parents, widths =
+			layout.Nodes, layout.Names, layout.Ends, layout.Depths, layout.Parents, layout.Widths
+		local result = {
+			Width = width,
+			Depth = maxDepth,
+			ExactWidth = false,
+			WidthRevision = 0,
+			Overrides = {},
+			Removed = {},
+			ExpansionVersion = 0,
+			OverrideRevision = 0,
+			Resolved = 0,
+			Pages = {},
+			PageOrder = {},
+			Cold = true,
+			ColdLayout = layout,
+		}
+		local matches, contextRows, visible = allMatches, allContext, allContext
+		local allowed = {}
+		function result:Contains(node)
+			return allContext:Has(positions[node])
+		end
+		function result:Remove(node)
+			if self:Contains(node) and not self.Removed[node] then
+				self.Removed[node] = true
+				self.ExpansionVersion += 1
+			end
+		end
+		function result:NameOf(node)
+			local at = positions[node]
+			return (not layout.Positions or allContext:Has(at)) and names[at] or nil
+		end
+		function result:DepthOf(node)
+			local at = positions[node]
+			return (not layout.Positions or allContext:Has(at)) and depths[at] or nil
+		end
+		function result:IndexOf(node)
+			local at = positions[node]
+			return at and visible:Has(at) and visible:Rank(at) or nil
+		end
+		function result:PositionOfMatch(node)
+			local at = positions[node]
+			return at and matches:Has(at) and matches:Rank(at) or nil
+		end
+		function result:MaterializeMatches(include)
+			local output = table.create(matches.Count)
+			matches:Each(function(at)
+				local node = nodes[at]
+				if not include or include(node) then
+					output[#output + 1] = node
+				end
+			end)
+			return output
+		end
+		function result:MeasureWidths(measure, check)
+			local maximum, workDone = 0, 0
+			visible:Each(function(at)
+				local value = widths[at]
+				if not value then
+					local reusable
+					value, reusable = measure({ Node = nodes[at], Name = names[at] })
+					if reusable ~= false then
+						widths[at] = value
+					end
+				end
+				maximum = math.max(maximum, value)
+				workDone += 1
+				if workDone % 128 == 0 then
+					check()
+				end
+			end, check)
+			return maximum
+		end
+		function result:RememberStats() end
+		function result:Reflow(check)
+			local changed = self.AppliedExpansion ~= self.ExpansionVersion
+			local hasHidden = false
+			for _, at in ipairs(top) do
+				local shown = context.Visible(nodes[at])
+				hasHidden = hasHidden or not shown
+				changed = changed or allowed[at] ~= shown
+				allowed[at] = shown
+			end
+			if not changed then
+				return
+			end
+			matches, contextRows = allMatches, allContext
+			if hasHidden or next(self.Removed) then
+				matches, contextRows = allMatches:Clone(), allContext:Clone()
+				local function hide(at)
+					matches:ClearRange(at, ends[at])
+					contextRows:ClearRange(at, ends[at])
+				end
+				for _, at in ipairs(top) do
+					if not allowed[at] then
+						hide(at)
+					end
+				end
+				for node in pairs(self.Removed) do
+					hide(positions[node])
+				end
+				matches:Prepare(check)
+				for node in pairs(self.Removed) do
+					local ancestor = parents[positions[node]]
+					while ancestor > 0 and matches:Rank(ends[ancestor]) == matches:Rank(ancestor - 1) do
+						contextRows:Set(ancestor, false)
+						ancestor = parents[ancestor]
+					end
+				end
+				contextRows:Prepare(check)
+			end
+			visible = contextRows
+			for node, value in pairs(self.Overrides) do
+				local at = positions[node]
+				if value == false and at then
+					if visible == contextRows then
+						visible = contextRows:Clone()
+					end
+					visible:ClearRange(at + 1, ends[at])
+				end
+			end
+			if visible ~= contextRows then
+				visible:Prepare(check)
+			end
+			self.MatchBits, self.VisibleBits = matches, visible
+			self.WidthRevision += 1
+			self.ExactWidth = false
+			self.AppliedExpansion = self.ExpansionVersion
+		end
+		result.Rows = setmetatable({
+			IndexOf = function(node)
+				return result:IndexOf(node)
+			end,
+			DepthOf = function(node)
+				return result:DepthOf(node)
+			end,
+		}, {
+			__len = function()
+				return visible.Count
+			end,
+			__index = function(_, i)
+				local at = type(i) == "number" and visible:Select(i)
+				return at and nodes[at] or nil
+			end,
+		})
+		result.Indices = setmetatable({}, {
+			__index = function(_, node)
+				return result:IndexOf(node)
+			end,
+		})
+		result.Matches = setmetatable({}, {
+			__index = function(_, node)
+				return matches:Has(positions[node]) or nil
+			end,
+		})
+		result.MatchList = setmetatable({
+			IndexOf = function(node)
+				return result:PositionOfMatch(node)
+			end,
+		}, {
+			__len = function()
+				return matches.Count
+			end,
+			__index = function(_, i)
+				local at = type(i) == "number" and matches:Select(i)
+				return at and nodes[at] or nil
+			end,
+		})
+		result.Expanded = setmetatable({}, {
+			__newindex = function(_, node, value)
+				if result.Expanded[node] ~= value then
+					result.Overrides[node] = value
+					result.OverrideRevision += 1
+					result.ExpansionVersion += 1
+				end
+			end,
+			__index = function(_, node)
+				local override = result.Overrides[node]
+				if override ~= nil then
+					return override
+				end
+				local at = positions[node]
+				if at and contextRows:Has(at) then
+					return contextRows:Rank(ends[at]) > contextRows:Rank(at) and true or 0
+				end
+			end,
+		})
+		result:Reflow(checkpoint)
+		return result
+	end
+	return Results
+end
+return {
+	InitDeps = function(d)
+		Apps = d.Apps
+	end,
+	InitAfterMain = function() end,
+	Main = Main,
+}

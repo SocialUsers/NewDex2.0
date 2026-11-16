@@ -1,0 +1,76 @@
+{
+  "installation": "version-7aaa6838d36c4448",
+  "package": "DraggerFramework/ee91efdd",
+  "modules": {
+    "MoveHandleView": {
+      "sha256": "38d2f1fed64b0e97890db5d981e121f840bb8b6ce15780a1c610793114afd5c2",
+      "publicSha256": "38d2f1fed64b0e97890db5d981e121f840bb8b6ce15780a1c610793114afd5c2",
+      "bytes": 5075,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Components/MoveHandleView.luac",
+      "installedMatchesPublic": true
+    },
+    "MovePlanarHandleView": {
+      "sha256": "1051458852c630ecaa9cf40656f562bbacdf90dd5225db9e13d3237dd1b919fd",
+      "publicSha256": "1051458852c630ecaa9cf40656f562bbacdf90dd5225db9e13d3237dd1b919fd",
+      "bytes": 3904,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Components/MovePlanarHandleView.luac",
+      "installedMatchesPublic": true
+    },
+    "RotateHandleView": {
+      "sha256": "73c8526c120cbf1b2054db54c9a4b1eb3ff1725666b3fbc5c6344e01d0f0b25a",
+      "publicSha256": "73c8526c120cbf1b2054db54c9a4b1eb3ff1725666b3fbc5c6344e01d0f0b25a",
+      "bytes": 6718,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Components/RotateHandleView.luac",
+      "installedMatchesPublic": true
+    },
+    "ScaleHandleView": {
+      "sha256": "8789d4f57688839214d377975ef4d708336a133aa1501e6524c46ab64c3ce50c",
+      "publicSha256": "8789d4f57688839214d377975ef4d708336a133aa1501e6524c46ab64c3ce50c",
+      "bytes": 2666,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Components/ScaleHandleView.luac",
+      "installedMatchesPublic": true
+    },
+    "MoveHandles": {
+      "sha256": "95952ec646fa85896510c4472f2fefd015e537a93a88f993a5ce968b030df49a",
+      "publicSha256": "95952ec646fa85896510c4472f2fefd015e537a93a88f993a5ce968b030df49a",
+      "bytes": 31578,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Handles/MoveHandles.luac",
+      "installedMatchesPublic": true
+    },
+    "RotateHandles": {
+      "sha256": "73070dfc8704bfdbf36325767e78106c27b9cc2e3a740771dbb0b0a705db0b70",
+      "publicSha256": "73070dfc8704bfdbf36325767e78106c27b9cc2e3a740771dbb0b0a705db0b70",
+      "bytes": 17358,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Handles/RotateHandles.luac",
+      "installedMatchesPublic": true
+    },
+    "ExtrudeHandles": {
+      "sha256": "393c0acddf2876a57b3c697c0d0576f06f722d2e5b69bcc2110e14c418300b19",
+      "publicSha256": "393c0acddf2876a57b3c697c0d0576f06f722d2e5b69bcc2110e14c418300b19",
+      "bytes": 18711,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Handles/ExtrudeHandles.luac",
+      "installedMatchesPublic": true
+    },
+    "DraggerContext_PluginImpl": {
+      "sha256": "411e980f03e76d0996dda509b5b8351283307ccbcd30ed740960d28502dfb9f0",
+      "publicSha256": "411e980f03e76d0996dda509b5b8351283307ccbcd30ed740960d28502dfb9f0",
+      "bytes": 13087,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Implementation/DraggerContext_PluginImpl.luac",
+      "installedMatchesPublic": true
+    },
+    "Colors": {
+      "sha256": "77dcaa494ae1a75775db39551ed52bd75ff9b5a538a445b18319dc1eeea8d004",
+      "publicSha256": "77dcaa494ae1a75775db39551ed52bd75ff9b5a538a445b18319dc1eeea8d004",
+      "bytes": 2345,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Utility/Colors.luac",
+      "installedMatchesPublic": true
+    },
+    "Math": {
+      "sha256": "cddf5f8deca7f3708e0556761689f81bf8b10186a7c84aafae6013fd8d3e7d0c",
+      "publicSha256": "539107da707817ed864cd7ef4c2ded1935c7653db21587a4603291cde65e2bf0",
+      "bytes": 124,
+      "publicPath": "CompiledPackages/DraggerFramework/ee91efdd/DraggerFramework/Utility/Math.luac",
+      "installedMatchesPublic": false
+    }
+  }
+}

@@ -1,0 +1,1077 @@
+{
+  "schema": 1,
+  "release": "bd07140d451acdf281e9",
+  "entry": "main.lua",
+  "assets": "studio_assets.lua",
+  "react": "src/Packages/React/Loader.luau",
+  "modules": {
+    "ActivitySession": "src/Apps/ActivityViewer/ActivitySession.lua",
+    "ActivityViewer": "src/Apps/ActivityViewer/ActivityViewer.lua",
+    "AIBridge": "src/Apps/AIBridge/AIBridge.lua",
+    "BridgeActivityView": "src/Apps/AIBridge/Components/BridgeActivityView.lua",
+    "BridgeCommandsView": "src/Apps/AIBridge/Components/BridgeCommandsView.lua",
+    "BridgeConnectionView": "src/Apps/AIBridge/Components/BridgeConnectionView.lua",
+    "BridgeSetupView": "src/Apps/AIBridge/Components/BridgeSetupView.lua",
+    "BridgeUI": "src/Apps/AIBridge/Components/BridgeUI.lua",
+    "BridgeCaptureCommands": "src/Apps/AIBridge/Services/BridgeCaptureCommands.lua",
+    "BridgeClient": "src/Apps/AIBridge/Services/BridgeClient.lua",
+    "BridgeCommandCatalog": "src/Apps/AIBridge/Services/BridgeCommandCatalog.lua",
+    "BridgeCommandRouter": "src/Apps/AIBridge/Services/BridgeCommandRouter.lua",
+    "BridgeComparisonCommands": "src/Apps/AIBridge/Services/BridgeComparisonCommands.lua",
+    "BridgeConditions": "src/Apps/AIBridge/Services/BridgeConditions.lua",
+    "BridgeExtraCommands": "src/Apps/AIBridge/Services/BridgeExtraCommands.lua",
+    "BridgeInspectionCommands": "src/Apps/AIBridge/Services/BridgeInspectionCommands.lua",
+    "BridgeLogCommands": "src/Apps/AIBridge/Services/BridgeLogCommands.lua",
+    "BridgeQueryCommands": "src/Apps/AIBridge/Services/BridgeQueryCommands.lua",
+    "BridgeRegistry": "src/Apps/AIBridge/Services/BridgeRegistry.lua",
+    "BridgeRemoteCommands": "src/Apps/AIBridge/Services/BridgeRemoteCommands.lua",
+    "BridgeRuntimeDiagnostics": "src/Apps/AIBridge/Services/BridgeRuntimeDiagnostics.lua",
+    "BridgeSpatialCommands": "src/Apps/AIBridge/Services/BridgeSpatialCommands.lua",
+    "BridgeTestCommands": "src/Apps/AIBridge/Services/BridgeTestCommands.lua",
+    "BridgeUIDiagnostics": "src/Apps/AIBridge/Services/BridgeUIDiagnostics.lua",
+    "BridgeValueCodec": "src/Apps/AIBridge/Services/BridgeValueCodec.lua",
+    "AssetCatalog": "src/Apps/AssetManager/AssetCatalog.lua",
+    "AssetDownload": "src/Apps/AssetManager/AssetDownload.lua",
+    "AssetManager": "src/Apps/AssetManager/AssetManager.lua",
+    "AssetPlayback": "src/Apps/AssetManager/AssetPlayback.lua",
+    "AssetPreview": "src/Apps/AssetManager/AssetPreview.lua",
+    "AssetQuery": "src/Apps/AssetManager/AssetQuery.lua",
+    "AssetRig": "src/Apps/AssetManager/AssetRig.lua",
+    "AssetRigData": "src/Apps/AssetManager/AssetRigData.lua",
+    "AssetRows": "src/Apps/AssetManager/AssetRows.lua",
+    "Console": "src/Apps/Console/Console.lua",
+    "BoxSelectIndicator": "src/Apps/Explorer/Components/BoxSelectIndicator.lua",
+    "ContextMenu": "src/Apps/Explorer/Components/ContextMenu.lua",
+    "IconAppearance": "src/Apps/Explorer/Components/ExplorerNodeRow/IconAppearance.lua",
+    "RowStatus": "src/Apps/Explorer/Components/ExplorerNodeRow/RowStatus.lua",
+    "ExplorerNodeRow": "src/Apps/Explorer/Components/ExplorerNodeRow.lua",
+    "GradualEdgeScroll": "src/Apps/Explorer/Components/GradualEdgeScroll.lua",
+    "IndentGuides": "src/Apps/Explorer/Components/IndentGuides.lua",
+    "InsertObjectMenu": "src/Apps/Explorer/Components/InsertObjectMenu.lua",
+    "NodeDetailsPlaceholder": "src/Apps/Explorer/Components/NodeDetailsPlaceholder.lua",
+    "DragDropIndicator": "src/Apps/Explorer/Components/Overlays/DragDropIndicator.lua",
+    "InsertObjectOverlay": "src/Apps/Explorer/Components/Overlays/InsertObjectOverlay.lua",
+    "RenameBox": "src/Apps/Explorer/Components/RenameBox.lua",
+    "ScrollingView": "src/Apps/Explorer/Components/ScrollingView.lua",
+    "Dropdown": "src/Apps/Explorer/Components/SearchBox/Dropdown.lua",
+    "SearchBar": "src/Apps/Explorer/Components/SearchBox/SearchBar.lua",
+    "SearchBrowserButton": "src/Apps/Explorer/Components/SearchBox/SearchBrowserButton.lua",
+    "SearchBox": "src/Apps/Explorer/Components/SearchBox.lua",
+    "ServiceVisibilityDialog": "src/Apps/Explorer/Components/ServiceVisibilityDialog.lua",
+    "SessionView": "src/Apps/Explorer/Components/SessionView.lua",
+    "UnderlaysRow": "src/Apps/Explorer/Components/Underlays/UnderlaysRow.lua",
+    "Explorer": "src/Apps/Explorer/Explorer.lua",
+    "ExplorerPolicy": "src/Apps/Explorer/ExplorerPolicy.lua",
+    "ExplorerQuickActions": "src/Apps/Explorer/ExplorerQuickActions.lua",
+    "TooltipActions": "src/Apps/Explorer/Hooks/TooltipActions.lua",
+    "SelectionGeometryMask": "src/Apps/Explorer/Rendering/SelectionGeometryMask.lua",
+    "SelectionRenderer": "src/Apps/Explorer/Rendering/SelectionRenderer.lua",
+    "EditingService": "src/Apps/Explorer/Services/EditingService.lua",
+    "ExplorerProjection": "src/Apps/Explorer/Services/ExplorerProjection.lua",
+    "ExplorerSearch": "src/Apps/Explorer/Services/ExplorerSearch.lua",
+    "InsertionService": "src/Apps/Explorer/Services/InsertionService.lua",
+    "ReflectionService": "src/Apps/Explorer/Services/ReflectionService.lua",
+    "SearchBits": "src/Apps/Explorer/Services/SearchBits.lua",
+    "SearchNameIndex": "src/Apps/Explorer/Services/SearchNameIndex.lua",
+    "SearchPostings": "src/Apps/Explorer/Services/SearchPostings.lua",
+    "SearchResults": "src/Apps/Explorer/Services/SearchResults.lua",
+    "SearchSnapshot": "src/Apps/Explorer/Services/SearchSnapshot.lua",
+    "SearchTreeResults": "src/Apps/Explorer/Services/SearchTreeResults.lua",
+    "SelectionService": "src/Apps/Explorer/Services/SelectionService.lua",
+    "ServiceVisibility": "src/Apps/Explorer/Services/ServiceVisibility.lua",
+    "InstancePath": "src/Apps/Explorer/Util/InstancePath.lua",
+    "InputMacros": "src/Apps/InputMacros/InputMacros.lua",
+    "MacroEngine": "src/Apps/InputMacros/MacroEngine.lua",
+    "MacroStore": "src/Apps/InputMacros/MacroStore.lua",
+    "PreviewCamera": "src/Apps/ModelViewer/Components/PreviewCamera.lua",
+    "PreviewScene": "src/Apps/ModelViewer/Components/PreviewScene.lua",
+    "ModelViewer": "src/Apps/ModelViewer/ModelViewer.lua",
+    "PluginActions": "src/Apps/Plugins/PluginActions.lua",
+    "PluginManager": "src/Apps/Plugins/PluginManager.lua",
+    "PluginOutput": "src/Apps/Plugins/PluginOutput.lua",
+    "PluginRuntime": "src/Apps/Plugins/PluginRuntime.lua",
+    "PluginToolbar": "src/Apps/Plugins/PluginToolbar.lua",
+    "PropertyReader": "src/Apps/Properties/Adapters/PropertyReader.lua",
+    "PropertyColumnSplitter": "src/Apps/Properties/Components/PropertyColumnSplitter.lua",
+    "PropertyRow": "src/Apps/Properties/Components/PropertyRow.lua",
+    "PropertyValueCell": "src/Apps/Properties/Components/PropertyValueCell.lua",
+    "PropertyValueEditors": "src/Apps/Properties/Components/PropertyValueEditors.lua",
+    "StudioPropertiesView": "src/Apps/Properties/Components/StudioPropertiesView.lua",
+    "Properties": "src/Apps/Properties/Properties.lua",
+    "PropertySchema": "src/Apps/Properties/Util/PropertySchema.lua",
+    "PropertyValueCodec": "src/Apps/Properties/Util/PropertyValueCodec.lua",
+    "ExplorerInferenceOverlay": "src/Apps/Reconstructor/Adapters/ExplorerInferenceOverlay.lua",
+    "Reconstructor": "src/Apps/Reconstructor/Reconstructor.lua",
+    "BytecodePaths": "src/Apps/Reconstructor/Services/BytecodePaths.lua",
+    "BytecodeStrings": "src/Apps/Reconstructor/Services/BytecodeStrings.lua",
+    "ModuleReconstruction": "src/Apps/Reconstructor/Services/ModuleReconstruction.lua",
+    "ReconstructorEvidence": "src/Apps/Reconstructor/Services/ReconstructorEvidence.lua",
+    "ReconstructorSession": "src/Apps/Reconstructor/Services/ReconstructorSession.lua",
+    "RetainedFunctionEvidence": "src/Apps/Reconstructor/Services/RetainedFunctionEvidence.lua",
+    "ScriptEvidenceReader": "src/Apps/Reconstructor/Services/ScriptEvidenceReader.lua",
+    "ServerReferenceAnalysis": "src/Apps/Reconstructor/Services/ServerReferenceAnalysis.lua",
+    "ReferenceFinder": "src/Apps/ReferenceFinder/ReferenceFinder.lua",
+    "ReferenceScan": "src/Apps/ReferenceFinder/ReferenceScan.lua",
+    "ReferenceSource": "src/Apps/ReferenceFinder/ReferenceSource.lua",
+    "SaveBackend": "src/Apps/SaveInstance/SaveBackend.lua",
+    "SaveConfiguration": "src/Apps/SaveInstance/SaveConfiguration.lua",
+    "SaveInstance": "src/Apps/SaveInstance/SaveInstance.lua",
+    "SaveOptions": "src/Apps/SaveInstance/SaveOptions.lua",
+    "CodeViewport": "src/Apps/ScriptViewer/Components/CodeViewport.lua",
+    "EditorCompletion": "src/Apps/ScriptViewer/Components/EditorCompletion.lua",
+    "EditorContextMenu": "src/Apps/ScriptViewer/Components/EditorContextMenu.lua",
+    "EditorDocumentationText": "src/Apps/ScriptViewer/Components/EditorDocumentationText.lua",
+    "EditorFindWidget": "src/Apps/ScriptViewer/Components/EditorFindWidget.lua",
+    "EditorFolding": "src/Apps/ScriptViewer/Components/EditorFolding.lua",
+    "EditorGlobalSearchWidget": "src/Apps/ScriptViewer/Components/EditorGlobalSearchWidget.lua",
+    "EditorHover": "src/Apps/ScriptViewer/Components/EditorHover.lua",
+    "EditorNavigation": "src/Apps/ScriptViewer/Components/EditorNavigation.lua",
+    "EditorNewScript": "src/Apps/ScriptViewer/Components/EditorNewScript.lua",
+    "EditorSignature": "src/Apps/ScriptViewer/Components/EditorSignature.lua",
+    "EditorTabs": "src/Apps/ScriptViewer/Components/EditorTabs.lua",
+    "StudioEditorSkin": "src/Apps/ScriptViewer/Components/StudioEditorSkin.lua",
+    "StudioMenuDefinition": "src/Apps/ScriptViewer/Components/StudioMenuDefinition.lua",
+    "ScriptViewer": "src/Apps/ScriptViewer/ScriptViewer.lua",
+    "EditorApiDocumentation": "src/Apps/ScriptViewer/Services/EditorApiDocumentation.lua",
+    "EditorBuiltinSignatures": "src/Apps/ScriptViewer/Services/EditorBuiltinSignatures.lua",
+    "EditorController": "src/Apps/ScriptViewer/Services/EditorController.lua",
+    "EditorDefinitions": "src/Apps/ScriptViewer/Services/EditorDefinitions.lua",
+    "EditorFindModel": "src/Apps/ScriptViewer/Services/EditorFindModel.lua",
+    "EditorFormatter": "src/Apps/ScriptViewer/Services/EditorFormatter.lua",
+    "EditorGlobalSearch": "src/Apps/ScriptViewer/Services/EditorGlobalSearch.lua",
+    "EditorHoverTypes": "src/Apps/ScriptViewer/Services/EditorHoverTypes.lua",
+    "EditorLanguage": "src/Apps/ScriptViewer/Services/EditorLanguage.lua",
+    "EditorModuleTypes": "src/Apps/ScriptViewer/Services/EditorModuleTypes.lua",
+    "EditorSelectionSet": "src/Apps/ScriptViewer/Services/EditorSelectionSet.lua",
+    "EditorSymbols": "src/Apps/ScriptViewer/Services/EditorSymbols.lua",
+    "EditorUndoStack": "src/Apps/ScriptViewer/Services/EditorUndoStack.lua",
+    "EditorDocument": "src/Apps/ScriptViewer/Util/EditorDocument.lua",
+    "EditorHitTest": "src/Apps/ScriptViewer/Util/EditorHitTest.lua",
+    "GuiAlignment": "src/Apps/TransformTools/GuiAlignment.lua",
+    "GuiTransformSession": "src/Apps/TransformTools/GuiTransformSession.lua",
+    "GuiTransformTools": "src/Apps/TransformTools/GuiTransformTools.lua",
+    "GuiTransformView": "src/Apps/TransformTools/GuiTransformView.lua",
+    "TransformGizmo": "src/Apps/TransformTools/TransformGizmo.lua",
+    "TransformSession": "src/Apps/TransformTools/TransformSession.lua",
+    "TransformTools": "src/Apps/TransformTools/TransformTools.lua",
+    "EditorRegex": "src/Packages/Regex/EditorRegex.lua",
+    "AntiAFK": "src/Shared/AntiAFK.lua",
+    "EditorBuffer": "src/Shared/EditorBuffer.lua",
+    "EditorWorkspace": "src/Shared/EditorWorkspace.lua",
+    "History": "src/Shared/History.lua",
+    "Lib": "src/Shared/Lib.lua",
+    "LoadingSplash": "src/Shared/LoadingSplash.lua",
+    "PerformanceRuntime": "src/Shared/PerformanceRuntime.lua",
+    "React": "src/Shared/React.lua",
+    "SearchQuery": "src/Shared/SearchQuery.lua",
+    "Signal": "src/Shared/Signal.lua",
+    "WindowLayout": "src/Shared/WindowLayout.lua"
+  },
+  "files": {
+    "src/Apps/ActivityViewer/ActivitySession.lua": {
+      "bytes": 16537,
+      "checksum": 1032434263,
+      "sha256": "85d8d8200b2accd9eec15f419a2f921cb1f4ea88035dac6b76a3875a9aea4390"
+    },
+    "src/Apps/ActivityViewer/ActivityViewer.lua": {
+      "bytes": 17152,
+      "checksum": 2879585328,
+      "sha256": "a7a12127ad57be894a43775523e09a41561ac532f2990666baf950a2e77a9707"
+    },
+    "src/Apps/AIBridge/AIBridge.lua": {
+      "bytes": 11522,
+      "checksum": 852107498,
+      "sha256": "5168951196bde2a91fea126dbe6b775404fda49c6eec6025aa4745caaa1b17a4"
+    },
+    "src/Apps/AIBridge/Components/BridgeActivityView.lua": {
+      "bytes": 17042,
+      "checksum": 2715602815,
+      "sha256": "33447709acd00e4e44b83ac0ba8ca6eb7a231f4f908b54a9b5ee05d53ad0a0ce"
+    },
+    "src/Apps/AIBridge/Components/BridgeCommandsView.lua": {
+      "bytes": 11597,
+      "checksum": 2552525772,
+      "sha256": "155e486aaabfac105e1e065ba0f150fc54a9ae30cec65a795b3359ea6da77371"
+    },
+    "src/Apps/AIBridge/Components/BridgeConnectionView.lua": {
+      "bytes": 10552,
+      "checksum": 3794232784,
+      "sha256": "9c3e32b0ec1fbb7e03c38ac427235f99c246fcbc7ccf89315c887401446a9743"
+    },
+    "src/Apps/AIBridge/Components/BridgeSetupView.lua": {
+      "bytes": 3132,
+      "checksum": 1579719361,
+      "sha256": "95451e63cd8524fb1bc17a08db638e531552bb6c302f963777cdfe89a4849790"
+    },
+    "src/Apps/AIBridge/Components/BridgeUI.lua": {
+      "bytes": 7995,
+      "checksum": 2412874523,
+      "sha256": "8de85df08c218e406854d9bc2a49857959e853be6ea050899071223baf49e19d"
+    },
+    "src/Apps/AIBridge/Services/BridgeCaptureCommands.lua": {
+      "bytes": 32966,
+      "checksum": 1643789297,
+      "sha256": "67bf782d01a79b83657dd1b9dd860177eb94fbe20835f3968a3242a9cb544be1"
+    },
+    "src/Apps/AIBridge/Services/BridgeClient.lua": {
+      "bytes": 21327,
+      "checksum": 3395225633,
+      "sha256": "ea6c71c2bbe9aab24df1028df2624175bcb91ed0159e6280174a7b14932c89f0"
+    },
+    "src/Apps/AIBridge/Services/BridgeCommandCatalog.lua": {
+      "bytes": 69030,
+      "checksum": 302523579,
+      "sha256": "351cefd65968d3e5b6ca1407da31d137f453c2fe08544829371f4b34eda7314b"
+    },
+    "src/Apps/AIBridge/Services/BridgeCommandRouter.lua": {
+      "bytes": 32490,
+      "checksum": 4796003,
+      "sha256": "36474f61e3ca155fdb9533c3e1d1adc90fe6e8f24d5a36305b488b13553a897d"
+    },
+    "src/Apps/AIBridge/Services/BridgeComparisonCommands.lua": {
+      "bytes": 18589,
+      "checksum": 352041548,
+      "sha256": "76691c0beaa7687d6bd2c2fdafbdb6afbac0e69ee407d7f8cfa50dc295d486e9"
+    },
+    "src/Apps/AIBridge/Services/BridgeConditions.lua": {
+      "bytes": 11053,
+      "checksum": 1907827445,
+      "sha256": "6018f10cf8e6a5a6ff0143f1f890d28d94cabdc2bb31361295c13273287163c1"
+    },
+    "src/Apps/AIBridge/Services/BridgeExtraCommands.lua": {
+      "bytes": 35282,
+      "checksum": 1592887498,
+      "sha256": "3e9d1c0e8c7c384d42651c4cc18ca78b267938a17bca9cf11684b1f1e2f55f2e"
+    },
+    "src/Apps/AIBridge/Services/BridgeInspectionCommands.lua": {
+      "bytes": 13034,
+      "checksum": 2814518564,
+      "sha256": "a7c0fa5cd3e303bc419da08dbc730654864459c374357d3a75be5d508106790c"
+    },
+    "src/Apps/AIBridge/Services/BridgeLogCommands.lua": {
+      "bytes": 5792,
+      "checksum": 2915420808,
+      "sha256": "e542b202079de73ca077e2959dcbff94977f95cb525d3ef4c8b3d1f8e8e51c36"
+    },
+    "src/Apps/AIBridge/Services/BridgeQueryCommands.lua": {
+      "bytes": 7809,
+      "checksum": 3195718008,
+      "sha256": "817aa81dc85e07b6036e5638d59315f97b88e74a6b50cb89465c790444171053"
+    },
+    "src/Apps/AIBridge/Services/BridgeRegistry.lua": {
+      "bytes": 2852,
+      "checksum": 159815316,
+      "sha256": "c3e7448de3650e4210ec98017909cd6c2cba3a0b5cba309ca02629a087c0d980"
+    },
+    "src/Apps/AIBridge/Services/BridgeRemoteCommands.lua": {
+      "bytes": 14032,
+      "checksum": 2167255850,
+      "sha256": "74fce442dc75c4b536a608deb05127f6ca14139cea1fd43baf0ccf31142c0d33"
+    },
+    "src/Apps/AIBridge/Services/BridgeRuntimeDiagnostics.lua": {
+      "bytes": 14403,
+      "checksum": 2655200277,
+      "sha256": "cdcddd4ca032dd9e36437196443c6f301c55448eab0c9258ecc319c2412f98a0"
+    },
+    "src/Apps/AIBridge/Services/BridgeSpatialCommands.lua": {
+      "bytes": 14717,
+      "checksum": 4247708896,
+      "sha256": "c33a0b0f982030aaf9700522cf2ee9ed0a361c3d1a781e4589f593fa7d501c84"
+    },
+    "src/Apps/AIBridge/Services/BridgeTestCommands.lua": {
+      "bytes": 8367,
+      "checksum": 1627063253,
+      "sha256": "33c9f8ac944660e93c0120c226853cbb2fd6018a06174f7e5742df8a6636e814"
+    },
+    "src/Apps/AIBridge/Services/BridgeUIDiagnostics.lua": {
+      "bytes": 17871,
+      "checksum": 3578923848,
+      "sha256": "ab64f85007aabb83a05eea8b437513ca4ab651923a318d84b995bacdf29c64e0"
+    },
+    "src/Apps/AIBridge/Services/BridgeValueCodec.lua": {
+      "bytes": 9218,
+      "checksum": 2094884948,
+      "sha256": "425f8e8be6076f4910484635159052736c29fd06321ae8e3e3ed59210ae2030f"
+    },
+    "src/Apps/AssetManager/AssetCatalog.lua": {
+      "bytes": 5734,
+      "checksum": 119975925,
+      "sha256": "ef31f62d009a88d04d2ebd2715096e6d0c6e968672efe79d583ff1af40d8aef3"
+    },
+    "src/Apps/AssetManager/AssetDownload.lua": {
+      "bytes": 3568,
+      "checksum": 2663985087,
+      "sha256": "b9cc3eed67a8c4b50bf662e280c95a42be47b400e20b3bc068ead4b349abc04f"
+    },
+    "src/Apps/AssetManager/AssetManager.lua": {
+      "bytes": 23671,
+      "checksum": 475466162,
+      "sha256": "e57fe6850f348a5b6d68ae7ac17dfb52f18707d3da6684650d4ca684023c6736"
+    },
+    "src/Apps/AssetManager/AssetPlayback.lua": {
+      "bytes": 2263,
+      "checksum": 2743641380,
+      "sha256": "6449b50cfd91f0ea493966f328d87cbc9e402c6d0110727373457e6060609ca5"
+    },
+    "src/Apps/AssetManager/AssetPreview.lua": {
+      "bytes": 8050,
+      "checksum": 4233579061,
+      "sha256": "55c0b0ba6b6cfb04efd18f4ddb5ce45780777e002d54bba37bf90ca25f2f5bc2"
+    },
+    "src/Apps/AssetManager/AssetQuery.lua": {
+      "bytes": 2515,
+      "checksum": 1740363850,
+      "sha256": "502a4bd9bbfda3b4664aa916dcd39f1b885a1c8138fdb337992289b84bfb9433"
+    },
+    "src/Apps/AssetManager/AssetRig.lua": {
+      "bytes": 2024,
+      "checksum": 3529142989,
+      "sha256": "d9377272051ecd99c4d8eeaf403503f367dfb4d370688f76fd762e986cd4b8db"
+    },
+    "src/Apps/AssetManager/AssetRigData.lua": {
+      "bytes": 142410,
+      "checksum": 2658366236,
+      "sha256": "5e04bcc73f01c9f620b2f4909685040115a90aa3bddeb1a612c2ca8cb3691aaa"
+    },
+    "src/Apps/AssetManager/AssetRows.lua": {
+      "bytes": 4408,
+      "checksum": 1904810188,
+      "sha256": "c2b503f74732e150b8a3f3546ad13a935e712832096e492e00d364ef9837cb3f"
+    },
+    "src/Apps/Console/Console.lua": {
+      "bytes": 22373,
+      "checksum": 3133976079,
+      "sha256": "873090ff3fba2bdc12efa5c884398161e712e9dd7ba2c79c500532a9c05efb7d"
+    },
+    "src/Apps/Explorer/Components/BoxSelectIndicator.lua": {
+      "bytes": 984,
+      "checksum": 3323076470,
+      "sha256": "4b052a5c0df6df9a3fdaee6a191b7c51a802e227b9d6b89ba424bae8d9ea64c4"
+    },
+    "src/Apps/Explorer/Components/ContextMenu.lua": {
+      "bytes": 23040,
+      "checksum": 3630644436,
+      "sha256": "9de7d20de408eda4fadf18ce8efa1c87a4838b537fbe2daa476d627ddbf1da0f"
+    },
+    "src/Apps/Explorer/Components/ExplorerNodeRow/IconAppearance.lua": {
+      "bytes": 1598,
+      "checksum": 2709712277,
+      "sha256": "a8b317aa812f6d696be9520a879fb8191760824c63ae7ea3fa9b668f9ed349db"
+    },
+    "src/Apps/Explorer/Components/ExplorerNodeRow/RowStatus.lua": {
+      "bytes": 4417,
+      "checksum": 499937293,
+      "sha256": "0f2fb423ab27511679a0d53d99e07db719588a2db9c278e5775b23f835dd009d"
+    },
+    "src/Apps/Explorer/Components/ExplorerNodeRow.lua": {
+      "bytes": 3005,
+      "checksum": 1476622013,
+      "sha256": "4eef3569c62fe615c7b77257e2ede1ffa61e48cba2c6fb43b3eb3a02b6b79697"
+    },
+    "src/Apps/Explorer/Components/GradualEdgeScroll.lua": {
+      "bytes": 1669,
+      "checksum": 3080320884,
+      "sha256": "4bf847800e082c272df46f54cf0d932642ebee54059ab5469284af3eb2aa6159"
+    },
+    "src/Apps/Explorer/Components/IndentGuides.lua": {
+      "bytes": 1973,
+      "checksum": 121725443,
+      "sha256": "9ac5b355de03c875d9ca8bc3750e25aeae19756459046c49b23ff049eb7c6468"
+    },
+    "src/Apps/Explorer/Components/InsertObjectMenu.lua": {
+      "bytes": 1993,
+      "checksum": 2930603955,
+      "sha256": "14ffb0d61534827277d2b1f3bd64b667df6a88269418db80fb3827767e79fc0d"
+    },
+    "src/Apps/Explorer/Components/NodeDetailsPlaceholder.lua": {
+      "bytes": 528,
+      "checksum": 3107168085,
+      "sha256": "09c1c6deda804e536d40066145d4dce7855d6d4e0ff40f3add7a2e3c6c1963af"
+    },
+    "src/Apps/Explorer/Components/Overlays/DragDropIndicator.lua": {
+      "bytes": 969,
+      "checksum": 4237041481,
+      "sha256": "6d467eb7dc23b8f2c0020ee9e3509a99ffe4b144a553c3e1bbaac951505b871a"
+    },
+    "src/Apps/Explorer/Components/Overlays/InsertObjectOverlay.lua": {
+      "bytes": 1971,
+      "checksum": 2281722863,
+      "sha256": "57ee02fc9c1d6f4fbdaf7d90495595545f10d2456cdc748c93be01206ea1d8dc"
+    },
+    "src/Apps/Explorer/Components/RenameBox.lua": {
+      "bytes": 1422,
+      "checksum": 205431608,
+      "sha256": "37f254a82501a89f63abc82ba12a5325b1415016bc9751b1c025381905e56719"
+    },
+    "src/Apps/Explorer/Components/ScrollingView.lua": {
+      "bytes": 6578,
+      "checksum": 1787300600,
+      "sha256": "02e88348130c512a2ed0d0e52f94fd24cbb73ca68d2c0d358a050d9be4856bfc"
+    },
+    "src/Apps/Explorer/Components/SearchBox/Dropdown.lua": {
+      "bytes": 1810,
+      "checksum": 357971490,
+      "sha256": "7f0d99152ec420138a4bc87d4701f31644c4727ff1ab7c8df9ec87ed19d05107"
+    },
+    "src/Apps/Explorer/Components/SearchBox/SearchBar.lua": {
+      "bytes": 4325,
+      "checksum": 3639593102,
+      "sha256": "e26dc0b08e058f86b0aa07b667c609d2ab54cca966ac50241a0ad5f9edd2aa70"
+    },
+    "src/Apps/Explorer/Components/SearchBox/SearchBrowserButton.lua": {
+      "bytes": 1841,
+      "checksum": 26879290,
+      "sha256": "1c543a09f2ff69fd24460df69a2be323f361c7b26a5e5c8ddce6eedf621a68a9"
+    },
+    "src/Apps/Explorer/Components/SearchBox.lua": {
+      "bytes": 26805,
+      "checksum": 172438931,
+      "sha256": "da6987dbb443ae8be4b6d8ae2772e5b5ca96cdfae7e0f4d96b9c5d278940d2c0"
+    },
+    "src/Apps/Explorer/Components/ServiceVisibilityDialog.lua": {
+      "bytes": 7485,
+      "checksum": 2974860577,
+      "sha256": "7b73a340c9ff801888b85f8ba5c1875f0c07791124175f95fa7db0aa1caa369e"
+    },
+    "src/Apps/Explorer/Components/SessionView.lua": {
+      "bytes": 7027,
+      "checksum": 788803381,
+      "sha256": "965db04a72ef1c1f90317cc879b90baa2d861aad70358ff70eb577ef6d1406d9"
+    },
+    "src/Apps/Explorer/Components/Underlays/UnderlaysRow.lua": {
+      "bytes": 2724,
+      "checksum": 1233464695,
+      "sha256": "4b4451cfdf32edf710eccc6079fd34fdb7194bc6b46455c62abad0b1ee4cd609"
+    },
+    "src/Apps/Explorer/Explorer.lua": {
+      "bytes": 188216,
+      "checksum": 1775259374,
+      "sha256": "4e608f40522c6a6551036379b7e040645cc0d45a2f2dd0be5beabdfdac1d2eae"
+    },
+    "src/Apps/Explorer/ExplorerPolicy.lua": {
+      "bytes": 7173,
+      "checksum": 3122316082,
+      "sha256": "d8beec825ee7db9e769ce43507cedb8e1c4f109b15029d28477b28bba370f090"
+    },
+    "src/Apps/Explorer/ExplorerQuickActions.lua": {
+      "bytes": 16665,
+      "checksum": 2694343488,
+      "sha256": "a1756acf3cb46caeaea5204842d1d35a1bc93a1a8c9521818ee1014dc89fca80"
+    },
+    "src/Apps/Explorer/Hooks/TooltipActions.lua": {
+      "bytes": 6619,
+      "checksum": 1934238404,
+      "sha256": "880d8eacbeaa9ce4966152b6be4ef0f5f21db2b0ff82ee1334cf7ccc31c70879"
+    },
+    "src/Apps/Explorer/Rendering/SelectionGeometryMask.lua": {
+      "bytes": 9891,
+      "checksum": 711262286,
+      "sha256": "984fab2f572499e84ed01f48e32cc31d98edf39160cf3a8ce798d84ca9ca705e"
+    },
+    "src/Apps/Explorer/Rendering/SelectionRenderer.lua": {
+      "bytes": 18154,
+      "checksum": 1174883501,
+      "sha256": "f162169c4299b9d7909565441832b201ad57cc344cb816d5e6699f04c08e218c"
+    },
+    "src/Apps/Explorer/Services/EditingService.lua": {
+      "bytes": 1041,
+      "checksum": 2832286749,
+      "sha256": "151b661b0e81268d6add19627be22385f6ef0416cf2e3de8d12fd2011fda52ce"
+    },
+    "src/Apps/Explorer/Services/ExplorerProjection.lua": {
+      "bytes": 5725,
+      "checksum": 3664416817,
+      "sha256": "222e5063be4e4564c45f75925950a2953d63b63a196ac9dd2289df2f4c80053b"
+    },
+    "src/Apps/Explorer/Services/ExplorerSearch.lua": {
+      "bytes": 6339,
+      "checksum": 548239561,
+      "sha256": "cd6d04ace7489cfda9b2212a83d86dd24ce87f3137bd1b8b2147fa38a7bcb9f6"
+    },
+    "src/Apps/Explorer/Services/InsertionService.lua": {
+      "bytes": 1461,
+      "checksum": 4228626670,
+      "sha256": "a474ad3481ce9b2554ed14da457e5bfff76b7ac7ab1d34b96df6d7517aee4e80"
+    },
+    "src/Apps/Explorer/Services/ReflectionService.lua": {
+      "bytes": 3136,
+      "checksum": 2957964550,
+      "sha256": "fc5dd11ff61b2ccf3b9ffcfb6176a9b8314ed79b4c0f631d72934e95d7b7e163"
+    },
+    "src/Apps/Explorer/Services/SearchBits.lua": {
+      "bytes": 6581,
+      "checksum": 1344442513,
+      "sha256": "22f7b45e7d27d5e9d8cf60adb76017c8dbcab66125e04f9d9655ac6bc78e8e53"
+    },
+    "src/Apps/Explorer/Services/SearchNameIndex.lua": {
+      "bytes": 12886,
+      "checksum": 882201598,
+      "sha256": "19d0091d03e46e1240a1e3536fbf9e40a8522509736b37c6a5b32e64a467eda2"
+    },
+    "src/Apps/Explorer/Services/SearchPostings.lua": {
+      "bytes": 5453,
+      "checksum": 2849004942,
+      "sha256": "6da4f20218f456ed9df7e52955b32da2f905a3a7e587199e97033f2a5919820a"
+    },
+    "src/Apps/Explorer/Services/SearchResults.lua": {
+      "bytes": 18765,
+      "checksum": 965783447,
+      "sha256": "85c597cbda225b36073905ca15b5fecd2676cc4af0d7891a4a717cfff81c45d9"
+    },
+    "src/Apps/Explorer/Services/SearchSnapshot.lua": {
+      "bytes": 16439,
+      "checksum": 1737098259,
+      "sha256": "0a58c69cb83658e2a73fb54d99b7dfa4b0340f618fc87b7140629192ac12b735"
+    },
+    "src/Apps/Explorer/Services/SearchTreeResults.lua": {
+      "bytes": 19856,
+      "checksum": 188527079,
+      "sha256": "c905e614b511cd5faa6ebce397b14a90dba33fefaded312d322006f54ee075a7"
+    },
+    "src/Apps/Explorer/Services/SelectionService.lua": {
+      "bytes": 2400,
+      "checksum": 1221646699,
+      "sha256": "6ce41fbd5f487c631fcee4d21611ba27afaa15bbd3e88b4271a1b0b6a839ffd5"
+    },
+    "src/Apps/Explorer/Services/ServiceVisibility.lua": {
+      "bytes": 2448,
+      "checksum": 3145077309,
+      "sha256": "c56fca5f2c4c236ea8bed4e601a94de9391e297cc2eb29367f25be29fdbbc25e"
+    },
+    "src/Apps/Explorer/Util/InstancePath.lua": {
+      "bytes": 1978,
+      "checksum": 2423085006,
+      "sha256": "96c9ec066df43c32d04ffad97d8173ae59cf4e7fc38a0e04ee042a9c1edb1020"
+    },
+    "src/Apps/InputMacros/InputMacros.lua": {
+      "bytes": 40548,
+      "checksum": 1815891015,
+      "sha256": "d92e087e0de7c03d3f03c7c4a9d5436f26ffc5379bca5e26fa7a79ff111389e4"
+    },
+    "src/Apps/InputMacros/MacroEngine.lua": {
+      "bytes": 17901,
+      "checksum": 1975173846,
+      "sha256": "c80035062f0f53e13551a182f76ba08d113e1d62a8e8c48da555b99dbfe731a9"
+    },
+    "src/Apps/InputMacros/MacroStore.lua": {
+      "bytes": 2722,
+      "checksum": 3443875117,
+      "sha256": "d81b18548406c733ce64c05a0f7ef2e6d42a4cd54246c4d4f727e5b1d6d56ecd"
+    },
+    "src/Apps/ModelViewer/Components/PreviewCamera.lua": {
+      "bytes": 3083,
+      "checksum": 1969781331,
+      "sha256": "3b4ecb502159f800c2955eafc66ac71793445bc4e70b527e98880a0bfa66b524"
+    },
+    "src/Apps/ModelViewer/Components/PreviewScene.lua": {
+      "bytes": 7867,
+      "checksum": 2813473465,
+      "sha256": "2be6fe539913fadd74bd45395bbdfd991fdf429d8c5bfda21f88906335e26762"
+    },
+    "src/Apps/ModelViewer/ModelViewer.lua": {
+      "bytes": 26910,
+      "checksum": 565662411,
+      "sha256": "f1b7a3310ea489a1417e4d934d8219841a47f5e2b1e9a073f92ac3f78436ca9a"
+    },
+    "src/Apps/Plugins/PluginActions.lua": {
+      "bytes": 5625,
+      "checksum": 2964189990,
+      "sha256": "8fa10ae855b3fcd364ce89f1031a1d273e6684489df6d64d9d45cd625e117501"
+    },
+    "src/Apps/Plugins/PluginManager.lua": {
+      "bytes": 23140,
+      "checksum": 2337773297,
+      "sha256": "ab6cff17681073b533b4e6939cb0708540ec8134840b6366cf3fe94608af78d3"
+    },
+    "src/Apps/Plugins/PluginOutput.lua": {
+      "bytes": 8976,
+      "checksum": 1568986724,
+      "sha256": "b95c16593d4b446d1af2a4827af1554a994c5e984fde32c6286681c3b4968d64"
+    },
+    "src/Apps/Plugins/PluginRuntime.lua": {
+      "bytes": 29400,
+      "checksum": 3574127366,
+      "sha256": "b7518941d16d4ed885597f88314806a0444e3dbcb76834c86cdc28223cf9d60e"
+    },
+    "src/Apps/Plugins/PluginToolbar.lua": {
+      "bytes": 8512,
+      "checksum": 2730236089,
+      "sha256": "0982e2fcfe9fb6330b9c03a52c4a8d1eb320c86bdb3c822bb54bebc63c40f58b"
+    },
+    "src/Apps/Properties/Adapters/PropertyReader.lua": {
+      "bytes": 2446,
+      "checksum": 1861946024,
+      "sha256": "d1341a817d7ea4e27a4efd74023599e53417dcee7dbe51c2b9d77e83c5f2690a"
+    },
+    "src/Apps/Properties/Components/PropertyColumnSplitter.lua": {
+      "bytes": 2756,
+      "checksum": 514546677,
+      "sha256": "7249e6c2e21c5f8a556c5e25d85fe49eb9b61c2985c2cdb32c0f8428419437c6"
+    },
+    "src/Apps/Properties/Components/PropertyRow.lua": {
+      "bytes": 10142,
+      "checksum": 2040752220,
+      "sha256": "f38b26c1e07b5d56517e1e46900d57e224204e3e51eb1bdac1cdfff3d5866bf9"
+    },
+    "src/Apps/Properties/Components/PropertyValueCell.lua": {
+      "bytes": 6470,
+      "checksum": 2161706666,
+      "sha256": "73eb90a6725c53258a640f97c9767b4a1a70de689f0019cb7f7d17cffde2b2f6"
+    },
+    "src/Apps/Properties/Components/PropertyValueEditors.lua": {
+      "bytes": 5957,
+      "checksum": 4262411672,
+      "sha256": "a2357dc31b6dc87adf1dfc9e5fd2e48eb2f67127175fac909dc66c47e2f7471e"
+    },
+    "src/Apps/Properties/Components/StudioPropertiesView.lua": {
+      "bytes": 1892,
+      "checksum": 2071154747,
+      "sha256": "2308f939d7a73430d4e566c4854de24aafb2c52dd9a9507fbdbe9eeb3184dab0"
+    },
+    "src/Apps/Properties/Properties.lua": {
+      "bytes": 85226,
+      "checksum": 434432828,
+      "sha256": "447723e5525eba8f09f537a061490d18a1e5af34d578780795ecc072bfa6b9f7"
+    },
+    "src/Apps/Properties/Util/PropertySchema.lua": {
+      "bytes": 1143,
+      "checksum": 3407771640,
+      "sha256": "0b8a9739707e6d8f2dc69256c5b6b0ccb3e2ac7102e1050036097e08b5da82b6"
+    },
+    "src/Apps/Properties/Util/PropertyValueCodec.lua": {
+      "bytes": 2393,
+      "checksum": 3851544256,
+      "sha256": "dc6d2db4d615decb0604ee9e33796b8272b058b02eb98d5ac384ac66e64a6237"
+    },
+    "src/Apps/Reconstructor/Adapters/ExplorerInferenceOverlay.lua": {
+      "bytes": 5247,
+      "checksum": 3077184810,
+      "sha256": "ec1c3c436deb4e4e26aeca35b5534ab9511c1f09a7c609e3dc6848c39f73e38f"
+    },
+    "src/Apps/Reconstructor/Reconstructor.lua": {
+      "bytes": 18224,
+      "checksum": 1383330807,
+      "sha256": "c302db031ab73db3bbc6e55ce958095aec8e64cbb1d52d9fd9a7f80780aaaf80"
+    },
+    "src/Apps/Reconstructor/Services/BytecodePaths.lua": {
+      "bytes": 27167,
+      "checksum": 3410673473,
+      "sha256": "09f478a9d817b2ea7c4c018561c0213a7d6cbd910dd12bffcf850740dd3af183"
+    },
+    "src/Apps/Reconstructor/Services/BytecodeStrings.lua": {
+      "bytes": 2391,
+      "checksum": 3736656879,
+      "sha256": "82fe8fab44eab076d71289ff7b51b50f911750da4c834627e39afd96de3e09f5"
+    },
+    "src/Apps/Reconstructor/Services/ModuleReconstruction.lua": {
+      "bytes": 8454,
+      "checksum": 348208564,
+      "sha256": "e517fddea16730864e57e743d919302b58fe125a93e48ece451c026f79562681"
+    },
+    "src/Apps/Reconstructor/Services/ReconstructorEvidence.lua": {
+      "bytes": 4019,
+      "checksum": 1742120443,
+      "sha256": "369620a7b42ce5337ae2bf6be41caf5e1a16325c440ee0a739312760070d8b80"
+    },
+    "src/Apps/Reconstructor/Services/ReconstructorSession.lua": {
+      "bytes": 21068,
+      "checksum": 74463116,
+      "sha256": "805b50922e67e6b9d9373d462ceabac4fe3cf207a8f7a7adaf5ed48beb773b85"
+    },
+    "src/Apps/Reconstructor/Services/RetainedFunctionEvidence.lua": {
+      "bytes": 5833,
+      "checksum": 985188237,
+      "sha256": "861d36b16d1612a954c98e862609f5eb8ba2d7be8d204d57b8b129813698260f"
+    },
+    "src/Apps/Reconstructor/Services/ScriptEvidenceReader.lua": {
+      "bytes": 7792,
+      "checksum": 1135892852,
+      "sha256": "7f2cfed948cac24876daca8de8e7d570d061062b5455652d5eb7d341b7534054"
+    },
+    "src/Apps/Reconstructor/Services/ServerReferenceAnalysis.lua": {
+      "bytes": 19827,
+      "checksum": 3369834103,
+      "sha256": "93061803656f7eb8a3f0dc2505807728deccae37b2878ac03794be3b864352be"
+    },
+    "src/Apps/ReferenceFinder/ReferenceFinder.lua": {
+      "bytes": 19486,
+      "checksum": 3205897064,
+      "sha256": "251709410a19eae01d0678fc4ef01bd3dd5abed21656c61e2f32dc4a1395922c"
+    },
+    "src/Apps/ReferenceFinder/ReferenceScan.lua": {
+      "bytes": 9444,
+      "checksum": 311605478,
+      "sha256": "b02e3f672ddfbbd465f173daf5bea9b321e5d2e9404db4b52b6617a1854fdb9a"
+    },
+    "src/Apps/ReferenceFinder/ReferenceSource.lua": {
+      "bytes": 4427,
+      "checksum": 36272720,
+      "sha256": "a3e8a1d67ad6944fbf8f18f5839e9d1528d47aa88a2d053ada6a744e39fdad3d"
+    },
+    "src/Apps/SaveInstance/SaveBackend.lua": {
+      "bytes": 2359,
+      "checksum": 2656235263,
+      "sha256": "b9015e4e34e095afa0f0b5678d64b7f500341443ecc1b34d983320cccb98b1fe"
+    },
+    "src/Apps/SaveInstance/SaveConfiguration.lua": {
+      "bytes": 2970,
+      "checksum": 3948247679,
+      "sha256": "5b57dffb9ebc98f82cd90cd0a374488374960d666df2a37b77eb7925ef227072"
+    },
+    "src/Apps/SaveInstance/SaveInstance.lua": {
+      "bytes": 17987,
+      "checksum": 282765821,
+      "sha256": "34518629393cc4992ba52cd9fe6cf56d25fa8d6ad09f036e3a4661473334f555"
+    },
+    "src/Apps/SaveInstance/SaveOptions.lua": {
+      "bytes": 12888,
+      "checksum": 3488873510,
+      "sha256": "0de1a66fe295f8dbd9b7e6f4598f5719fdf0e57a4b0c7cb53e0f411a200f4fdd"
+    },
+    "src/Apps/ScriptViewer/Components/CodeViewport.lua": {
+      "bytes": 38013,
+      "checksum": 1366934512,
+      "sha256": "11af2fdd50009207f5ca4a30ca28c0543437be1c4b5e0483e632d5a00b7a2a55"
+    },
+    "src/Apps/ScriptViewer/Components/EditorCompletion.lua": {
+      "bytes": 24198,
+      "checksum": 495144268,
+      "sha256": "1b6feccdc95b4b2389b227f2af4e0f8033cd2308d0c9a22042ef30f501019275"
+    },
+    "src/Apps/ScriptViewer/Components/EditorContextMenu.lua": {
+      "bytes": 7932,
+      "checksum": 1632063398,
+      "sha256": "e84d1feca107dadce1a658cc72faad22a85ea6d1372cff464bc60c933b7addd8"
+    },
+    "src/Apps/ScriptViewer/Components/EditorDocumentationText.lua": {
+      "bytes": 2294,
+      "checksum": 1579785234,
+      "sha256": "5e9a978201d11bf261564caca7da4174d74d2e41a7cba3f4652e9a4752b6d66b"
+    },
+    "src/Apps/ScriptViewer/Components/EditorFindWidget.lua": {
+      "bytes": 7629,
+      "checksum": 674836026,
+      "sha256": "47ea5d359fe7bfa600e8c45a4397cd5240cb5617573c69be43477e09380b6cc1"
+    },
+    "src/Apps/ScriptViewer/Components/EditorFolding.lua": {
+      "bytes": 5419,
+      "checksum": 3864017582,
+      "sha256": "dceee491eb7274f4265b3a0e21e0af835d5d8cedd1dc9fda7e278f01e5fdfe02"
+    },
+    "src/Apps/ScriptViewer/Components/EditorGlobalSearchWidget.lua": {
+      "bytes": 25513,
+      "checksum": 4150910659,
+      "sha256": "be45b1a4457ca0e7e6188eb45b78f82301f690b27bfff7968d064c60b9262593"
+    },
+    "src/Apps/ScriptViewer/Components/EditorHover.lua": {
+      "bytes": 7300,
+      "checksum": 3824489506,
+      "sha256": "8967065cbe15799d78389f4a491cccf61c1f0e79cad2c99fc17a239caffbff65"
+    },
+    "src/Apps/ScriptViewer/Components/EditorNavigation.lua": {
+      "bytes": 23813,
+      "checksum": 1793647970,
+      "sha256": "eab7983d46462046c6ee242ed847e9d02f50a8c44bfc2a6650047cd1b3cc4852"
+    },
+    "src/Apps/ScriptViewer/Components/EditorNewScript.lua": {
+      "bytes": 16218,
+      "checksum": 2015015598,
+      "sha256": "d71fa914572e5f6d3cdaad2bd7cb8a314c73f7e2474ce82a13a113e5276cd766"
+    },
+    "src/Apps/ScriptViewer/Components/EditorSignature.lua": {
+      "bytes": 14703,
+      "checksum": 4026785519,
+      "sha256": "da9605b25e4d159468e120525833834192a055c4886504b3441da44ffb95d827"
+    },
+    "src/Apps/ScriptViewer/Components/EditorTabs.lua": {
+      "bytes": 13936,
+      "checksum": 2257952823,
+      "sha256": "a40ce21d6b2bef3fd6c7d37930165a0ae830a941cb506f0326787eebc0d52971"
+    },
+    "src/Apps/ScriptViewer/Components/StudioEditorSkin.lua": {
+      "bytes": 1647,
+      "checksum": 1699146364,
+      "sha256": "d2237e812ef219e1414debd9e024d6d39e15703ad8396d5022cdfb33a1440a8e"
+    },
+    "src/Apps/ScriptViewer/Components/StudioMenuDefinition.lua": {
+      "bytes": 3359,
+      "checksum": 2920075313,
+      "sha256": "f3fefac00eaec2d5bf4c9115637406014fa56f8b30fda97a9fcbd95336f94bca"
+    },
+    "src/Apps/ScriptViewer/ScriptViewer.lua": {
+      "bytes": 51890,
+      "checksum": 3145182009,
+      "sha256": "7cda9cf884aef4dc4aa420c605d93b308f556acd2881cbdb2f95826bbd7a32a2"
+    },
+    "src/Apps/ScriptViewer/Services/EditorApiDocumentation.lua": {
+      "bytes": 5831,
+      "checksum": 2695967000,
+      "sha256": "11a522402a90807e0a20bde4d6f1847246f02555ce0b4a9219f1529186c73775"
+    },
+    "src/Apps/ScriptViewer/Services/EditorBuiltinSignatures.lua": {
+      "bytes": 40912,
+      "checksum": 3164961057,
+      "sha256": "0e88833237f393d5a873406908a4ba1367a421cf473ddf623ab246cc78e9986a"
+    },
+    "src/Apps/ScriptViewer/Services/EditorController.lua": {
+      "bytes": 59603,
+      "checksum": 485645905,
+      "sha256": "00d8aeec05f5f40fda51fb113b95d2e4b93eb1197f7df99a4f3aac8383c1b200"
+    },
+    "src/Apps/ScriptViewer/Services/EditorDefinitions.lua": {
+      "bytes": 22092,
+      "checksum": 3678176134,
+      "sha256": "d4d6a8af5a7a3fee889a4a08c56e4a9697528c17f5ae70bf564666b9d7e20a0c"
+    },
+    "src/Apps/ScriptViewer/Services/EditorFindModel.lua": {
+      "bytes": 7375,
+      "checksum": 2481910071,
+      "sha256": "24082db959aac787635eff152f2a1c6b088f15d6d162b79bc48fe4ecda5ae9f5"
+    },
+    "src/Apps/ScriptViewer/Services/EditorFormatter.lua": {
+      "bytes": 6440,
+      "checksum": 1198492255,
+      "sha256": "87ec4d0c88195afd0f39c51fdaa19da65d47f8de6b040a81424b52d0c3fb1802"
+    },
+    "src/Apps/ScriptViewer/Services/EditorGlobalSearch.lua": {
+      "bytes": 27095,
+      "checksum": 28396262,
+      "sha256": "d0daba67b4b83ca994fd24e0aa60697742fd8a3b70a8e4fe870174ede9fc3ae9"
+    },
+    "src/Apps/ScriptViewer/Services/EditorHoverTypes.lua": {
+      "bytes": 41898,
+      "checksum": 4178385981,
+      "sha256": "7cf784c5f916942ce26e66127c3be31268aab55dc35cb3485d154b8d76ce4740"
+    },
+    "src/Apps/ScriptViewer/Services/EditorLanguage.lua": {
+      "bytes": 56866,
+      "checksum": 3618279501,
+      "sha256": "23bf8a18285068017d6eb6345eff5ddc45a5bb5d14ef597788f9b29d96f944ac"
+    },
+    "src/Apps/ScriptViewer/Services/EditorModuleTypes.lua": {
+      "bytes": 7103,
+      "checksum": 2250359132,
+      "sha256": "25c04b9854b613bc206c17b0ee35b2ea832b4663d4454b4fd4f99bc98798094c"
+    },
+    "src/Apps/ScriptViewer/Services/EditorSelectionSet.lua": {
+      "bytes": 10572,
+      "checksum": 2149447154,
+      "sha256": "94db2060a53d1618f641b7683a8a07aeed525f32911457847f5e10ab9c3c8939"
+    },
+    "src/Apps/ScriptViewer/Services/EditorSymbols.lua": {
+      "bytes": 18153,
+      "checksum": 3893756232,
+      "sha256": "b8c7624d6a06e6734a6fed63138afecbbd7d9f9c0f2e8ee10c87bafd3b4612fa"
+    },
+    "src/Apps/ScriptViewer/Services/EditorUndoStack.lua": {
+      "bytes": 3621,
+      "checksum": 241602052,
+      "sha256": "fb35692a797709f4bddaf2479c54abb0b246f8ba78e61f9aa9d45bfba7778850"
+    },
+    "src/Apps/ScriptViewer/Util/EditorDocument.lua": {
+      "bytes": 27541,
+      "checksum": 3530266634,
+      "sha256": "6d3ed088b406756053f76e598437e7d39078332f5484b442ee32ddab7d5b5509"
+    },
+    "src/Apps/ScriptViewer/Util/EditorHitTest.lua": {
+      "bytes": 2957,
+      "checksum": 634485723,
+      "sha256": "87dd3e6dd2f35c20482577e2b2d3bed8f114c6c3bc1ae8029a667bff42511dbd"
+    },
+    "src/Apps/TransformTools/GuiAlignment.lua": {
+      "bytes": 4720,
+      "checksum": 3676327224,
+      "sha256": "43cc93a53a14e108f007e04e5f721cc142d0d4b6cdd3660e1005903136d2b816"
+    },
+    "src/Apps/TransformTools/GuiTransformSession.lua": {
+      "bytes": 10742,
+      "checksum": 229214865,
+      "sha256": "46c1f5c45e5bf26793c9fda1f91dc17352e9425d9e5bf0ed92f53b6e2e88dcb8"
+    },
+    "src/Apps/TransformTools/GuiTransformTools.lua": {
+      "bytes": 15936,
+      "checksum": 1943474831,
+      "sha256": "cb422a484e7dc6974542d5580597cbedd478c143257a2b94d57705095ccc435c"
+    },
+    "src/Apps/TransformTools/GuiTransformView.lua": {
+      "bytes": 9177,
+      "checksum": 2895405175,
+      "sha256": "79806f0043ef1aac43cb84890029545967f76f121e12e1cad4ce995be2c1d5f7"
+    },
+    "src/Apps/TransformTools/TransformGizmo.lua": {
+      "bytes": 15427,
+      "checksum": 4056209697,
+      "sha256": "135eda62a2ad17ecfdcbf35f95d00ea84ad9f8fe9beb6087d2d3ff025dbfb07a"
+    },
+    "src/Apps/TransformTools/TransformSession.lua": {
+      "bytes": 12709,
+      "checksum": 3286938826,
+      "sha256": "bf012272c8f7febca7867549d8c0b3232492ba51c48d5421076a0b9bf7714f37"
+    },
+    "src/Apps/TransformTools/TransformTools.lua": {
+      "bytes": 34184,
+      "checksum": 2519570533,
+      "sha256": "f6c595840fc97b1d39a0d0e665dd35d52167241cd338ae314350ed1e0cf7119f"
+    },
+    "src/Packages/Regex/EditorRegex.lua": {
+      "bytes": 78038,
+      "checksum": 331605925,
+      "sha256": "6f65309c9d64a3edc45348ad41fb6784e012d565ef03b249c4fa547213a1a95a"
+    },
+    "src/Shared/AntiAFK.lua": {
+      "bytes": 2021,
+      "checksum": 1663529385,
+      "sha256": "5fe31bbe5639499ab88c5e893423fa725c2a5babf4adf98613de2a57f103cf0d"
+    },
+    "src/Shared/EditorBuffer.lua": {
+      "bytes": 2501,
+      "checksum": 3473529822,
+      "sha256": "82f5f3c708579b444a43b34aa939e6e3894b33592835c38e17eec2a404d73ca0"
+    },
+    "src/Shared/EditorWorkspace.lua": {
+      "bytes": 3267,
+      "checksum": 958701939,
+      "sha256": "a5d638f70a336bf9dc79633f331ddc389c5481d7886abeeffd65fd9e7385299c"
+    },
+    "src/Shared/History.lua": {
+      "bytes": 9099,
+      "checksum": 1923148636,
+      "sha256": "edae32f0d5de0f6399aaa790b64374d99c1874e3e435481175faae47ef83aec2"
+    },
+    "src/Shared/Lib.lua": {
+      "bytes": 342538,
+      "checksum": 2936854901,
+      "sha256": "8128bd9ad04e3ae431c9d9e59bf4f879c6e7a78d198935e0d4d41918280725a4"
+    },
+    "src/Shared/LoadingSplash.lua": {
+      "bytes": 10956,
+      "checksum": 1218550716,
+      "sha256": "ccac12c95e866b7050ee26bfb3643f7b001f86a7087861a3b6a2fa5eec4c906b"
+    },
+    "src/Shared/PerformanceRuntime.lua": {
+      "bytes": 2213,
+      "checksum": 1111268242,
+      "sha256": "5160dd320990dd92ff00ad6b8e8e94d671e24f309b8362bc41b036801ada62a2"
+    },
+    "src/Shared/React.lua": {
+      "bytes": 395,
+      "checksum": 720402160,
+      "sha256": "a5fe1fdcfd580c8ed33bb012cc1d205f7b4d7ba1433704755ad9fa921db8e244"
+    },
+    "src/Shared/SearchQuery.lua": {
+      "bytes": 18644,
+      "checksum": 930350449,
+      "sha256": "1c2b45133c863b9af51c9bc0fcea6c662984a9638697392e5490140c1424f0b2"
+    },
+    "src/Shared/Signal.lua": {
+      "bytes": 2047,
+      "checksum": 3423561597,
+      "sha256": "1a20be147f0466920853adcf7194870cd0b520ac417fb41f869146f969e25ef8"
+    },
+    "src/Shared/WindowLayout.lua": {
+      "bytes": 6400,
+      "checksum": 2141300052,
+      "sha256": "8824466f225bcb26dd12e71bf28dbbeb958de8039fd55c55304ad624218dc1af"
+    },
+    "src/Packages/React/boolean.luau": {
+      "bytes": 479,
+      "checksum": 4208829184,
+      "sha256": "8d530b5303aaa0e98322898882178c55c9a7460be2445f95516d4c75cd4cb606"
+    },
+    "src/Packages/React/collections.luau": {
+      "bytes": 53752,
+      "checksum": 3985371291,
+      "sha256": "4470104d8fab57ad3f0763913cf435959d17d946469dfda5cccb436ee8f92887"
+    },
+    "src/Packages/React/console.luau": {
+      "bytes": 2343,
+      "checksum": 842134480,
+      "sha256": "68b62e0508363a4697604451e64b7b0df83096ca1734d0f15528597017fdcc06"
+    },
+    "src/Packages/React/es7-types.luau": {
+      "bytes": 2309,
+      "checksum": 1496882906,
+      "sha256": "e379ed7b81d410ec4510c67c9c53c122e43cd13687c848b1d0391dde07c5d968"
+    },
+    "src/Packages/React/instance-of.luau": {
+      "bytes": 1345,
+      "checksum": 2749216029,
+      "sha256": "f3b2ac59ca51a8ef42396e90affcf2335459c1bd1f456fa88cfa2e25b9bbc247"
+    },
+    "src/Packages/React/Loader.luau": {
+      "bytes": 17441,
+      "checksum": 1840480170,
+      "sha256": "d900290e02ae5ba60848c7f58ed5f309f00249d042327fcbcbd5d7720cac2ef6"
+    },
+    "src/Packages/React/luau-polyfill.luau": {
+      "bytes": 29097,
+      "checksum": 894152938,
+      "sha256": "fb827c2ce814ad5c0c5271ef6d29fd4de7512a130a455c6d22af005cf4e49627"
+    },
+    "src/Packages/React/math.luau": {
+      "bytes": 200,
+      "checksum": 2048802905,
+      "sha256": "d0077cd6b8cf52678e375d819db58e5a58b28790b418a357f5f5496da990af67"
+    },
+    "src/Packages/React/number.luau": {
+      "bytes": 3024,
+      "checksum": 639366010,
+      "sha256": "44cf3c3f637a8b531d56a5d4799ed6490f6d3c28226ceb20dacde034e75b0c29"
+    },
+    "src/Packages/React/promise.luau": {
+      "bytes": 62792,
+      "checksum": 3378450830,
+      "sha256": "ad3af000fd6bdf104920297d1f4ffb9fc22f2da52d59e311ad74cae3112a21e6"
+    },
+    "src/Packages/React/react-reconciler.luau": {
+      "bytes": 998623,
+      "checksum": 4288630450,
+      "sha256": "b92ef8ff9b81393dbfaeb52d168a26a802cd777a7f74bba2c0d9c47b2051f78c"
+    },
+    "src/Packages/React/react-roblox.luau": {
+      "bytes": 111100,
+      "checksum": 2718645390,
+      "sha256": "c6160406d6f925f554a86ff15fdd5845299af463d4981536983565b99794b413"
+    },
+    "src/Packages/React/react.luau": {
+      "bytes": 125211,
+      "checksum": 1613569558,
+      "sha256": "10a2caa43ae39e13495831bc42de8559c43e6ba600587c1de60a0f10e3795605"
+    },
+    "src/Packages/React/scheduler.luau": {
+      "bytes": 56732,
+      "checksum": 3065736791,
+      "sha256": "25d8c710439a57b148e31a097bad77c48742f84aebddc48a947b1a3f5c0065af"
+    },
+    "src/Packages/React/shared.luau": {
+      "bytes": 122255,
+      "checksum": 1008609351,
+      "sha256": "12c368c827042649dfdc473087de9e512b2cdb44cc7798313161972390b87a6b"
+    },
+    "src/Packages/React/string.luau": {
+      "bytes": 12002,
+      "checksum": 334152554,
+      "sha256": "c7f4109ca0af0921e4889afe6aa5ac1bda8880a4ea628f2171bd530101266b93"
+    },
+    "src/Packages/React/symbol-luau.luau": {
+      "bytes": 1977,
+      "checksum": 1859231727,
+      "sha256": "a1679bf6ec3f15a2bf1f5ea87a26497360d635f4bc04aa73f6039d174685f6b5"
+    },
+    "src/Packages/React/timers.luau": {
+      "bytes": 2502,
+      "checksum": 3312985801,
+      "sha256": "403ef993a4be8ed8c91cb5e06c8ede1aa38fceb9f6532a3c830abf086b0961a0"
+    },
+    "main.lua": {
+      "bytes": 97932,
+      "checksum": 3782926314,
+      "sha256": "0b7f66aea2ef3f3c4f44a9e72927e21bdb490193a108125c7b76acb068ffa4a3"
+    },
+    "studio_assets.lua": {
+      "bytes": 1121833,
+      "checksum": 2963367032,
+      "sha256": "0793a8b674b92c2261342c1ef9b8b53518844a8e89ebd8bbd92ec167915cd5c8"
+    }
+  }
+}

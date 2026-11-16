@@ -1,0 +1,32 @@
+{
+  "native/scroll/top": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\Explorer\\Light\\Standard\\scrollTop.png",
+    "sha256": "e702e226f5f46f2391961410d632b8b86c1b2e83bf28729ac00b6292a66e01e6",
+    "width": 16,
+    "height": 16
+  },
+  "native/scroll/mid": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\Explorer\\Light\\Standard\\scrollMid.png",
+    "sha256": "aadb4c397f17be893667e2f84c83f293c44bc8ad8113954845d9adf20ba9e66c",
+    "width": 16,
+    "height": 16
+  },
+  "native/scroll/bottom": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\Explorer\\Light\\Standard\\scrollBottom.png",
+    "sha256": "0d28bb55c1a915d443bbd3653d351c41bd2171bd46799d22f21226af2df70176",
+    "width": 16,
+    "height": 16
+  },
+  "native/scroll/up": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Shared\\Navigation\\Dark\\Standard\\ScrollbarUp.png",
+    "sha256": "c0cc2dbd2554da2e1373efe87ebdf308f28c0f0c6d00648008e389193014e35b",
+    "width": 16,
+    "height": 16
+  },
+  "native/scroll/down": {
+    "path": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Shared\\Navigation\\Dark\\Standard\\ScrollbarDown.png",
+    "sha256": "f91c257bed5ff8818242824f9a94503723e5553ca08630697968d64cb9f0b934",
+    "width": 16,
+    "height": 16
+  }
+}

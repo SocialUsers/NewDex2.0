@@ -1,0 +1,89 @@
+{
+  "studioVersion": "version-7aaa6838d36c4448",
+  "assets": {
+    "native/gui-editor/icon_resize1": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_resize1.png",
+      "sha256": "8526d6ca988f0bd9850d4a10132205642c7e4c035cca5419d72702d234f21b49",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_resize2": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_resize2.png",
+      "sha256": "2ec702d73aa3a156cbeb77457671b6f5a98a885ef465372188b8c199b63f3486",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_resize3": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_resize3.png",
+      "sha256": "101cf22c225e344d57e5056f184d2c29fc5fd1ed3ce21c59be243fc80146e8bd",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_resize4": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_resize4.png",
+      "sha256": "3d302a8a2f44aad533278ee7ea3de5be5959f04d1fe1dcc29b07c6cfdcf90970",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate1": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate1.png",
+      "sha256": "d4201a986beb7d4915a60f4bbc4f8509a2160d9680b13da2cbec5074b284decf",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate2": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate2.png",
+      "sha256": "52eaca58fa3e874c65b493c0bed5ec0ed0090feeeec90c5e494cfb0c6f6fb14a",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate3": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate3.png",
+      "sha256": "c745a78478d01fe7bac46fe99db8f09baee1ba02456f6d80f8174d670233aa59",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate4": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate4.png",
+      "sha256": "1175008a58379027ba348fdda72bc64ec075d11f64e2ca4b60db419e636ee1b1",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate5": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate5.png",
+      "sha256": "94162dd1fe20b1059bacfc24a30a2ae4b89c2738912dbf89bfb3a94db89f85aa",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate6": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate6.png",
+      "sha256": "f7f393ed8a84175e5fcf3089e424a3bb1c0f9592edefd7edfb14fb35110a3a5c",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate7": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate7.png",
+      "sha256": "0994e8a38c2610a43fdf6b03077160c0d170c5cf412deecd04128bf6bc188cfc",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/icon_rotate8": {
+      "path": "StudioContent/textures/StudioUIEditor/icon_rotate8.png",
+      "sha256": "41396926bac24567a0bc7ce2cd8d219a7818f5425d0d2a9e5de3a004c66b8b09",
+      "width": 64,
+      "height": 64
+    },
+    "native/gui-editor/resizeHandleDropShadow": {
+      "path": "StudioContent/textures/StudioUIEditor/resizeHandleDropShadow.png",
+      "sha256": "0088d200b77294371da0d54675aac025967f6d7b5d5345c95e909b3b32012086",
+      "width": 16,
+      "height": 16
+    },
+    "native/gui-editor/valueBoxRoundedRectangle": {
+      "path": "StudioContent/textures/StudioUIEditor/valueBoxRoundedRectangle.png",
+      "sha256": "35b87bf3ff33835a167df2746af56c30fd989166e88741c9f0b8e52f0958851e",
+      "width": 16,
+      "height": 16
+    }
+  }
+}

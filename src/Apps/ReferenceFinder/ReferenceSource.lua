@@ -1,0 +1,163 @@
+--!strict
+
+local Apps, env
+
+------------------------------ Initialization ------------------------------
+
+local function InitDeps(d)
+	Apps, env = d.Apps, d.env
+end
+------------------------------ Module ------------------------------
+
+local function Main()
+	local Reader = {}
+	local sources = {}
+	local literals = {}
+	local total = 0
+	local revision = 0
+	local literalBytes = 0
+	local paused = false
+	local order = {}
+	local queued = {}
+	local remove
+	local function touch(object)
+		if not queued[object] then
+			if #order >= 32768 then
+				remove(table.remove(order, 1))
+			end
+			queued[object] = true
+			order[#order + 1] = object
+		end
+	end
+	remove = function(object)
+		if sources[object] then
+			total -= #sources[object].Source
+			sources[object] = nil
+		end
+		if literals[object] then
+			for _, text in ipairs(literals[object]) do
+				literalBytes -= #text
+			end
+			literals[object] = nil
+		end
+		queued[object] = nil
+	end
+	function Reader.Store(object, text, kind)
+		if type(text) ~= "string" or #text > 2 * 1024 * 1024 then
+			return
+		end
+		local old = sources[object]
+		local size = old and #old.Source or 0
+		while total - size + #text > 32 * 1024 * 1024 and #order > 0 do
+			local victim = table.remove(order, 1)
+			remove(victim)
+			old = sources[object]
+			size = old and #old.Source or 0
+		end
+		touch(object)
+		if literals[object] then
+			for _, value in ipairs(literals[object]) do
+				literalBytes -= #value
+			end
+			literals[object] = nil
+		end
+		sources[object] = { Source = text, SourceKind = kind or "Cached source" }
+		total = total - size + #text
+		if not old or old.Source ~= text then
+			revision += 1
+		end
+	end
+	function Reader.Revision()
+		return revision
+	end
+	function Reader.BeginPass()
+		paused = false
+		for index = #order, 1, -1 do
+			local object = order[index]
+			if object.Parent == nil then
+				remove(object)
+				table.remove(order, index)
+			end
+		end
+		while #order > 32768 do
+			remove(table.remove(order, 1))
+		end
+	end
+	function Reader.ClearBytecode()
+		table.clear(literals)
+		literalBytes = 0
+	end
+	function Reader.PeekCompiled(object)
+		if literals[object] then
+			return { Literals = literals[object], SourceKind = "Cached bytecode" }
+		end
+	end
+	function Reader.Peek(object)
+		return sources[object]
+	end
+	function Reader.Read(object, checkpoint, yieldNative, pass)
+		if literals[object] then
+			return { Literals = literals[object], SourceKind = "Cached bytecode" }
+		end
+		if not pass then
+			local ok, source = pcall(function()
+				return object.Source
+			end)
+			if ok and type(source) == "string" and source ~= "" then
+				return { Source = source, SourceKind = "Readable source" }
+			end
+		end
+		if sources[object] then
+			return sources[object]
+		end
+		if object.ClassName == "Script" then
+			local known, context = pcall(function()
+				return object.RunContext
+			end)
+			if known and (context == Enum.RunContext.Legacy or context == Enum.RunContext.Server) then
+				return { Unavailable = "Server script contents are not replicated" }
+			end
+		end
+		if not pass and paused then
+			return { Unavailable = "Bytecode reads paused after a slow call" }
+		end
+		if type(env.getscriptbytecode) ~= "function" then
+			return { Unavailable = "Source and bytecode unavailable" }
+		end
+		if checkpoint and not checkpoint() then
+			return { Cancelled = true }
+		end
+		local started = os.clock()
+		local good, bytes = pcall(env.getscriptbytecode, object)
+		local duration = os.clock() - started
+		if not pass and duration > 0.02 then
+			paused = true
+		end
+		if yieldNative then
+			yieldNative(duration)
+		end
+		if not pass and checkpoint and not checkpoint() then
+			return { Cancelled = true }
+		end
+		if not good or type(bytes) ~= "string" then
+			return { Unavailable = "Bytecode unavailable" }
+		end
+		local strings = {}
+		local size = 0
+		local valid, problem = Apps.BytecodeStrings.VisitAll(bytes, function(text)
+			strings[#strings + 1] = text
+			size += #text
+		end, pass and pass.ParseCheckpoint or checkpoint, pass ~= nil)
+		if not valid then
+			return { Unavailable = problem or "Unsupported bytecode" }
+		end
+		if not pass and literalBytes + size <= 48 * 1024 * 1024 and (queued[object] or #order < 32768) then
+			touch(object)
+			literals[object] = strings
+			literalBytes += size
+		end
+		return { Literals = strings, SourceKind = "Bytecode strings", Bytes = size }
+	end
+	return Reader
+end
+return { InitDeps = InitDeps, InitAfterMain = function() end, Main = Main }

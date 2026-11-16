@@ -1,0 +1,12 @@
+{
+  "R6": {
+    "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\avatar\\morpherEditorR6.rbxmx",
+    "sha256": "a68019d9b9b34e74fba246aec5510249cb69599029df3eb3cb5eee96dcbfc98e",
+    "builtin": "rbxasset://avatar/morpherEditorR6.rbxmx"
+  },
+  "R15": {
+    "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\avatar\\morpherEditorR15.rbxmx",
+    "sha256": "e5e2585b1916674251419fda20adccc37f8b0103f4e2e30aeb1591596f9bf892",
+    "builtin": "rbxasset://avatar/morpherEditorR15.rbxmx"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "studioVersion": "version-7aaa6838d36c4448",
+  "assets": {
+    "native/transform/ribbon/select": {
+      "path": "content/studio_svg_textures/Shared/Ribbon/Dark/Medium/RibbonSelect@2x.png",
+      "sha256": "d435b24dd198f41a167fd0b76c2f5cfdcb2a2ee26657176a80c7d650ab8043f8",
+      "width": 48,
+      "height": 48
+    },
+    "native/transform/ribbon/move": {
+      "path": "content/studio_svg_textures/Shared/Ribbon/Dark/Medium/RibbonMove@2x.png",
+      "sha256": "bcf2b81d21c2ad6c693dd8ba5e8cf32910b7dd6442e0a8ea77cc40acbce0d2a9",
+      "width": 48,
+      "height": 48
+    },
+    "native/transform/ribbon/scale": {
+      "path": "content/studio_svg_textures/Shared/Ribbon/Dark/Medium/RibbonScale@2x.png",
+      "sha256": "e2d07de3a2f08fa6cdd3420957e6899bca3feb8d7447e5d1126d173f0805cb64",
+      "width": 48,
+      "height": 48
+    },
+    "native/transform/ribbon/rotate": {
+      "path": "content/studio_svg_textures/Shared/Ribbon/Dark/Medium/RibbonRotate@2x.png",
+      "sha256": "1ed2ee2370358bcbd9b9e194effbb04df4b3d3ff9b0bdef0773098da85a52d95",
+      "width": 48,
+      "height": 48
+    }
+  }
+}

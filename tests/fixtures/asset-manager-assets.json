@@ -1,0 +1,77 @@
+{
+  "studioVersion": "version-7062aec9dbe74b14",
+  "assets": {
+    "native/asset-manager/icon": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Shared\\WidgetIcons\\Dark\\Standard\\AssetManager@2x.png",
+      "sha256": "8f2aae2223bde0c318c708535b8e2e98e6eeee27273dcc436bc93b13fddfd1a6",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/AudioFolder": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\AudioFolder@2x.png",
+      "sha256": "02ee46c34fee73adbf2530fdba9c747e76e455737582b3dafdd9f5239ebd4b40",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/ImagesFolder": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\ImagesFolder@2x.png",
+      "sha256": "ba46bc81067961db85966ec1d96b4bf286fb217afb6bd16aef2e55bed432a1e9",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/MeshesFolder": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\MeshesFolder@2x.png",
+      "sha256": "d0eb69d7b8fbdfc208a3997e5ee85d9098b722d89fb0594d4efaaf8a76e2e625",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/BlankFolder": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\BlankFolder@2x.png",
+      "sha256": "2aa3446cd0ac4ea4d13c5171da62723ca8db501b6ffffab81a297fe5725480c0",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/ExperienceFolder": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\ExperienceFolder@2x.png",
+      "sha256": "a23ab0cd40e0a150ef414a02a256e06c37ebc5db88fedfb238f73259beba50a6",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/List": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\List@2x.png",
+      "sha256": "8eff4663973e3dca93a69776cfcd302fd17c78fa811c945b44464ea45bb5b3d5",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/Sort": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\Sort@2x.png",
+      "sha256": "390fe2a8c221f9fb1dc045655646182f17cb708f0d0840014f2ac80621c3c9aa",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "native/asset-manager/Menu": {
+      "source": "C:\\Users\\User\\AppData\\Local\\Roblox\\Versions\\version-7062aec9dbe74b14\\content\\studio_svg_textures\\Lua\\AssetManager\\Dark\\Standard\\Menu@2x.png",
+      "sha256": "7633dde0f181625c31ca0fc499a7bd5364df2bd6aff509ecd63084a05ff78e5f",
+      "size": [
+        32,
+        32
+      ]
+    }
+  }
+}

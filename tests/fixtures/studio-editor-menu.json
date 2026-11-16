@@ -1,0 +1,60 @@
+{
+  "source": {
+    "sha256": "cc70176d50d5f2c1edc26d40f1fcdc530748fc83dedc63c2fdbb251f766972d2",
+    "method_va": "0x1472292b0",
+    "method_end_va": "0x14722a4a0",
+    "evidence": "PE RTTI/vtable method entry, imported QMenu/QWidget calls, RIP-relative QAction object-name and command-ID strings; adapted definition, not original C++ source",
+    "decompiler_evidence_id": "ev_cc3fb30e0afe3526f626f32afd3d01ce2a7590e18440b83a41afa4a5510d59d1"
+  },
+  "groups": [
+    [
+      "undoAction",
+      "redoAction"
+    ],
+    [
+      "cutAction",
+      "copyAction",
+      "pasteAction",
+      "deleteSelectedAction"
+    ],
+    [
+      "selectAllAction"
+    ],
+    [
+      {
+        "id": "formatContextMenuAction",
+        "children": [
+          "FORMATSEL",
+          "FORMATALL",
+          "INDENT",
+          "UNINDENT"
+        ],
+        "icon": ":/RibbonBar/images/RibbonIcons/Home/FormatSelection.png"
+      }
+    ],
+    [
+      "GOTOERR",
+      "GOTODECL",
+      "INVOKESYMBOLS",
+      "RENAMEDOCSYMBOL"
+    ],
+    [
+      "TOGGLECOMMENT"
+    ],
+    [
+      "UNFOLDALL",
+      "FOLDALL"
+    ],
+    [
+      "zoomInAction",
+      "zoomOutAction",
+      "resetScriptZoomAction"
+    ],
+    [
+      "showScriptInExplorerAction"
+    ]
+  ],
+  "excluded": {
+    "RENAMEDOCSYMBOL": "No semantic cross-document symbol rename service; textual replacement is not equivalent."
+  }
+}

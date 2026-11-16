@@ -1,0 +1,14 @@
+{
+  "native/references/refresh": {
+    "path": "Lua/FileSync/Dark/Standard/Refresh@2x.png",
+    "sha256": "9e1c1b071e91ad415b0e7ec663e62958cc9da0b7c7d936c1c14397e8b223cefb",
+    "width": 32,
+    "height": 32
+  },
+  "native/references/stop": {
+    "path": "Shared/Ribbon/Dark/Standard/RibbonStopActiveSmall@2x.png",
+    "sha256": "eb488f17c2454a6f4c534cd6fac8cd81a7523e65af8f5236721dc40eaeca19b9",
+    "width": 32,
+    "height": 32
+  }
+}

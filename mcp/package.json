@@ -1,0 +1,21 @@
+{
+  "name": "dex-plus-local-mcp",
+  "version": "0.8.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/generate-tool-catalog.mjs --check && node scripts/build.mjs && node --test tests/*.test.mjs",
+    "catalog": "node scripts/generate-tool-catalog.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node src/stdio.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
+    "ws": "8.19.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "esbuild": "0.28.2"
+  }
+}

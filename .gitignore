@@ -1,0 +1,12 @@
+/out.lua
+.tools/
+.build/
+dist/
+__pycache__/
+react_vendor.lua
+vendor/
+preview-upstream.png
+node_modules/
+.private/
+.env
+.env.local

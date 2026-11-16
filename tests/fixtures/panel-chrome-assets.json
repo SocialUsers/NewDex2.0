@@ -1,0 +1,86 @@
+{
+  "native/panel-v2/close-dark": {
+    "path": "content/studio_svg_textures/Shared/Navigation/Dark/Standard/CloseWidget.png",
+    "sha256": "c27942496e0222a8c145495506385a67d0cee9f70079a84ce1d243c1c454cb8a",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": null,
+    "offset": null,
+    "bytes": 383
+  },
+  "native/panel-v2/pin-dark": {
+    "path": ":/res/RobloxIcons/Dark/pin.png",
+    "sha256": "205e6a97ace6100a8b06647befeac19ad6af245859e70deaa5fc74b84f10db54",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 898649,
+    "bytes": 656
+  },
+  "native/panel-v2/pinned-dark": {
+    "path": ":/res/RobloxIcons/Dark/pinned.png",
+    "sha256": "0733726afe2502feb97e27da56397ab60c3648ecd183f86fb678c4eb03fa6b90",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 890899,
+    "bytes": 638
+  },
+  "native/panel-v2/dropdown-dark": {
+    "path": ":/res/RobloxIcons/Dark/ArrowDown.png",
+    "sha256": "27dfdc137d3f12913f1461c3756aa3160e1cfe24b4f1bc9970bd06f584b40a9b",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 893572,
+    "bytes": 197
+  },
+  "native/panel-v2/close-light": {
+    "path": "content/studio_svg_textures/Shared/Navigation/Light/Standard/CloseWidget.png",
+    "sha256": "9a97b3872e7a8112fd4192791d235f63c6d2b4c2cbdf5e1e9517d08402da166b",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": null,
+    "offset": null,
+    "bytes": 385
+  },
+  "native/panel-v2/pin-light": {
+    "path": ":/res/RobloxIcons/Light/pin.png",
+    "sha256": "c77ab2d3b4a49076b272846fdf4b4a64ddc1aa4e9dd06f6c6d31271c770142fe",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 913193,
+    "bytes": 663
+  },
+  "native/panel-v2/pinned-light": {
+    "path": ":/res/RobloxIcons/Light/pinned.png",
+    "sha256": "1fdb6cf41fad1d48a8fafdde88e9e4f67ba7768180564f8d6c0c77fb3e634447",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 905264,
+    "bytes": 669
+  },
+  "native/panel-v2/dropdown-light": {
+    "path": ":/res/RobloxIcons/Light/ArrowDown.png",
+    "sha256": "0c1b7479896291caa4ad49af34a0f87efd789753562db8a954106da0f92e21a0",
+    "width": 16,
+    "height": 16,
+    "dllSHA256": "c9d5850a3461562c451b8008d1aea6dae3e7f3cea1a879c36654560cfbbf824c",
+    "offset": 908023,
+    "bytes": 216
+  },
+  "native/panel-v2/close-launcher-dark": {
+    "path": "Shared/Navigation/Dark/Standard/CloseWidget@3x.png (downsampled to 26 px)",
+    "sha256": "3e7b7dc850aba8c9dd08310c0de7c62faaa83e9c0a4003d25551ebbbc9126ca3",
+    "width": 26,
+    "height": 26
+  },
+  "native/panel-v2/close-launcher-light": {
+    "path": "Shared/Navigation/Light/Standard/CloseWidget@3x.png (downsampled to 26 px)",
+    "sha256": "4230e031bb4f1d49aee2aa565332e52fde39c487261f49dd9a8bc8425d25daca",
+    "width": 26,
+    "height": 26
+  }
+}

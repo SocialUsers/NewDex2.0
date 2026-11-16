@@ -1,0 +1,15 @@
+# Dex Explorer uses Luau + Roblox APIs, plus a small set of executor-provided
+# globals.  Without this, Selene falls back to Lua 5.1 and reports valid Luau
+# syntax (+=, -=, ..=, continue, etc.) as parse errors.
+std = "roblox+dex_executor"
+
+# These patterns are intentional throughout the inherited DeX codebase and
+# create a lot of noise without finding meaningful bugs. Keep Selene's other
+# correctness checks enabled.
+[lints]
+multiple_statements = "allow"
+unused_variable = "allow"
+shadowing = "allow"
+unscoped_variables = "allow"
+global_usage = "allow"
+parenthese_conditions = "allow"

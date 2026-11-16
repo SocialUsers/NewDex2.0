@@ -1,0 +1,59 @@
+{
+  "studioVersion": "version-7aaa6838d36c4448",
+  "assets": {
+    "menu/tool/explorer": {
+      "path": "Shared/WidgetIcons/Dark/Large/Explorer@2x.png",
+      "sha256": "b072e3e9cfeb10e55202bb17df0d5de42d65d18f026d7b0ad6ac425a15d84259",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/properties": {
+      "path": "Shared/WidgetIcons/Dark/Large/Properties@2x.png",
+      "sha256": "b2774fa450cc09437f506f6a41749d4bebe5502f68eb8567fa78d5ad295695dc",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/select": {
+      "path": "Shared/DraggerTools/Dark/Large/Select@2x.png",
+      "sha256": "39b2f97d50f5631424cad4ecf6e3d0740184fe8641420f834714d507f5410f04",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/ui_select": {
+      "path": "Shared/InsertableObjects/Dark/Large/ScreenGui@2x.png",
+      "sha256": "fa9a61dcbeaf283fa96113fca9938bbcea7e89dcb0a265b7bf7a1c207e859b5e",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/script": {
+      "path": "Lua/ActivityHistory/Dark/Large/Script@2x.png",
+      "sha256": "aa79b802b58bbe55992947378cecc50aa2df6592c5d6e435aab840201ee331fa",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/console": {
+      "path": "Shared/WidgetIcons/Dark/Large/Output@2x.png",
+      "sha256": "5c5c34a54bca7ef3eef8c3e1cbc949d8a874ff427f48822e60cab5fdba158297",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/save": {
+      "path": "Lua/Localization/Dark/Large/ExportCSV@2x.png",
+      "sha256": "c4e09989832ca94b4718f76c40a1525fbea9ad2c8a9dd412372662e8a95b2d38",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/viewer": {
+      "path": "Lua/Terrain/Dark/Large/TerrainBrushTypeCube@2x.png",
+      "sha256": "846b788ebbecbf8322613df6222e45b8ef450cd81719874ac9fbc7c9a239a262",
+      "width": 64,
+      "height": 64
+    },
+    "menu/tool/reconstructor": {
+      "path": "Shared/InsertableObjects/Dark/Standard/ServerScriptService@2x.png",
+      "sha256": "291f7235fecfa8a1cc6b87214058c5462325409761c246bea3810de077da0ba8",
+      "width": 32,
+      "height": 32
+    }
+  }
+}

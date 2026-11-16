@@ -1,0 +1,130 @@
+{
+  "jsdotlua/react": {
+    "version": "17.2.1",
+    "archive_sha256": "cf76f1aa9e866e0255d55287d4bb5a82a44ecd5d7dbab3ab25f28e38b7c0d025",
+    "dependencies": {
+      "luau-polyfill": "jsdotlua/luau-polyfill@^1.2.6",
+      "shared": "jsdotlua/shared@17.2.1"
+    }
+  },
+  "jsdotlua/react-roblox": {
+    "version": "17.2.1",
+    "archive_sha256": "ad1c632d69ed90f741e72784ce6cac8985d2a806318ac38b8e63d643ae3047f3",
+    "dependencies": {
+      "luau-polyfill": "jsdotlua/luau-polyfill@^1.2.6",
+      "react": "jsdotlua/react@17.2.1",
+      "react-reconciler": "jsdotlua/react-reconciler@17.2.1",
+      "scheduler": "jsdotlua/scheduler@17.2.1",
+      "shared": "jsdotlua/shared@17.2.1"
+    }
+  },
+  "jsdotlua/luau-polyfill": {
+    "version": "1.2.7",
+    "archive_sha256": "88527a7a52409bce96676e0926a8340cf3c269f9d0720b8e69ed09ed4e6d784c",
+    "dependencies": {
+      "boolean": "jsdotlua/boolean@1.2.7",
+      "collections": "jsdotlua/collections@1.2.7",
+      "console": "jsdotlua/console@1.2.7",
+      "es7-types": "jsdotlua/es7-types@1.2.7",
+      "instance-of": "jsdotlua/instance-of@1.2.7",
+      "math": "jsdotlua/math@1.2.7",
+      "number": "jsdotlua/number@1.2.7",
+      "string": "jsdotlua/string@1.2.7",
+      "timers": "jsdotlua/timers@1.2.7",
+      "symbol-luau": "jsdotlua/symbol-luau@^1.0.0"
+    }
+  },
+  "jsdotlua/shared": {
+    "version": "17.2.1",
+    "archive_sha256": "ea39ee69ff1db5c257f417171c9f9602aec9211401848b26bb95c69b5033a1aa",
+    "dependencies": {
+      "luau-polyfill": "jsdotlua/luau-polyfill@^1.2.6"
+    }
+  },
+  "jsdotlua/react-reconciler": {
+    "version": "17.2.1",
+    "archive_sha256": "3db511072092d774f89bfa35351ffd465b6849193917ea74e4f2be54354eabc2",
+    "dependencies": {
+      "luau-polyfill": "jsdotlua/luau-polyfill@^1.2.6",
+      "promise": "jsdotlua/promise@^3.5.0",
+      "react": "jsdotlua/react@17.2.1",
+      "scheduler": "jsdotlua/scheduler@17.2.1",
+      "shared": "jsdotlua/shared@17.2.1"
+    }
+  },
+  "jsdotlua/scheduler": {
+    "version": "17.2.1",
+    "archive_sha256": "12e13054b13d5e4d218c4f3291d5ad9c11fee5d51bf5585b5a773d5d44770b7f",
+    "dependencies": {
+      "luau-polyfill": "jsdotlua/luau-polyfill@^1.2.6",
+      "shared": "jsdotlua/shared@17.2.1"
+    }
+  },
+  "jsdotlua/boolean": {
+    "version": "1.2.7",
+    "archive_sha256": "98c70f23f01c9990940aac88341a2777261ed514b72e2dc698b7b2567f49893a",
+    "dependencies": {
+      "number": "jsdotlua/number@1.2.7"
+    }
+  },
+  "jsdotlua/collections": {
+    "version": "1.2.7",
+    "archive_sha256": "2f68153e5477937466270eba55cdc4671566729b2027da9bb99e8bd22f923a42",
+    "dependencies": {
+      "es7-types": "jsdotlua/es7-types@1.2.7",
+      "instance-of": "jsdotlua/instance-of@1.2.7"
+    }
+  },
+  "jsdotlua/console": {
+    "version": "1.2.7",
+    "archive_sha256": "195bd39663c4d180ae8626d65951fe85898368a08c5849320e811c6266790838",
+    "dependencies": {
+      "collections": "jsdotlua/collections@1.2.7"
+    }
+  },
+  "jsdotlua/es7-types": {
+    "version": "1.2.7",
+    "archive_sha256": "0e05bb44297505299c024f630f5365eef874833535d693e2eb353c6bc8eb351a",
+    "dependencies": {}
+  },
+  "jsdotlua/instance-of": {
+    "version": "1.2.7",
+    "archive_sha256": "e04d09b5042799b66f5dbccb01f731d0ef76e5c80c04de11f4d4a9b44ab2177f",
+    "dependencies": {}
+  },
+  "jsdotlua/math": {
+    "version": "1.2.7",
+    "archive_sha256": "51a598d4b030ae400ac6685861efe5ad9f6708d7906944aa0e272fe26770f94d",
+    "dependencies": {}
+  },
+  "jsdotlua/number": {
+    "version": "1.2.7",
+    "archive_sha256": "2750523cf21f76e7d65f1664d6dba2a31ce7e2e385d88abcfb51ec015ee25792",
+    "dependencies": {}
+  },
+  "jsdotlua/string": {
+    "version": "1.2.7",
+    "archive_sha256": "4af04193ba54b94431f0cf4312281a6d5596967cb08c0bd30d53867053f8896b",
+    "dependencies": {
+      "es7-types": "jsdotlua/es7-types@1.2.7",
+      "number": "jsdotlua/number@1.2.7"
+    }
+  },
+  "jsdotlua/timers": {
+    "version": "1.2.7",
+    "archive_sha256": "d9b240d83db5ca835124f43d3f9c72278b0d8e70cee171a1549da83da2b2145f",
+    "dependencies": {
+      "collections": "jsdotlua/collections@1.2.7"
+    }
+  },
+  "jsdotlua/symbol-luau": {
+    "version": "1.0.1",
+    "archive_sha256": "f586cd586e16f2847a7795d82c5d369aba2277dc5df0756b6b7ef593638fd742",
+    "dependencies": {}
+  },
+  "jsdotlua/promise": {
+    "version": "3.5.0",
+    "archive_sha256": "47b53703a494816f688f2b7642403f375922dc1c75e2495a5aa824a6ac1f816c",
+    "dependencies": {}
+  }
+}

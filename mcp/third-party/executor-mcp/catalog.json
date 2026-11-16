@@ -1,0 +1,1461 @@
+{
+  "revision": "367e5e15a0661b2309088cc77377bff47254c939",
+  "registered": 291,
+  "tools": [
+    {
+      "upstream": "list-clients",
+      "dex": "dex_list_sessions",
+      "status": "native"
+    },
+    {
+      "upstream": "select-client",
+      "dex": "dex_select_client",
+      "status": "imported"
+    },
+    {
+      "upstream": "clear-selection",
+      "dex": "dex_clear_selection",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-active-client",
+      "dex": "dex_get_active_client",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-players",
+      "dex": "dex_list_players",
+      "status": "native"
+    },
+    {
+      "upstream": "get-local-player-info",
+      "dex": "dex_get_character_state",
+      "status": "native"
+    },
+    {
+      "upstream": "discover-character",
+      "dex": "dex_get_character_state",
+      "status": "native"
+    },
+    {
+      "upstream": "get-place-details",
+      "dex": "dex_get_session",
+      "status": "native"
+    },
+    {
+      "upstream": "run-luau",
+      "dex": "dex_run_luau",
+      "status": "native"
+    },
+    {
+      "upstream": "eval-expression",
+      "dex": "dex_eval_expression",
+      "status": "imported"
+    },
+    {
+      "upstream": "execute",
+      "dex": "dex_run_luau",
+      "status": "native"
+    },
+    {
+      "upstream": "execute-and-wait",
+      "dex": "dex_run_luau",
+      "status": "native"
+    },
+    {
+      "upstream": "batch-execute",
+      "dex": "dex_batch_execute",
+      "status": "imported"
+    },
+    {
+      "upstream": "profile-code",
+      "dex": "dex_profile_code",
+      "status": "imported"
+    },
+    {
+      "upstream": "measure-memory",
+      "dex": "dex_measure_memory",
+      "status": "imported"
+    },
+    {
+      "upstream": "run-loop",
+      "dex": "dex_run_loop",
+      "status": "imported"
+    },
+    {
+      "upstream": "run-deferred",
+      "dex": "dex_run_deferred",
+      "status": "imported"
+    },
+    {
+      "upstream": "run-with-timeout",
+      "dex": "dex_run_with_timeout",
+      "status": "imported"
+    },
+    {
+      "upstream": "execute-file",
+      "dex": "dex_load_file",
+      "status": "native"
+    },
+    {
+      "upstream": "script",
+      "dex": "dex_script",
+      "status": "imported"
+    },
+    {
+      "upstream": "script-fanout",
+      "dex": "dex_script_fanout",
+      "status": "imported"
+    },
+    {
+      "upstream": "vm-reset",
+      "dex": "dex_vm_reset",
+      "status": "imported"
+    },
+    {
+      "upstream": "playbook-save",
+      "dex": "dex_playbook_save",
+      "status": "imported"
+    },
+    {
+      "upstream": "playbook-list",
+      "dex": "dex_playbook_list",
+      "status": "imported"
+    },
+    {
+      "upstream": "playbook-run",
+      "dex": "dex_playbook_run",
+      "status": "imported"
+    },
+    {
+      "upstream": "playbook-delete",
+      "dex": "dex_playbook_delete",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-executor-info",
+      "dex": "dex_get_executor_info",
+      "status": "native"
+    },
+    {
+      "upstream": "get-game-info",
+      "dex": "dex_get_session",
+      "status": "native"
+    },
+    {
+      "upstream": "test-capabilities",
+      "dex": "dex_test_capabilities",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-anticheat-surfaces",
+      "dex": "dex_get_anticheat_surfaces",
+      "status": "imported"
+    },
+    {
+      "upstream": "execution-footprint-audit",
+      "dex": "dex_execution_footprint_audit",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-instance-counts",
+      "dex": "dex_get_instance_counts",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-memory-stats",
+      "dex": "dex_get_runtime_stats",
+      "status": "native"
+    },
+    {
+      "upstream": "get-render-stats",
+      "dex": "dex_get_runtime_stats",
+      "status": "native"
+    },
+    {
+      "upstream": "bridge-status",
+      "dex": "dex_list_sessions",
+      "status": "native"
+    },
+    {
+      "upstream": "get-connector-diagnostics",
+      "dex": "dex_get_connector_diagnostics",
+      "status": "imported"
+    },
+    {
+      "upstream": "session-list",
+      "dex": "dex_list_sessions",
+      "status": "native"
+    },
+    {
+      "upstream": "session-show",
+      "dex": "dex_session_show",
+      "status": "imported"
+    },
+    {
+      "upstream": "session-replay",
+      "dex": "dex_session_replay",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-instance-tree",
+      "dex": "dex_get_tree",
+      "status": "native"
+    },
+    {
+      "upstream": "get-instance-properties",
+      "dex": "dex_get_properties",
+      "status": "native"
+    },
+    {
+      "upstream": "get-script-content",
+      "dex": "dex_read_script",
+      "status": "native"
+    },
+    {
+      "upstream": "get-console-output",
+      "dex": "dex_get_logs",
+      "status": "native"
+    },
+    {
+      "upstream": "search-instances",
+      "dex": "dex_find_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "script-grep",
+      "dex": "dex_script_grep",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-attributes",
+      "dex": "dex_get_attributes",
+      "status": "native"
+    },
+    {
+      "upstream": "verify-path-exists",
+      "dex": "dex_verify_path_exists",
+      "status": "imported"
+    },
+    {
+      "upstream": "watch-instance-property",
+      "dex": "dex_watch_instance",
+      "status": "native"
+    },
+    {
+      "upstream": "list-instance-signals",
+      "dex": "dex_list_instance_signals",
+      "status": "imported"
+    },
+    {
+      "upstream": "trace-connection-function",
+      "dex": "dex_trace_connection_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "diff-instance-snapshot",
+      "dex": "dex_compare_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "discover-player-values",
+      "dex": "dex_discover_player_values",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-signal-connections",
+      "dex": "dex_list_signal_connections",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-connection-info",
+      "dex": "dex_get_connection_info",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-signal-arguments",
+      "dex": "dex_get_signal_arguments",
+      "status": "imported"
+    },
+    {
+      "upstream": "count-signal-connections",
+      "dex": "dex_count_signal_connections",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-connection-constants",
+      "dex": "dex_get_connection_constants",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-signal-arguments-info",
+      "dex": "dex_get_signal_arguments_info",
+      "status": "imported"
+    },
+    {
+      "upstream": "replicate-signal",
+      "dex": "dex_replicate_signal",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-instances-with-connections",
+      "dex": "dex_find_instances_with_connections",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-connection-upvalues",
+      "dex": "dex_get_connection_upvalues",
+      "status": "imported"
+    },
+    {
+      "upstream": "can-signal-replicate",
+      "dex": "dex_can_signal_replicate",
+      "status": "imported"
+    },
+    {
+      "upstream": "fire-connection",
+      "dex": "dex_fire_connection",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-connection-protos",
+      "dex": "dex_get_connection_protos",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-connections-by-source",
+      "dex": "dex_scan_connections_by_source",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-connection-state",
+      "dex": "dex_set_connection_state",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-signal-whitelist",
+      "dex": "dex_get_signal_whitelist",
+      "status": "imported"
+    },
+    {
+      "upstream": "fire-signal",
+      "dex": "dex_fire_signal",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-metatable",
+      "dex": "dex_get_metatable",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-metamethod",
+      "dex": "dex_get_metamethod",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-readonly",
+      "dex": "dex_is_readonly",
+      "status": "imported"
+    },
+    {
+      "upstream": "compare-instances",
+      "dex": "dex_compare_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "set-metatable-readonly",
+      "dex": "dex_set_metatable_readonly",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-rawmetatable",
+      "dex": "dex_set_rawmetatable",
+      "status": "imported"
+    },
+    {
+      "upstream": "hook-metamethod",
+      "dex": "dex_hook_metamethod",
+      "status": "imported"
+    },
+    {
+      "upstream": "inspect-closure",
+      "dex": "dex_inspect_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-closure-constants",
+      "dex": "dex_get_closure_constants",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-closure-upvalues",
+      "dex": "dex_get_closure_upvalues",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-closure-protos",
+      "dex": "dex_get_closure_protos",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-script-closure",
+      "dex": "dex_get_script_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-closure-upvalue",
+      "dex": "dex_set_closure_upvalue",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-closure-constant",
+      "dex": "dex_set_closure_constant",
+      "status": "imported"
+    },
+    {
+      "upstream": "hook-function",
+      "dex": "dex_hook_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-script-env",
+      "dex": "dex_get_script_env",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-function-env",
+      "dex": "dex_get_function_env",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-hooks",
+      "dex": "dex_list_hooks",
+      "status": "imported"
+    },
+    {
+      "upstream": "restore-hook",
+      "dex": "dex_restore_hook",
+      "status": "imported"
+    },
+    {
+      "upstream": "closure-capabilities",
+      "dex": "dex_closure_capabilities",
+      "status": "imported"
+    },
+    {
+      "upstream": "check-caller",
+      "dex": "dex_check_caller",
+      "status": "imported"
+    },
+    {
+      "upstream": "clone-function",
+      "dex": "dex_clone_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-function-hash",
+      "dex": "dex_get_function_hash",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-c-closure",
+      "dex": "dex_is_c_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-l-closure",
+      "dex": "dex_is_l_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-executor-closure",
+      "dex": "dex_is_executor_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-function-hooked",
+      "dex": "dex_is_function_hooked",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-new-c-closure",
+      "dex": "dex_is_new_c_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "new-c-closure",
+      "dex": "dex_new_c_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "new-l-closure",
+      "dex": "dex_new_l_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "restore-function",
+      "dex": "dex_restore_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-stack-hidden",
+      "dex": "dex_set_stack_hidden",
+      "status": "imported"
+    },
+    {
+      "upstream": "invoke-closure",
+      "dex": "dex_invoke_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-function-env",
+      "dex": "dex_set_function_env",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-closure-references",
+      "dex": "dex_list_closure_references",
+      "status": "imported"
+    },
+    {
+      "upstream": "release-closure-reference",
+      "dex": "dex_release_closure_reference",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-strings",
+      "dex": "dex_list_strings",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-string-xrefs",
+      "dex": "dex_find_string_xrefs",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-global-xrefs",
+      "dex": "dex_find_global_xrefs",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-functions-by-complexity",
+      "dex": "dex_find_functions_by_complexity",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-function-xrefs",
+      "dex": "dex_find_function_xrefs",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-instance-xrefs",
+      "dex": "dex_find_instance_xrefs",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-remote-xrefs",
+      "dex": "dex_find_remote_xrefs",
+      "status": "imported"
+    },
+    {
+      "upstream": "build-call-graph",
+      "dex": "dex_build_call_graph",
+      "status": "imported"
+    },
+    {
+      "upstream": "disassemble-function",
+      "dex": "dex_disassemble_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-duplicate-functions",
+      "dex": "dex_find_duplicate_functions",
+      "status": "imported"
+    },
+    {
+      "upstream": "search-bytecode",
+      "dex": "dex_search_bytecode",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-upvalue-sharing",
+      "dex": "dex_find_upvalue_sharing",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-gc-tables",
+      "dex": "dex_list_gc_tables",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-gc-threads",
+      "dex": "dex_list_gc_threads",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-registry-objects",
+      "dex": "dex_list_registry_objects",
+      "status": "imported"
+    },
+    {
+      "upstream": "inspect-instance-metatable",
+      "dex": "dex_inspect_instance_metatable",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-runtime-modules",
+      "dex": "dex_list_runtime_modules",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-module-scripts",
+      "dex": "dex_find_module_scripts",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-module-source",
+      "dex": "dex_get_module_source",
+      "status": "imported"
+    },
+    {
+      "upstream": "trace-require-callers",
+      "dex": "dex_trace_require_callers",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-event-connections",
+      "dex": "dex_find_event_connections",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-remote-listeners",
+      "dex": "dex_scan_remote_listeners",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-constants-xref",
+      "dex": "dex_find_constants_xref",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-upvalue-xref",
+      "dex": "dex_find_upvalue_xref",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-proto-functions",
+      "dex": "dex_scan_proto_functions",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-function-protos",
+      "dex": "dex_get_function_protos",
+      "status": "imported"
+    },
+    {
+      "upstream": "dump-function-env",
+      "dex": "dex_dump_function_env",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-global-env-keys",
+      "dex": "dex_list_global_env_keys",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-hook-surfaces",
+      "dex": "dex_scan_hook_surfaces",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-network-endpoints",
+      "dex": "dex_scan_network_endpoints",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-path-references",
+      "dex": "dex_find_path_references",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-script-actors",
+      "dex": "dex_list_script_actors",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-bytecode-size-outliers",
+      "dex": "dex_find_bytecode_size_outliers",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-closures-by-source",
+      "dex": "dex_scan_closures_by_source",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-closures-by-name",
+      "dex": "dex_scan_closures_by_name",
+      "status": "imported"
+    },
+    {
+      "upstream": "summarize-runtime-surfaces",
+      "dex": "dex_summarize_runtime_surfaces",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-gc-functions",
+      "dex": "dex_list_gc_functions",
+      "status": "imported"
+    },
+    {
+      "upstream": "lookup-function",
+      "dex": "dex_lookup_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-function-upvalues",
+      "dex": "dex_get_function_upvalues",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-functions-by-constant",
+      "dex": "dex_find_functions_by_constant",
+      "status": "imported"
+    },
+    {
+      "upstream": "compare-gc-snapshots",
+      "dex": "dex_compare_gc_snapshots",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-instance-property",
+      "dex": "dex_set_properties",
+      "status": "native"
+    },
+    {
+      "upstream": "set-attribute",
+      "dex": "dex_set_attributes",
+      "status": "native"
+    },
+    {
+      "upstream": "set-properties-bulk",
+      "dex": "dex_set_properties",
+      "status": "native"
+    },
+    {
+      "upstream": "create-instance",
+      "dex": "dex_create_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "clone-instance",
+      "dex": "dex_duplicate_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "destroy-instance",
+      "dex": "dex_delete_instances",
+      "status": "native"
+    },
+    {
+      "upstream": "invoke-method",
+      "dex": "dex_invoke_method",
+      "status": "imported"
+    },
+    {
+      "upstream": "fire-remote",
+      "dex": "dex_fire_remote",
+      "status": "native"
+    },
+    {
+      "upstream": "dump-table",
+      "dex": "dex_dump_table",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-thread-stack",
+      "dex": "dex_get_thread_stack",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-gui-elements",
+      "dex": "dex_list_gui_elements",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-gui-text",
+      "dex": "dex_get_gui_text",
+      "status": "native"
+    },
+    {
+      "upstream": "set-gui-text",
+      "dex": "dex_set_gui_text",
+      "status": "native"
+    },
+    {
+      "upstream": "click-button",
+      "dex": "dex_click_button",
+      "status": "native"
+    },
+    {
+      "upstream": "type-text-box",
+      "dex": "dex_type_text_box",
+      "status": "native"
+    },
+    {
+      "upstream": "fire-proximity-prompt",
+      "dex": "dex_fire_proximity_prompt",
+      "status": "native"
+    },
+    {
+      "upstream": "fire-click-detector",
+      "dex": "dex_fire_click_detector",
+      "status": "native"
+    },
+    {
+      "upstream": "press-key",
+      "dex": "dex_press_key",
+      "status": "imported"
+    },
+    {
+      "upstream": "virtual-input",
+      "dex": "dex_virtual_input",
+      "status": "imported"
+    },
+    {
+      "upstream": "camera-control",
+      "dex": "dex_set_camera",
+      "status": "native"
+    },
+    {
+      "upstream": "list-remotes",
+      "dex": "dex_list_remotes",
+      "status": "native"
+    },
+    {
+      "upstream": "get-remote-signature",
+      "dex": "dex_get_remote_signature",
+      "status": "imported"
+    },
+    {
+      "upstream": "monitor-remote",
+      "dex": "dex_watch_remote",
+      "status": "native"
+    },
+    {
+      "upstream": "trace-remote-traffic",
+      "dex": "dex_get_remote_events",
+      "status": "native"
+    },
+    {
+      "upstream": "inspect-callbacks",
+      "dex": "dex_inspect_callbacks",
+      "status": "imported"
+    },
+    {
+      "upstream": "ensure-remote-spy",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "get-remote-spy-logs",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "clear-remote-spy-logs",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "block-remote",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "ignore-remote",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "remote-spy",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "configure-remote-spy",
+      "dex": null,
+      "status": "excluded"
+    },
+    {
+      "upstream": "hook-and-log-function",
+      "dex": "dex_hook_and_log_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "call-closure",
+      "dex": "dex_call_closure",
+      "status": "imported"
+    },
+    {
+      "upstream": "count-function-calls",
+      "dex": "dex_count_function_calls",
+      "status": "imported"
+    },
+    {
+      "upstream": "spoof-function-return",
+      "dex": "dex_spoof_function_return",
+      "status": "imported"
+    },
+    {
+      "upstream": "block-function",
+      "dex": "dex_block_function",
+      "status": "imported"
+    },
+    {
+      "upstream": "trace-call-durations",
+      "dex": "dex_trace_call_durations",
+      "status": "imported"
+    },
+    {
+      "upstream": "capture-log-output",
+      "dex": "dex_get_logs",
+      "status": "native"
+    },
+    {
+      "upstream": "watch-property-changes",
+      "dex": "dex_watch_instance",
+      "status": "native"
+    },
+    {
+      "upstream": "find-hidden-scripts",
+      "dex": "dex_find_hidden_scripts",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-actors",
+      "dex": "dex_list_actors",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-nil-instances",
+      "dex": "dex_get_nil_instances",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-running-scripts",
+      "dex": "dex_find_running_scripts",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-hidden-instances",
+      "dex": "dex_find_hidden_instances",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-hidden-guis",
+      "dex": "dex_find_hidden_guis",
+      "status": "imported"
+    },
+    {
+      "upstream": "summarize-hidden-surfaces",
+      "dex": "dex_summarize_hidden_surfaces",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-hidden-remotes",
+      "dex": "dex_find_hidden_remotes",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-actor-details",
+      "dex": "dex_get_actor_details",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-detached-instances",
+      "dex": "dex_find_detached_instances",
+      "status": "imported"
+    },
+    {
+      "upstream": "actor-capabilities",
+      "dex": "dex_actor_capabilities",
+      "status": "imported"
+    },
+    {
+      "upstream": "run-on-actor",
+      "dex": "dex_run_on_actor",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-lua-state",
+      "dex": "dex_get_lua_state",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-game-state",
+      "dex": "dex_get_game_state",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-lua-states",
+      "dex": "dex_list_lua_states",
+      "status": "imported"
+    },
+    {
+      "upstream": "new-lua-state-proxy",
+      "dex": "dex_new_lua_state_proxy",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-lua-state-actors",
+      "dex": "dex_get_lua_state_actors",
+      "status": "imported"
+    },
+    {
+      "upstream": "execute-lua-state",
+      "dex": "dex_execute_lua_state",
+      "status": "imported"
+    },
+    {
+      "upstream": "fire-lua-state-event",
+      "dex": "dex_fire_lua_state_event",
+      "status": "imported"
+    },
+    {
+      "upstream": "is-parallel-context",
+      "dex": "dex_is_parallel_context",
+      "status": "imported"
+    },
+    {
+      "upstream": "create-comm-channel",
+      "dex": "dex_create_comm_channel",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-comm-channel",
+      "dex": "dex_get_comm_channel",
+      "status": "imported"
+    },
+    {
+      "upstream": "fire-comm-channel",
+      "dex": "dex_fire_comm_channel",
+      "status": "imported"
+    },
+    {
+      "upstream": "actor-event-monitor",
+      "dex": "dex_actor_event_monitor",
+      "status": "imported"
+    },
+    {
+      "upstream": "comm-channel-monitor",
+      "dex": "dex_comm_channel_monitor",
+      "status": "imported"
+    },
+    {
+      "upstream": "lua-state-event-monitor",
+      "dex": "dex_lua_state_event_monitor",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-tables-by-key",
+      "dex": "dex_find_tables_by_key",
+      "status": "imported"
+    },
+    {
+      "upstream": "scan-number-range",
+      "dex": "dex_scan_number_range",
+      "status": "imported"
+    },
+    {
+      "upstream": "read-path-value",
+      "dex": "dex_read_path_value",
+      "status": "imported"
+    },
+    {
+      "upstream": "write-path-value",
+      "dex": "dex_write_path_value",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-table-references",
+      "dex": "dex_find_table_references",
+      "status": "imported"
+    },
+    {
+      "upstream": "find-string-in-tables",
+      "dex": "dex_find_string_in_tables",
+      "status": "imported"
+    },
+    {
+      "upstream": "search-gc-value",
+      "dex": "dex_search_gc_value",
+      "status": "imported"
+    },
+    {
+      "upstream": "watch-value",
+      "dex": "dex_watch_value",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-roblox-windows",
+      "dex": "dex_list_roblox_windows",
+      "status": "imported"
+    },
+    {
+      "upstream": "screenshot-window",
+      "dex": "dex_capture_screenshot",
+      "status": "native"
+    },
+    {
+      "upstream": "semantic-search-scripts",
+      "dex": "dex_semantic_search_scripts",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-semantic-index-stats",
+      "dex": "dex_get_semantic_index_stats",
+      "status": "imported"
+    },
+    {
+      "upstream": "clear-semantic-index",
+      "dex": "dex_clear_semantic_index",
+      "status": "imported"
+    },
+    {
+      "upstream": "read-file",
+      "dex": "dex_read_file",
+      "status": "native"
+    },
+    {
+      "upstream": "write-file",
+      "dex": "dex_write_file",
+      "status": "native"
+    },
+    {
+      "upstream": "append-file",
+      "dex": "dex_append_file",
+      "status": "native"
+    },
+    {
+      "upstream": "list-files",
+      "dex": "dex_list_files",
+      "status": "native"
+    },
+    {
+      "upstream": "make-folder",
+      "dex": "dex_make_folder",
+      "status": "native"
+    },
+    {
+      "upstream": "delete-file",
+      "dex": "dex_delete_file",
+      "status": "native"
+    },
+    {
+      "upstream": "delete-folder",
+      "dex": "dex_delete_folder",
+      "status": "native"
+    },
+    {
+      "upstream": "file-exists",
+      "dex": "dex_file_exists",
+      "status": "native"
+    },
+    {
+      "upstream": "load-file",
+      "dex": "dex_load_file",
+      "status": "native"
+    },
+    {
+      "upstream": "get-custom-asset",
+      "dex": "dex_get_custom_asset",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-base64-encode",
+      "dex": "dex_crypt_base64_encode",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-base64-decode",
+      "dex": "dex_crypt_base64_decode",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-hash",
+      "dex": "dex_crypt_hash",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-encrypt",
+      "dex": "dex_crypt_encrypt",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-decrypt",
+      "dex": "dex_crypt_decrypt",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-generate-key",
+      "dex": "dex_crypt_generate_key",
+      "status": "native"
+    },
+    {
+      "upstream": "crypt-generate-bytes",
+      "dex": "dex_crypt_generate_bytes",
+      "status": "native"
+    },
+    {
+      "upstream": "draw-create",
+      "dex": "dex_draw_create",
+      "status": "native"
+    },
+    {
+      "upstream": "draw-update",
+      "dex": "dex_draw_update",
+      "status": "native"
+    },
+    {
+      "upstream": "draw-remove",
+      "dex": "dex_draw_remove",
+      "status": "native"
+    },
+    {
+      "upstream": "draw-clear",
+      "dex": "dex_draw_clear",
+      "status": "native"
+    },
+    {
+      "upstream": "list-drawings",
+      "dex": "dex_list_drawings",
+      "status": "native"
+    },
+    {
+      "upstream": "filter-gc",
+      "dex": "dex_filter_gc",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-call-stack",
+      "dex": "dex_get_call_stack",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-stack",
+      "dex": "dex_get_stack",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-hidden-ui",
+      "dex": "dex_get_hidden_ui",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-rendered-instances",
+      "dex": "dex_list_rendered_instances",
+      "status": "imported"
+    },
+    {
+      "upstream": "cache-invalidate",
+      "dex": "dex_cache_invalidate",
+      "status": "imported"
+    },
+    {
+      "upstream": "cache-is-cached",
+      "dex": "dex_cache_is_cached",
+      "status": "imported"
+    },
+    {
+      "upstream": "cache-replace",
+      "dex": "dex_cache_replace",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-script-bytecode",
+      "dex": "dex_get_script_bytecode",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-script-hash",
+      "dex": "dex_get_script_hash",
+      "status": "imported"
+    },
+    {
+      "upstream": "packet-spy",
+      "dex": "dex_packet_spy",
+      "status": "imported"
+    },
+    {
+      "upstream": "send-packet",
+      "dex": "dex_send_packet",
+      "status": "imported"
+    },
+    {
+      "upstream": "block-packets",
+      "dex": "dex_block_packets",
+      "status": "imported"
+    },
+    {
+      "upstream": "http-request",
+      "dex": "dex_http_request",
+      "status": "imported"
+    },
+    {
+      "upstream": "ws-connect",
+      "dex": "dex_ws_connect",
+      "status": "imported"
+    },
+    {
+      "upstream": "ws-send",
+      "dex": "dex_ws_send",
+      "status": "imported"
+    },
+    {
+      "upstream": "ws-receive",
+      "dex": "dex_ws_receive",
+      "status": "imported"
+    },
+    {
+      "upstream": "ws-close",
+      "dex": "dex_ws_close",
+      "status": "imported"
+    },
+    {
+      "upstream": "ws-list",
+      "dex": "dex_ws_list",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-fast-flag",
+      "dex": "dex_get_fast_flag",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-fast-flag",
+      "dex": "dex_set_fast_flag",
+      "status": "imported"
+    },
+    {
+      "upstream": "get-fps-cap",
+      "dex": "dex_get_fps_cap",
+      "status": "native"
+    },
+    {
+      "upstream": "set-fps-cap",
+      "dex": "dex_set_fps_cap",
+      "status": "native"
+    },
+    {
+      "upstream": "get-hwid",
+      "dex": "dex_get_hwid",
+      "status": "imported"
+    },
+    {
+      "upstream": "set-clipboard",
+      "dex": "dex_set_clipboard",
+      "status": "native"
+    },
+    {
+      "upstream": "queue-on-teleport",
+      "dex": "dex_queue_on_teleport",
+      "status": "imported"
+    },
+    {
+      "upstream": "clear-queue-on-teleport",
+      "dex": "dex_clear_queue_on_teleport",
+      "status": "imported"
+    },
+    {
+      "upstream": "save-instance",
+      "dex": "dex_save_instance",
+      "status": "imported"
+    },
+    {
+      "upstream": "message-box",
+      "dex": "dex_message_box",
+      "status": "imported"
+    },
+    {
+      "upstream": "tool-schema",
+      "dex": "dex_tool_schema",
+      "status": "native"
+    },
+    {
+      "upstream": "tool-plan",
+      "dex": "dex_tool_plan",
+      "status": "imported"
+    },
+    {
+      "upstream": "agent-context",
+      "dex": "dex_agent_context",
+      "status": "imported"
+    },
+    {
+      "upstream": "agent-run",
+      "dex": "dex_agent_run",
+      "status": "imported"
+    },
+    {
+      "upstream": "agent-memory",
+      "dex": "dex_agent_memory",
+      "status": "imported"
+    },
+    {
+      "upstream": "tool-quality-audit",
+      "dex": "dex_tool_quality_audit",
+      "status": "imported"
+    },
+    {
+      "upstream": "observe-world",
+      "dex": "dex_observe_world",
+      "status": "imported"
+    },
+    {
+      "upstream": "resolve-entity",
+      "dex": "dex_resolve_entity",
+      "status": "imported"
+    },
+    {
+      "upstream": "smart-task",
+      "dex": "dex_smart_task",
+      "status": "imported"
+    },
+    {
+      "upstream": "assert-state",
+      "dex": "dex_assert_state",
+      "status": "imported"
+    },
+    {
+      "upstream": "explain-failure",
+      "dex": "dex_explain_failure",
+      "status": "imported"
+    },
+    {
+      "upstream": "state-transaction",
+      "dex": "dex_state_transaction",
+      "status": "imported"
+    },
+    {
+      "upstream": "teach-mode",
+      "dex": "dex_teach_mode",
+      "status": "imported"
+    },
+    {
+      "upstream": "world-delta",
+      "dex": "dex_world_delta",
+      "status": "imported"
+    },
+    {
+      "upstream": "list-tools",
+      "dex": "dex_list_tools",
+      "status": "native"
+    },
+    {
+      "upstream": "suggest-tools",
+      "dex": "dex_suggest_tools",
+      "status": "native"
+    }
+  ]
+}
