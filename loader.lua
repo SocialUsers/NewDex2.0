@@ -1,7 +1,7 @@
 --!strict
 
 -- Dex Explorer: modules are pinned to a single tested source commit.
-local ref="initial-release"
+local ref="4da6de325158442904c5ab5017482f496bd434f6"
 local base="https://raw.githubusercontent.com/wooxps/dex-explorer/"..ref.."/"
 local path="dex/runtime/"..ref..".lua"
 local chunk
