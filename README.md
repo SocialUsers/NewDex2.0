@@ -5,17 +5,19 @@
 <p align="center">An in-game Explorer for Roblox</p>
 
 <p align="center">
+  <a href="https://luau.org/"><img src="https://img.shields.io/badge/language-Luau-5e6ad2?style=flat-square" alt="Language: Luau"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="License: MIT"></a>
+  <a href="https://github.com/wooxps/dex-explorer/issues/new"><img src="https://img.shields.io/badge/GitHub-report%20an%20issue-64748b?style=flat-square&amp;logo=github" alt="Report an issue"></a>
+</p>
+
+<p align="center">
   <a href="#run-dex"><strong>Run Dex</strong></a>
   &nbsp;·&nbsp;
   <a href="#tools">Tools</a>
   &nbsp;·&nbsp;
   <a href="#performance">Performance</a>
   &nbsp;·&nbsp;
-  <a href="docs/mcp/SETUP.md">Dex MCP</a>
-  &nbsp;·&nbsp;
-  <a href="docs/PLUGINS.md">Plugins</a>
-  &nbsp;·&nbsp;
-  <a href="BUILDING.md">Build from source</a>
+  <a href="#guides">Guides</a>
 </p>
 
 ## Run Dex
@@ -27,7 +29,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 ```
 
 <p align="center">
-  <img src="docs/explorer-preview.webp" width="760" alt="Dex Explorer showing search results and properties for a selected pumpkin in Roblox">
+  <a href="docs/explorer-preview.webp">
+    <img src="docs/explorer-preview.webp" width="760" alt="Dex Explorer showing search results and properties for a selected pumpkin in Roblox">
+  </a>
 </p>
 
 ## Tools
@@ -48,11 +52,11 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 </details>
 
-## Plugins and Dex MCP
+## Guides
 
-[Plugins](docs/PLUGINS.md) can add buttons, windows, shortcuts, and right-click actions to Dex.
-
-[Dex MCP](docs/mcp/SETUP.md) connects Dex to Codex or another MCP client. The **Commands** tab lets you turn tools on or off. **Activity** shows what ran and what it returned.
+- [Plugins](docs/PLUGINS.md) for adding buttons, windows, shortcuts, and right-click actions to Dex.
+- [Dex MCP](docs/mcp/SETUP.md) for connecting Codex or another MCP client. Use **Commands** to choose which tools it can call and **Activity** to see what they returned.
+- [Build from source](BUILDING.md) for building and testing Dex locally.
 
 Script source, file saves, and input playback depend on your executor.
 
@@ -67,9 +71,9 @@ Script source, file saves, and input playback depend on your executor.
 <details>
 <summary>Test details</summary>
 
-Median of three runs on an Intel i7-12700H. The tests use sample data and measure time spent in the search, filter, and highlighting code.
+The first search, asset filters, and script highlighting times are medians of three runs on sample data, on an Intel i7-12700H.
 
-The repeat-search comparison used Moon's Dex's plain name search and Dex Explorer's saved results on the same unchanged tree. Median over five batches was 126 ms per search in Moon's Dex and 0.04 ms in Dex Explorer.
+The repeat search used the same unchanged tree in both versions. Moon's Dex took 126 ms per search. Dex Explorer reused the previous results in 0.04 ms. Both figures are medians of five batches.
 
 - [Object search](tests/search_engine.spec.luau)
 - [Asset filters](tests/asset_query.spec.luau)
