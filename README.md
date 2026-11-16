@@ -1,23 +1,35 @@
-# Dex Explorer
+<h1 align="center">Dex Explorer</h1>
 
-Dex is an in-game Explorer for Roblox. Browse objects, edit properties, and open the tool menu for script search, asset previews, and input macros.
+<p align="center">An in-game Explorer and toolkit for Roblox.</p>
+
+<p align="center">
+  <a href="#run-dex">Run Dex</a> ·
+  <a href="docs/mcp/SETUP.md">Dex MCP</a> ·
+  <a href="docs/PLUGINS.md">Plugins</a> ·
+  <a href="BUILDING.md">Build from source</a>
+</p>
 
 ## Run Dex
 
-Run this in your executor.
+Paste this into your executor while Roblox is open.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/main/loader.lua"))()
 ```
 
-### Build locally
+## Tools
 
-From this folder, run `python build.py build`. Open the file printed by the build in your executor. To find it again, run `python build.py output`.
+- **Explorer and Properties** to browse the hierarchy, select objects, and edit their properties.
+- **Script Editor and Find in Place** to read scripts and jump to search results.
+- **Asset Manager and 3D Viewer** to browse assets and preview objects.
+- **Input Macros** to record and replay input.
 
-## Guides
+Open the Dex menu to switch tools. Right-click an object in Explorer to see its actions.
 
-- [Dex MCP setup](docs/mcp/SETUP.md)
-- [Install or write a plugin](docs/PLUGINS.md)
-- [Build and test Dex](BUILDING.md)
+## Build locally
+
+Run `python build.py build` from the repo folder. The command prints the path to the file you can run locally. See the [build guide](BUILDING.md) for setup and tests.
+
+## Credits
 
 Based on [Dex++ by Chillz](https://github.com/AZYsGithub/DexPlusPlus) and [Moon's Dex](https://github.com/LorekeeperZinnia/Dex). [MIT license](LICENSE).
