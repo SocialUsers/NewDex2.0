@@ -30,46 +30,50 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
   <img src="docs/explorer-preview.webp" width="760" alt="Dex Explorer showing search results and properties for a selected pumpkin in Roblox">
 </p>
 
-## What changed
-
-Explorer reuses rows when you scroll through large search results. Docked windows keep their layout when you reopen Dex.
-
-The Script Editor has Luau autocomplete and shows types on hover. Ctrl-click jumps to a definition, and the editor indents code as you type or paste.
-
 ## Tools
 
-- **Explorer and Properties.** Find objects by name, class, tag, or property. For example, `is:BasePart and Anchored=false` finds unanchored parts. Select several objects to edit their properties together.
-- **Find in Place.** Search across scripts and click a result to jump to that line. Replace All edits the matching text in the editor tabs.
-- **Console.** Filter client logs or run a Luau command.
-- **Asset Manager and 3D Viewer.** Preview images, sounds, meshes, and animations. See which objects use an asset or open a model in its own 3D view.
-- **Input Macros.** Record keyboard and mouse input. Edit the timing, change the speed, or play it on a loop. **F8** stops it.
+- **Explorer and Properties** let you search for objects and edit several at once. Try `is:BasePart and Anchored=false` to find unanchored parts.
+- **Script Editor** has Luau autocomplete and shows types when you hover over code. Ctrl-click a name to jump to its definition.
+- **Find in Place** searches across scripts. Click a result to go to that line, or use **Replace All** to edit matches in the editor.
+- **Asset Manager** previews images, sounds, meshes, and animations and shows where they're used. Open a model in **3D Viewer** to see it on its own.
+- **Console** shows client logs and has a Luau command bar.
+- **Input Macros** record and replay keyboard and mouse input. Change the speed, edit delays, or loop the recording. Press **F8** to stop.
 
 <details>
 <summary>More tools</summary>
 
-- Pick a part or UI element on screen to find it in Explorer. Use the transform handles to move, rotate, or resize it.
-- Right-click an object to find references or watch changes to its properties, attributes, and children.
-- Use **Save Instance** to export objects, or **Reconstructor** to review inferred paths and the evidence behind them.
+- Pick a part or UI element to select it in Explorer. Move, rotate, or resize it with the transform handles.
+- Right-click an object to find references to it or watch it for changes.
+- **Save Instance** exports objects to a file. **Reconstructor** shows inferred paths and where they came from.
 
 </details>
 
 ## Plugins and Dex MCP
 
-[Plugins](docs/PLUGINS.md) can add buttons to the Dex menu, open their own windows, and add shortcuts or right-click actions.
+[Plugins](docs/PLUGINS.md) can add buttons, windows, shortcuts, and right-click actions to Dex.
 
-[Dex MCP](docs/mcp/SETUP.md) lets you use Dex from Codex or another MCP client. You can turn off individual commands and see the result of each call in **Activity**.
+[Dex MCP](docs/mcp/SETUP.md) connects Dex to Codex or another MCP client. The **Commands** tab lets you turn tools on or off. **Activity** shows what ran and what it returned.
 
 Script source, file saves, and input playback depend on your executor.
 
 ## Performance
 
-Median of three Luau CLI runs on an Intel i7-12700H using test data.
-
-| Test | Time |
+| Feature | Result |
 | :--- | :--- |
-| Explorer search with 70,000 matches | **1.55 s** CPU time on the first search, **0.1 ms** for the exact same query again. [Test](tests/search_engine.spec.luau) |
-| Eight filters in a 20,000-asset list | **1,193 ms → 61 ms** with cached sort order, about **20× faster** than sorting again for each filter. [Test](tests/asset_query.spec.luau) |
-| Syntax highlighting for 10 edits in a 10,000-line script | **205 ms** for full highlighting passes, **0.03 ms** for incremental updates. [Test](tests/editor_highlight_checks.py) |
+| **Finding objects** | **1.6 seconds** to find 70,000 matches. **Under 1 ms** to repeat the same search. |
+| **Filtering assets** | Eight filter changes on 20,000 assets took **0.06 seconds** with the list already sorted and **1.2 seconds** when sorting it each time. |
+| **Editing long scripts** | Updating code colors for ten edits in a 10,000-line script took **under 1 ms** total. Coloring the whole file after each edit took about **0.2 seconds**. |
+
+<details>
+<summary>Test details</summary>
+
+Median of three runs on an Intel i7-12700H. The tests use sample data and measure time spent in the search, filter, and highlighting code.
+
+- [Object search](tests/search_engine.spec.luau)
+- [Asset filters](tests/asset_query.spec.luau)
+- [Script highlighting](tests/editor_highlight_checks.py)
+
+</details>
 
 ## Credits
 
