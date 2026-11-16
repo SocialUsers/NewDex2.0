@@ -8,8 +8,14 @@ do
 	fixture.Name = "ServiceVisibilityAudit"
 	local child = Instance.new("Folder", fixture)
 	child.Name = "HiddenServiceChild"
+	assert(visibility.IsVisible(fixture), "ordinary root objects are visible by default")
 	local oldClass = API.Classes.Folder
 	API.Classes.Folder = { Name = "Folder", Tags = { Service = true } }
+	assert(visibility.IsVisible(workspace), "Workspace is visible by default")
+	assert(not visibility.IsVisible(fixture), "extra services start hidden")
+	assert(table.find(visibility.GetHiddenServices(), "Folder"), "extra services can be shown")
+	assert(visibility.SetVisible(fixture, true), "extra services can be enabled")
+	assert(Settings.Explorer.HiddenServices.Folder == false, "showing an extra service stores a persistent override")
 	Explorer.SyncHistoryObject(fixture)
 	Explorer.Expanded[nodes[fixture]] = true
 	Explorer.ForceUpdate()

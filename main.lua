@@ -74,7 +74,7 @@ DefaultSettings = (function()
 			PartSelectionBox = true,
 			GuiSelectionBox = true,
 			CopyPathUseGetChildren = true,
-			ShowNilInstances = true,
+			ShowNilInstances = false,
 			ShowHiddenInsertClasses = false,
 			ShowDeprecatedInsertClasses = false,
 		},
@@ -154,8 +154,8 @@ DefaultSettings = (function()
 		},
 		Interface = {
 			_Recurse = true,
-			FocusGameInput = true,
-			FocusIndicator = true,
+			FocusGameInput = false,
+			FocusIndicator = false,
 			AntiAFK = true,
 		},
 		RemoteBlockWriteAttribute = false,
@@ -426,10 +426,9 @@ Main = (function()
 	end
 
 	Main.UpdateFocusIndicator = function()
-		local enabled = not Settings.Interface or Settings.Interface.FocusIndicator ~= false
-		local active = Main.GameInputLocked and enabled
+		local enabled = Main.Alive and Settings.Interface.FocusIndicator
 		for owner, setVisible in pairs(Main.FocusIndicators) do
-			pcall(setVisible, active and owner == Main.ActiveFocusOwner)
+			pcall(setVisible, enabled and owner == Main.ActiveFocusOwner)
 		end
 	end
 
@@ -829,6 +828,7 @@ Main = (function()
 			then
 				local pos = input.Position
 				if pos and not Main.IsPointInDexUI(pos.X, pos.Y) then
+					Main.SetFocusOwner(nil)
 					Main.SetGameInputLocked(false)
 					return Enum.ContextActionResult.Pass
 				end
@@ -855,9 +855,6 @@ Main = (function()
 		local focusEnabled = not Settings.Interface or Settings.Interface.FocusGameInput ~= false
 		locked = locked and Main.Alive and focusEnabled
 		if Main.GameInputLocked == locked then
-			if Main.UpdateFocusIndicator then
-				Main.UpdateFocusIndicator()
-			end
 			return
 		end
 		Main.GameInputLocked = locked
@@ -865,9 +862,7 @@ Main = (function()
 			bindGameInputLock()
 		else
 			unbindGameInputLock()
-			Main.ActiveFocusOwner = nil
 		end
-		Main.UpdateFocusIndicator()
 	end
 
 	Main.InitGameInputFocus = function()
@@ -896,6 +891,8 @@ Main = (function()
 			end
 			if inside and owner then
 				Main.SetFocusOwner(owner)
+			elseif not inside and Main.ActiveFocusOwner then
+				Main.SetFocusOwner(nil)
 			end
 			Main.SetGameInputLocked(inside)
 		end)

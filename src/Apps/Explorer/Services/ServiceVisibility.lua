@@ -1,6 +1,23 @@
 --!strict
 
 local Main, Apps, Settings, API
+local defaultVisible = {
+	Workspace = true,
+	Players = true,
+	CoreGui = true,
+	Lighting = true,
+	MaterialService = true,
+	ReplicatedFirst = true,
+	ReplicatedStorage = true,
+	ServerScriptService = true,
+	ServerStorage = true,
+	StarterGui = true,
+	StarterPack = true,
+	StarterPlayer = true,
+	Teams = true,
+	SoundService = true,
+	TextChatService = true,
+}
 
 ------------------------------ Initialization ------------------------------
 
@@ -31,13 +48,21 @@ local function CreateModule()
 		return ok and found == object
 	end
 	function Visibility.IsVisible(object)
-		return not hidden()[object.ClassName]
+		if object.Parent ~= game then
+			return true
+		end
+		local className = object.ClassName
+		local override = hidden()[className]
+		if type(override) == "boolean" then
+			return not override
+		end
+		return defaultVisible[className] == true or not Visibility.IsService(object)
 	end
 	function Visibility.SetVisible(object, visible)
 		if not Visibility.IsService(object) then
 			return false
 		end
-		hidden()[object.ClassName] = not visible or nil
+		hidden()[object.ClassName] = not visible
 		if Main.SaveSettings then
 			Main.SaveSettings()
 		end
