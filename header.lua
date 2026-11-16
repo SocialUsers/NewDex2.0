@@ -1,12 +1,12 @@
 --!strict
 
 --[[
-	Dex++
-	Version 2.3 — Studio source parity edition
+	Dex Explorer
+	Version 2.3
 	
-	Developed by Chillz
+	Developed by Wooxps
 	
-	Dex++ is a revival of Moon's Dex, made to fulfill Moon's Dex prophecy.
+	Dex Explorer is a revival of Dex++ which is based on Moon's Dex.
 ]]
 
 local selection
