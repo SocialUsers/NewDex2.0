@@ -333,6 +333,55 @@ do
 		activeSignals() == baseline and not next(Main.SelectionGeometryRoots),
 		"cancelling a large pending build leaves no copies or observers"
 	)
+	local folderBaseline = activeSignals()
+	local folder = Instance.new("Folder", workspace)
+	local nested = Instance.new("Folder", folder)
+	local nestedModel = Instance.new("Model", nested)
+	local folderPart = Instance.new("Part", folder)
+	local nestedPart = Instance.new("Part", nestedModel)
+	nestedPart.Transparency = 1
+	manager = Renderer.Create({ Parent = holder, Workspace = workspace, GeometryMask = Geometry })
+	manager:Update({ folder, nested, nestedModel, nestedPart })
+	record = manager.Records[folder]
+	assert(record and record.PreparingMask and manager.Counts.Roots == 1, "selected folders merge nested selections into one record")
+	drain()
+	assert(
+		record.MaskActive and manager.Counts.Highlights == 1 and manager.Counts.Bounds == 0
+			and record.Mask.Count == 2 and record.Mask.Entries[folderPart] and record.Mask.Entries[nestedPart],
+		"folders combine visible and hidden parts into one silhouette"
+	)
+	service.RunService.RenderStepped:Fire()
+	assert(manager.PivotDot.Visible, "folder pivot projects through the combined model")
+	local retainedHighlight = record.Highlight
+	local extraFolder = Instance.new("Folder", nested)
+	local extraPart = Instance.new("Part", extraFolder)
+	drain()
+	assert(record.Highlight == retainedHighlight and record.Mask.Entries[extraPart], "nested additions retain one highlight")
+	nestedPart.Parent = workspace
+	drain()
+	assert(not record.Mask.Entries[nestedPart] and manager.Counts.Roots == 2, "moved-out explicitly selected parts regain their own record")
+	manager:Update({ folder })
+	assert(manager.Counts.Roots == 1 and not manager.Records[nestedPart])
+	folderPart.Parent = workspace
+	extraPart.Parent = workspace
+	drain()
+	assert(not record.Highlight and not record.Mask and manager.Counts.Highlights == 0, "empty folders release combined geometry")
+	extraPart.Parent = extraFolder
+	drain()
+	assert(record.MaskActive and record.Mask.Count == 1, "empty folders regain outlines when geometry is added")
+	assert(folder.Parent == workspace and extraPart.Parent == extraFolder and nestedModel.Parent == nested, "folder rendering preserves original hierarchy")
+	record.Mask.Step = function()
+		error("folder copy unavailable")
+	end
+	service.RunService.RenderStepped:Fire()
+	assert(not record.Mask and not record.Highlight and record.Parts[extraPart].Bounds, "folder failures use valid part bounds")
+	manager:Destroy()
+	folder:Destroy()
+	folderPart:Destroy()
+	nestedPart:Destroy()
+	extraPart:Destroy()
+	drain()
+	assert(activeSignals() == folderBaseline and not next(Main.SelectionGeometryRoots), "folder cleanup releases geometry and listeners")
 	Instance.fromExisting = nil
 	assert(
 		Geometry.Create({ [visible] = true }) == nil,

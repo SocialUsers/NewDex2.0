@@ -48,7 +48,7 @@ local function CreateModule()
 			return config.IsExcluded and config.IsExcluded(object)
 		end
 		local function spatial(object)
-			return (object:IsA("BasePart") or object:IsA("Model"))
+			return (object:IsA("BasePart") or object:IsA("Model") or config.GeometryMask and object:IsA("Folder"))
 				and not object:IsA("Terrain")
 				and object ~= workspace
 				and not excluded(object)
@@ -163,7 +163,7 @@ local function CreateModule()
 			end
 			updateRoot(record)
 			if
-				hidden
+				(hidden or record.Kind == "Folder")
 				and not record.PreparingMask
 				and not (record.MaskActive and record.Mask and record.Mask.Entries[state.Object])
 			then
@@ -213,7 +213,7 @@ local function CreateModule()
 			end)
 			if not record.Collecting then
 				updateRoot(record)
-				if state.Invisible and not record.PreparingMask and not record.MaskActive then
+				if (state.Invisible or record.Kind == "Folder") and not record.PreparingMask and not record.MaskActive then
 					requestBounds(state, part)
 				end
 			end
@@ -228,7 +228,8 @@ local function CreateModule()
 				record.Mask:Destroy()
 				record.Mask = nil
 			end
-			if record.HiddenParts > 0 and config.GeometryMask and not record.Mask and not record.MaskUnavailable then
+			local needsMask = record.HiddenParts > 0 or record.Kind == "Folder" and record.VisibleParts > 0
+			if needsMask and config.GeometryMask and not record.Mask and not record.MaskUnavailable then
 				local mask, problem = config.GeometryMask.Create(record.Parts, function()
 					if not record.Destroyed then
 						updateRoot(record)
@@ -236,7 +237,7 @@ local function CreateModule()
 				end)
 				record.Mask = mask
 				record.MaskUnavailable = problem
-			elseif record.HiddenParts == 0 and record.Mask then
+			elseif not needsMask and record.Mask then
 				record.Mask:Destroy()
 				record.Mask = nil
 			end
@@ -266,7 +267,7 @@ local function CreateModule()
 				record.MaskVersion = -1
 				return
 			end
-			local want = record.VisibleParts > 0 or maskReady
+			local want = record.Kind ~= "Folder" and record.VisibleParts > 0 or maskReady
 			record.WantsHighlight = want
 			if want then
 				requestHighlight(record, maskReady and record.Mask.Model or record.Object)
@@ -279,7 +280,7 @@ local function CreateModule()
 				record.RenderingMode = maskReady and "CombinedGeometryMask" or "PublicFallback"
 				releaseBounds(record)
 			else
-				if record.VisibleParts > 0 then
+				if record.VisibleParts > 0 and record.Kind ~= "Folder" then
 					requestBounds(record, record.Object)
 				else
 					releaseBounds(record)
@@ -291,7 +292,7 @@ local function CreateModule()
 				record.MaskActive = maskActive
 				record.MaskVersion = maskVersion
 				for _, state in pairs(record.Parts) do
-					if state.Invisible and not (maskActive and record.Mask.Entries[state.Object]) then
+					if (state.Invisible or record.Kind == "Folder") and not (maskActive and record.Mask.Entries[state.Object]) then
 						requestBounds(state, state.Object)
 					else
 						releaseBounds(state)
@@ -343,7 +344,17 @@ local function CreateModule()
 					end
 				end
 				if record.Kind ~= "Gui" and record.Object.Parent then
-					roots[#roots + 1] = record.Object
+					if record.Kind == "Folder" then
+						if record.Mask and record.Mask.Ready then
+							roots[#roots + 1] = record.Mask.Model
+						elseif not record.PreparingMask then
+							for part in pairs(record.Parts) do
+								roots[#roots + 1] = part
+							end
+						end
+					else
+						roots[#roots + 1] = record.Object
+					end
 				end
 			end
 			local dot = manager.PivotDot
@@ -416,7 +427,10 @@ local function CreateModule()
 			local record = {
 				Object = object,
 				Connections = {},
-				Kind = object:IsA("GuiObject") and "Gui" or object:IsA("Model") and "Model" or "Part",
+				Kind = if object:IsA("GuiObject") then "Gui"
+					elseif object:IsA("Folder") then "Folder"
+					elseif object:IsA("Model") then "Model"
+					else "Part",
 			}
 			manager.Records[object] = record
 			manager.Counts.Roots += 1
@@ -488,7 +502,7 @@ local function CreateModule()
 				end
 			end
 			for _, object in ipairs(selection) do
-				if object:IsA("Folder") then
+				if object:IsA("Folder") and not config.GeometryMask then
 					if options.PartEnabled then
 						folders[object] = true
 					end
