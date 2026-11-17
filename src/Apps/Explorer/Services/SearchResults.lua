@@ -340,24 +340,36 @@ local function Main()
 		local depths = layout and layout.Depths or table.create(estimate)
 		local parents = layout and layout.Parents or table.create(estimate)
 		local widths = layout and layout.Widths or {}
-		local positions, top = {}, {}
+		local positions, top = layout and layout.Positions or {}, {}
 		local matchWords, contextWords = {}, {}
 		local work, width, maxDepth = 0, 0, 1
 		local firstTerm, termCount = terms[1], #terms
+		local nameResults, cachedNames = {}, 0
 		local function matchesName(name)
-			local lower = string.lower(name)
-			if not string.find(lower, firstTerm, 1, true) then
-				return false
+			local cached = nameResults[name]
+			if cached ~= nil then
+				return cached
 			end
-			for index = 2, termCount do
-				if not string.find(lower, terms[index], 1, true) then
-					return false
+			local lower = string.lower(name)
+			local hit = string.find(lower, firstTerm, 1, true) ~= nil
+			if hit then
+				for index = 2, termCount do
+					if not string.find(lower, terms[index], 1, true) then
+						hit = false
+						break
+					end
 				end
 			end
-			return true
+			if cachedNames < 8192 then
+				nameResults[name] = hit
+				cachedNames += 1
+			end
+			return hit
 		end
 		local function include(position, node, parent, depth, name)
-			positions[node] = position
+			if not layout or not layout.Positions then
+				positions[node] = position
+			end
 			write(contextWords, position)
 			if parent == 0 then
 				top[#top + 1] = position
@@ -399,24 +411,41 @@ local function Main()
 			return included
 		end
 		if layout then
+			local pending = {}
+			local matchWord, contextWord = 0, 0
+			local matchedBits, contextBits = Bits.Dense(#nodes), Bits.Dense(#nodes)
 			for position = #nodes, 1, -1 do
 				local node, name = nodes[position], names[position]
 				local hit = node ~= roots[2] and matchesName(name)
 				if hit then
-					write(matchWords, position)
+					matchWord = bit32.bor(matchWord, bit32.lshift(1, (position - 1) % 32))
 				end
-				local bit = bit32.lshift(1, (position - 1) % 32)
-				if hit or bit32.band(contextWords[(position - 1) // 32] or 0, bit) ~= 0 then
+				if hit or pending[position] then
 					local parent = parents[position]
-					include(position, node, parent, depths[position], name)
-					if parent > 0 then
-						write(contextWords, parent)
+					if not layout.Positions then
+						positions[node] = position
 					end
+					contextWord = bit32.bor(contextWord, bit32.lshift(1, (position - 1) % 32))
+					if parent == 0 then
+						top[#top + 1] = position
+					end
+					maxDepth = math.max(maxDepth, depths[position])
+					width = math.max(width, node.NameWidth or math.min(100, #name) * 14)
+					if parent > 0 then
+						pending[parent] = true
+					end
+				end
+				if (position - 1) % 32 == 0 then
+					local offset = (position - 1) // 32 * 4
+					buffer.writeu32(matchedBits.Data, offset, matchWord)
+					buffer.writeu32(contextBits.Data, offset, contextWord)
+					matchWord, contextWord = 0, 0
 				end
 				if position % 128 == 0 then
 					checkpoint()
 				end
 			end
+			return createView(layout, context, checkpoint, positions, top, matchedBits:Prepare(checkpoint), contextBits:Prepare(checkpoint), width, maxDepth)
 		else
 			for _, node in ipairs(readChildren(roots[1], checkpoint)) do
 				if node.Parent == roots[1] then

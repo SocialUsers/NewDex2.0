@@ -94,6 +94,47 @@ local function add(parent, name)
 	return node
 end
 do
+	for _, size in ipairs({ 1, 31, 32, 33, 63, 64, 65, 257 }) do
+		local testRoot = {}
+		local group = add(testRoot, "Container")
+		for index = 1, size do
+			add(group, index % 3 == 0 and "Repeated É日本 Car Blue" or "Repeated Tree")
+		end
+		local context = {
+			Name = function(node)
+				return node.Obj.Name
+			end,
+			Children = function(node)
+				return node
+			end,
+			Visible = function()
+				return true
+			end,
+		}
+		local function checkpoint() end
+		local roots = { testRoot }
+		local layout = Apps.SearchResults.CreateLayout(roots, context, checkpoint)
+		local positions = table.clone(layout.Positions)
+		local retained
+		for _, terms in ipairs({ { "e" }, { "car", "blue" }, { "日本" }, { "absent" } }) do
+			local recursive = Apps.SearchResults.CreateCold(roots, terms, context, checkpoint)
+			local packed = Apps.SearchResults.CreateCold(roots, terms, context, checkpoint, layout)
+			assert(#recursive.Rows == #packed.Rows and #recursive.MatchList == #packed.MatchList)
+			for index = 1, #packed.Rows do
+				assert(packed.Rows[index] == recursive.Rows[index] and packed:IndexOf(packed.Rows[index]) == index)
+			end
+			for index = 1, #packed.MatchList do
+				assert(packed.MatchList[index] == recursive.MatchList[index])
+			end
+			retained = retained or { View = packed, Count = #packed.MatchList }
+			assert(#retained.View.MatchList == retained.Count, "later queries mutated an earlier result")
+		end
+		for node, position in pairs(positions) do
+			assert(layout.Positions[node] == position, "query mutated shared hierarchy positions")
+		end
+	end
+end
+do
 	local testRoot = {}
 	local group = add(testRoot, "Group")
 	local recurring = add(group, "Part1")
