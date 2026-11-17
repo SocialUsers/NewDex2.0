@@ -94,6 +94,42 @@ local function add(parent, name)
 	return node
 end
 do
+	local testRoot = {}
+	local visible = add(testRoot, "Visible")
+	local hidden = add(testRoot, "Hidden")
+	add(visible, "Piece")
+	for _ = 1, 100 do
+		add(hidden, "Piece")
+	end
+	local shown, hiddenReads = false, 0
+	local context = {
+		Name = function(node)
+			if node.Parent == hidden then
+				hiddenReads += 1
+			end
+			return node.Obj.Name
+		end,
+		Children = function(node)
+			return node
+		end,
+		Visible = function(node)
+			return node ~= hidden or shown
+		end,
+		VisibleOnly = true,
+	}
+	local function checkpoint() end
+	local roots = { testRoot }
+	local first = Apps.SearchResults.CreateCold(roots, { "piece" }, context, checkpoint)
+	assert(#first.MatchList == 1 and #first.ColdLayout.Nodes == 2 and hiddenReads == 0)
+	shown = true
+	assert(not Apps.SearchResults.MatchesVisibility(first.ColdLayout, context.Visible))
+	local second = Apps.SearchResults.CreateCold(roots, { "piece" }, context, checkpoint, first.ColdLayout)
+	assert(#second.MatchList == 101 and hiddenReads == 100, "showing services must restore every hidden match")
+	shown = false
+	local third = Apps.SearchResults.CreateCold(roots, { "piece" }, context, checkpoint, second.ColdLayout)
+	assert(#third.MatchList == 1 and #first.MatchList == 1 and #second.MatchList == 101)
+end
+do
 	for _, size in ipairs({ 1, 31, 32, 33, 63, 64, 65, 257 }) do
 		local testRoot = {}
 		local group = add(testRoot, "Container")

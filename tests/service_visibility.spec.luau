@@ -29,6 +29,8 @@ do
 	end
 	assert(foundShow and foundHide, "service context exposes Studio actions")
 	Explorer.RightClickContext:Hide()
+	local initialObjectCount = Explorer.InitialObjectCount
+	Explorer.InitialObjectCount = 38000
 	Explorer.DoSearch("HiddenServiceChild")
 	Explorer.Selection:Set(nodes[fixture])
 	Explorer.HideSelectedServices()
@@ -52,6 +54,7 @@ do
 	)
 	assert(#Explorer.MatchList == 1, "restoring service restores search navigation without another scan")
 	Explorer.DoSearch("")
+	Explorer.InitialObjectCount = initialObjectCount
 	assert(not visibility.SetVisible(child, false), "ordinary child cannot be hidden as service")
 	local original = Lib.Window.new
 	Lib.Window.new = function()

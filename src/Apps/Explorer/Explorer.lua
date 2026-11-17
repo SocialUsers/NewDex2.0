@@ -2354,6 +2354,7 @@ local function CreateModule()
 		end
 		if searchView.Cold then
 			return searchView.TreeVersion ~= searchTreeVersion
+				or not Apps.SearchResults.MatchesVisibility(searchView.ColdLayout, characterSearch.Context.Visible)
 		end
 		return searchEngine:HasChanges() or searchView.State ~= searchEngine.Snapshots.State
 	end
@@ -4824,6 +4825,7 @@ return search]==]
 			characterSearch.Version == searchTreeVersion
 			and characterSearch.Sorter == Explorer.NodeSorter
 			and characterSearch.NilRoot == nilRoot
+			and Apps.SearchResults.MatchesVisibility(characterSearch.Layout, characterSearch.Context.Visible)
 		then
 			return characterSearch.Layout
 		end
@@ -5126,6 +5128,9 @@ return search]==]
 		if layout and layout.NilRoot ~= nilRoot then
 			layout = nil
 		end
+		if layout and not Apps.SearchResults.MatchesVisibility(layout, characterSearch.Context.Visible) then
+			layout = nil
+		end
 		if terms and layout and Explorer.Query == query then
 			Explorer.SetSearchBusy(false, query)
 			Explorer.Update()
@@ -5290,6 +5295,7 @@ return search]==]
 				local ok, view = pcall(Apps.SearchResults.CreateCold, roots, terms, {
 					Name = coldName,
 					Children = coldChildren,
+					VisibleOnly = true,
 					Estimate = Explorer.InitialObjectCount,
 					Visible = function(node)
 						return node == nilNode or Apps.ServiceVisibility.IsVisible(node.Obj)

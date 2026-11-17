@@ -11,6 +11,17 @@ local function Main()
 	end
 
 	local createView
+	function Results.MatchesVisibility(layout, visible)
+		if not layout then
+			return false
+		end
+		for node, shown in pairs(layout.RootVisibility or {}) do
+			if visible(node) ~= shown then
+				return false
+			end
+		end
+		return true
+	end
 
 	function Results.CreateLayout(roots, context, checkpoint)
 		local estimate = math.clamp(context.Estimate or 0, 0, 250000)
@@ -333,6 +344,9 @@ local function Main()
 	end
 
 	function Results.CreateCold(roots, terms, context, checkpoint, layout)
+		if context.VisibleOnly and (not layout or not layout.RootVisibility or not Results.MatchesVisibility(layout, context.Visible)) then
+			layout = nil
+		end
 		local estimate = math.clamp(context.Estimate or 0, 0, 250000)
 		local nodes = layout and layout.Nodes or table.create(estimate)
 		local names = layout and layout.Names or table.create(estimate)
@@ -342,6 +356,7 @@ local function Main()
 		local widths = layout and layout.Widths or {}
 		local positions, top = layout and layout.Positions or {}, {}
 		local matchWords, contextWords = {}, {}
+		local rootVisibility = context.VisibleOnly and {} or nil
 		local work, width, maxDepth = 0, 0, 1
 		local firstTerm, termCount = terms[1], #terms
 		local nameResults, cachedNames = {}, 0
@@ -452,7 +467,11 @@ local function Main()
 			return createView(layout, context, checkpoint, positions, top, matchedBits:Prepare(checkpoint), contextBits:Prepare(checkpoint), width, maxDepth)
 		else
 			for _, node in ipairs(snapshotChildren(roots[1])) do
-				if node.Parent == roots[1] then
+				local shown = not rootVisibility or context.Visible(node)
+				if rootVisibility then
+					rootVisibility[node] = shown
+				end
+				if shown and node.Parent == roots[1] then
 					visit(node, 0, 1, true)
 				end
 			end
@@ -479,6 +498,7 @@ local function Main()
 			Parents = parents,
 			Widths = widths,
 			NilRoot = roots[2],
+			RootVisibility = rootVisibility,
 		}
 		return createView(layout, context, checkpoint, positions, top, allMatches, allContext, width, maxDepth)
 	end
