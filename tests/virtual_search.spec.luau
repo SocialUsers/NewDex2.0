@@ -360,3 +360,51 @@ do
 	flushTasks()
 	print("PASS: packed cold property/class search, live values, class cache, OR, collapse and subtree removal")
 end
+
+do
+	Explorer.ClearSearch()
+	local previousSize, previousWait = Explorer.InitialObjectCount, task.wait
+	Explorer.InitialObjectCount = 38000
+	task.wait = function()
+		return 0
+	end
+	local host = Instance.new("Folder", workspace)
+	host.Name = "BroadColdScope"
+	local children = {}
+	for index = 1, 1200 do
+		local part = Instance.new("Part", host)
+		part.Name = "RepeatedPiece" .. index % 8
+		children[index] = part
+	end
+	Explorer.SyncHistoryObject(host)
+	local engine = Explorer.SearchEngine
+	local originalSearch = engine.Search
+	engine.Search = function()
+		error("broad cold search rebuilt the general index")
+	end
+	assert(Explorer.DoSearch("repeatedpiece") and #Explorer.MatchList == 1200)
+	local layout = Explorer.SearchView.ColdLayout
+	assert(layout and Explorer.SearchView.Resolved < 100, "wide matches remain virtual")
+	local previous
+	for index = 1, #Explorer.MatchList do
+		local node = Explorer.MatchList[index]
+		assert(not previous or not Explorer.NodeSorter(node, previous), "duplicate names preserve the Explorer comparator")
+		previous = node
+	end
+	assert(Explorer.DoSearch("piece0") and #Explorer.MatchList == 150)
+	assert(Explorer.SearchView.ColdLayout == layout, "all literal queries reuse a valid layout")
+	children[1].Name = "UpdatedPiece0"
+	game.ItemChanged:Fire(children[1], "Name")
+	assert(Explorer.DoSearch("piece0") and #Explorer.MatchList == 151)
+	assert(Explorer.Matches[nodes[children[1]]], "renames invalidate cached sibling order and names")
+	engine.Search = originalSearch
+	Explorer.ClearSearch()
+	host.Parent = nil
+	Explorer.SyncHistoryObject(host)
+	host:Destroy()
+	Explorer.CleanDeletedChildren()
+	Explorer.InitialObjectCount, task.wait = previousSize, previousWait
+	Explorer.ForceUpdate()
+	flushTasks()
+	print("PASS: stale broad cold searches skip index rebuilding, retain duplicate order, reuse layouts and invalidate renamed siblings")
+end

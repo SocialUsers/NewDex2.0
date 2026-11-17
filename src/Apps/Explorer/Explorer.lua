@@ -169,12 +169,14 @@ local function CreateModule()
 		return not Explorer.SearchInputPending and not Explorer.SearchBusy
 	end
 	local branchViews = {}
+	local sortedSearchChildren = setmetatable({}, { __mode = "k" })
 	local function invalidateBranch(node)
 		if projection then
 			projection:Mark(node)
 		end
 		while node do
 			branchViews[node] = nil
+			sortedSearchChildren[node] = nil
 			node = node.Parent
 		end
 	end
@@ -447,6 +449,7 @@ local function CreateModule()
 				local node = root[i]
 				if not node.Del and nodes[node.Obj] == node and node.Obj:IsDescendantOf(root.Obj) then
 					nodes[node.Obj] = nil
+					sortedSearchChildren[node] = nil
 					evidenceCandidates[node.Obj] = nil
 					scriptCandidates[node.Obj] = nil
 					if #node > 0 then
@@ -897,41 +900,10 @@ local function CreateModule()
 		return name
 	end
 
-	local function likelyBroad(terms, roots)
-		local tested, hits = 0, 0
-		local function sample(parent)
-			for _, child in ipairs(parent) do
-				if not child.Del then
-					local name = string.lower(coldName(child))
-					local matched = true
-					for _, term in ipairs(terms) do
-						if not name:find(term, 1, true) then
-							matched = false
-							break
-						end
-					end
-					tested += 1
-					if matched then
-						hits += 1
-					end
-					if tested >= 256 or #child > 0 and sample(child) then
-						return true
-					end
-				end
-			end
-			return false
-		end
-		for _, root in ipairs(roots) do
-			if sample(root) then
-				break
-			end
-		end
-		return hits >= 8 and hits * 3 >= tested
-	end
-
 	local function sortColdNames(items, check)
 		local class = items[1].Class or items[1].Obj.ClassName
 		local names, byName = table.create(#items), {}
+		local duplicates = {}
 		local first, last
 		for i, node in ipairs(items) do
 			if node.ManualOrder or (node.Class or node.Obj.ClassName) ~= class then
@@ -939,10 +911,17 @@ local function CreateModule()
 			end
 			node.Class = class
 			local name = coldName(node)
-			if byName[name] then
-				return false
+			local previous = byName[name]
+			if previous then
+				local group = duplicates[name]
+				if not group then
+					group = { previous }
+					duplicates[name] = group
+				end
+				group[#group + 1] = node
+			else
+				names[#names + 1], byName[name] = name, node
 			end
-			names[i], byName[name] = name, node
 			if not first or name < first then
 				first = name
 			end
@@ -953,12 +932,38 @@ local function CreateModule()
 				check()
 			end
 		end
+		for _, group in pairs(duplicates) do
+			local ordered, previousId = true, -math.huge
+			for index, node in ipairs(group) do
+				if not node.Id then
+					node.Id = idCounter
+					idCounter = (idCounter + 0.001) % 999999999
+				end
+				ordered = ordered and previousId <= node.Id
+				previousId = node.Id
+				if index % 128 == 0 then
+					check()
+				end
+			end
+			if not ordered then
+				table.sort(group, function(a, b)
+					return a.Id < b.Id
+				end)
+			end
+			check()
+		end
 		local out = 0
 		local function emit(group)
 			table.sort(group)
 			for _, name in ipairs(group) do
-				out += 1
-				items[out] = byName[name]
+				local repeated = duplicates[name]
+				if repeated then
+					table.move(repeated, 1, #repeated, out + 1, items)
+					out += #repeated
+				else
+					out += 1
+					items[out] = byName[name]
+				end
 			end
 			check()
 		end
@@ -1004,6 +1009,14 @@ local function CreateModule()
 		if not sortingEnabled or parent.Sorted or #parent < 2 then
 			return parent
 		end
+		local cached = sortedSearchChildren[parent]
+		if cached and cached.Sorter == Explorer.NodeSorter then
+			return cached.Items
+		end
+		local function remember(items)
+			sortedSearchChildren[parent] = { Sorter = Explorer.NodeSorter, Items = items }
+			return items
+		end
 		local items = {}
 		for i, child in ipairs(parent) do
 			if not child.Del and child.Parent == parent then
@@ -1017,7 +1030,7 @@ local function CreateModule()
 		local less = Explorer.NodeSorter
 		if less == defaultNodeSorter then
 			if #items > 512 and sortColdNames(items, check) then
-				return items
+				return remember(items)
 			end
 			less = function(a, b)
 				return compareNodes(a, b, names)
@@ -1026,7 +1039,7 @@ local function CreateModule()
 		if #items <= 512 then
 			table.sort(items, less)
 			check()
-			return items
+			return remember(items)
 		end
 		local page = {}
 		for first = 1, #items, 512 do
@@ -1071,7 +1084,7 @@ local function CreateModule()
 			items, merged = merged, items
 			width *= 2
 		end
-		return items
+		return remember(items)
 	end
 
 	local widthRecent, widthPrevious, widthCount = {}, {}, 0
@@ -5103,6 +5116,7 @@ return search]==]
 		local nilRoot = getSearchNilRoot()
 		local refreshing = searchView ~= nil and Explorer.Query == query
 		local layout = searchView and searchView.TreeVersion == searchTreeVersion and searchView.ColdLayout
+			or characterSearch.Ready(nilRoot)
 		if layout and layout.NilRoot ~= nilRoot then
 			layout = nil
 		end
@@ -5238,7 +5252,12 @@ return search]==]
 			return complete
 		end
 		local ready = engine:Ready()
-		if not refreshing and large and terms and (not ready or layout) and (layout and not ready or likelyBroad(terms, roots)) then
+		if
+			large
+			and terms
+			and (not refreshing or searchView.Cold)
+			and (not ready or layout or engine:HasChanges() or #terms[1] == 1)
+		then
 			Explorer.SetSearchBusy(true, query)
 			local changed = {}
 			for _ = 1, 2 do
