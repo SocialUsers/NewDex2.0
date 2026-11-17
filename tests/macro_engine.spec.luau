@@ -36,7 +36,11 @@ local os = {
 	end,
 }
 local function vec(x, y)
-	return { X = x, Y = y }
+	return setmetatable({ X = x, Y = y }, {
+		__add = function(a, b)
+			return vec(a.X + b.X, a.Y + b.Y)
+		end,
+	})
 end
 local Vector2 = { new = vec }
 local keyCode = { A = { Name = "A" }, F8 = { Name = "F8" }, W = { Name = "W" }, Unknown = { Name = "Unknown" } }
@@ -68,6 +72,14 @@ local input = {
 	WindowFocusReleased = signal(),
 }
 local mouse = vec(40, 50)
+local mouseLeft = { UserInputType = Enum.UserInputType.MouseButton1 }
+local mouseRight = { UserInputType = Enum.UserInputType.MouseButton2 }
+local mouseMiddle = { UserInputType = Enum.UserInputType.MouseButton3 }
+local mouseMove = { UserInputType = Enum.UserInputType.MouseMovement }
+local pressed = {}
+function input:GetMouseButtonsPressed()
+	return pressed
+end
 function input:GetMouseLocation()
 	return mouse
 end
@@ -167,6 +179,7 @@ mouse = vec(100, 80)
 input.InputEnded:Fire({ UserInputType = Enum.UserInputType.MouseButton1 })
 input.InputEnded:Fire(key(keyCode.W))
 allow = true
+mouse = vec(102, 80)
 input.InputChanged:Fire({ UserInputType = Enum.UserInputType.MouseMovement }, false)
 input.InputChanged:Fire({ UserInputType = Enum.UserInputType.MouseMovement }, false)
 input.MouseBehavior = Enum.MouseBehavior.LockCenter
@@ -237,6 +250,59 @@ assert(inputLog[#inputLog - 1][1] == "Up" and inputLog[#inputLog][1] == "Release
 assert(engine:StartRecording())
 tick(603)
 assert(engine.State == "Idle" and clean() and reason == "Recording limit reached")
+
+funcs.mousemoveabs = nil
+funcs.mouse2press = function()
+	emitted("RightDown")
+end
+funcs.mouse2release = function()
+	emitted("RightUp")
+end
+funcs.mouse3press = function()
+	emitted("MiddleDown")
+end
+funcs.mouse3release = function()
+	emitted("MiddleUp")
+end
+funcs.mousemoverel = function(x, y)
+	emitted("Delta", x, y)
+	mouse = vec(mouse.X + x, mouse.Y + y)
+end
+pressed = { mouseLeft }
+mouse = vec(40, 50)
+now = 604
+assert(engine:StartRecording())
+input.InputBegan:Fire(mouseLeft, false)
+input.InputBegan:Fire(mouseRight, false)
+input.InputBegan:Fire(mouseMiddle, false)
+now = 604.125
+mouse = vec(60, 80)
+input.InputChanged:Fire(mouseMove, true)
+input.MouseBehavior = Enum.MouseBehavior.LockCenter
+input.InputChanged:Fire({ UserInputType = mouseMove.UserInputType, Delta = vec(7, -5) }, true)
+input.MouseBehavior = Enum.MouseBehavior.Default
+now = 604.25
+input.InputEnded:Fire(mouseRight, true)
+input.InputEnded:Fire(mouseMiddle, true)
+now = 604.5
+input.InputEnded:Fire(mouseLeft, true)
+input.InputBegan:Fire(key(keyCode.F8), false)
+pressed = {}
+assert(#events == 8 and Engine.Validate(events))
+assert(events[1].Kind == "ButtonDown" and events[1].Button == 1 and events[1].Time == 0)
+assert(events[2].Button == 2 and events[3].Button == 3)
+assert(events[4].Kind == "Move" and events[4].Time == 0.125)
+assert(events[5].Kind == "RelativeMove" and events[5].DeltaX == 7)
+assert(events[8].Kind == "ButtonUp" and events[8].Time == 0.5)
+table.clear(inputLog)
+assert(engine:Play(events))
+tick(604.5)
+assert(inputLog[2][1] == "Click" and inputLog[4][1] == "RightDown" and inputLog[6][1] == "MiddleDown")
+tick(604.75)
+assert(inputLog[7][1] == "Delta" and inputLog[8][1] == "Delta" and inputLog[8][2] == 7)
+assert(inputLog[#inputLog][1] == "MiddleUp" and engine.State == "Playing")
+tick(605)
+assert(inputLog[#inputLog][1] == "Release" and engine.State == "Idle" and clean())
 engine:Destroy()
 assert(not engine:StartRecording() and not engine:Play(held) and clean())
 
@@ -255,6 +321,10 @@ function input:CreateVirtualInput()
 		SendMousePosition = function(_, point)
 			emitted("VirtualPosition", point.X, point.Y)
 		end,
+		SendMouseDelta = function(_, point)
+			assert(input.MouseBehavior == Enum.MouseBehavior.LockCenter)
+			emitted("VirtualDelta", point.X, point.Y)
+		end,
 		Destroy = function()
 			closed += 1
 		end,
@@ -263,9 +333,25 @@ end
 local fallback = Engine.Create()
 assert(fallback:Play(held))
 table.clear(inputLog)
-tick(603.1)
+tick(605.1)
 assert(inputLog[1][1] == "VirtualDown" and inputLog[2][1] == "VirtualClick" and inputLog[2][2] == 200)
-tick(604.1)
+tick(606.1)
 assert(inputLog[3][1] == "VirtualPosition" and inputLog[4][1] == "VirtualUp" and inputLog[5][1] == "VirtualRelease")
 assert(fallback.State == "Idle" and closed == 1 and clean())
-print("PASS: macro capture, resize-aware replay, timing, loop release, failure cleanup, focus loss and bounds")
+table.clear(inputLog)
+assert(fallback:Play({
+	{ Kind = "ButtonDown", Button = 1, X = 0.5, Y = 0.5, Time = 0 },
+	{ Kind = "RelativeMove", DeltaX = 4, DeltaY = 2, Time = 0 },
+	{ Kind = "RelativeMove", DeltaX = 7, DeltaY = -5, Time = 0.125 },
+	{ Kind = "ButtonUp", Button = 1, X = 0.5, Y = 0.5, Time = 0.25 },
+}))
+mouse = vec(80, 60)
+local start = now
+tick(start)
+assert(inputLog[1][1] == "VirtualClick" and inputLog[2][1] == "VirtualPosition" and inputLog[2][2] == 84)
+input.MouseBehavior = Enum.MouseBehavior.LockCenter
+tick(start + 0.125)
+assert(inputLog[3][1] == "VirtualDelta" and inputLog[3][2] == 7)
+tick(start + 0.25)
+assert(inputLog[4][1] == "VirtualRelease" and inputLog[4][2] == 80 and clean())
+print("PASS: macro capture, mouse holds and drags, timing, loop release, failure cleanup, focus loss and bounds")

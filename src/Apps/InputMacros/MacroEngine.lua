@@ -200,13 +200,23 @@ local function Main()
 			function backend.Move(x, y)
 				manager:SendMouseMoveEvent(x, y, game)
 			end
+		elseif type(relative) == "function" then
+			function backend.Move(x, y)
+				local current = input:GetMouseLocation()
+				relative(x - current.X, y - current.Y)
+			end
 		end
 
 		if type(relative) == "function" then
 			backend.RelativeMove = relative
 		elseif virtual then
 			function backend.RelativeMove(x, y)
-				virtual:SendMouseDelta(Vector2.new(x, y))
+				local delta = Vector2.new(x, y)
+				if input.MouseBehavior == Enum.MouseBehavior.Default then
+					virtual:SendMousePosition(input:GetMouseLocation() + delta)
+				else
+					virtual:SendMouseDelta(delta)
+				end
 			end
 		end
 
@@ -226,21 +236,27 @@ local function Main()
 		end
 
 		local function hasMouseFunctions(button)
-			return type(mouseDown[button]) == "function" and type(mouseUp[button]) == "function"
+			return backend.Move ~= nil and type(mouseDown[button]) == "function" and type(mouseUp[button]) == "function"
 		end
 		function backend.HasButton(button)
-			return (hasMouseFunctions(button) and backend.Move ~= nil) or virtual ~= nil or manager ~= nil
+			return hasMouseFunctions(button) or virtual ~= nil or manager ~= nil
 		end
-		function backend.Button(button, down, x, y, positionMouse)
-			if hasMouseFunctions(button) and backend.Move then
-				if positionMouse and input.MouseBehavior == Enum.MouseBehavior.Default then
+		function backend.Button(button, down, x, y, reposition)
+			if hasMouseFunctions(button) then
+				if reposition and input.MouseBehavior == Enum.MouseBehavior.Default then
 					backend.Move(x, y)
 				end
 				(if down then mouseDown[button] else mouseUp[button])()
-			elseif virtual then
-				virtual:SendMouseButton(Vector2.new(x, y), mouseTypes[button], down, 0)
 			else
-				manager:SendMouseButtonEvent(x, y, button - 1, down, game, 0)
+				if input.MouseBehavior ~= Enum.MouseBehavior.Default then
+					local current = input:GetMouseLocation()
+					x, y = current.X, current.Y
+				end
+				if virtual then
+					virtual:SendMouseButton(Vector2.new(x, y), mouseTypes[button], down, 0)
+				else
+					manager:SendMouseButtonEvent(x, y, button - 1, down, game, 0)
+				end
 			end
 		end
 
@@ -415,7 +431,7 @@ local function Main()
 			local capture = { Started = os.clock(), Events = {}, Keys = {}, Buttons = {} }
 			recording = capture
 			watchSession()
-			connect(input.InputBegan, function(event, processed)
+			local function beginInput(event, processed)
 				if isStop(event) then
 					self:Stop()
 					return
@@ -432,11 +448,13 @@ local function Main()
 					end
 				elseif button and not capture.Buttons[button] then
 					local x, y = normalizedPosition()
+					capture.X, capture.Y = x, y
 					local entry = { Kind = "ButtonDown", Button = button, X = x, Y = y }
 					capture.Buttons[button] = entry
 					append(capture, entry)
 				end
-			end)
+			end
+			connect(input.InputBegan, beginInput)
 			connect(input.InputEnded, function(event)
 				local button = buttons[event.UserInputType]
 				if event.UserInputType == Enum.UserInputType.Keyboard then
@@ -448,6 +466,7 @@ local function Main()
 				elseif button and capture.Buttons[button] then
 					capture.Buttons[button] = nil
 					local x, y = normalizedPosition()
+					capture.X, capture.Y = x, y
 					append(capture, { Kind = "ButtonUp", Button = button, X = x, Y = y })
 				end
 			end)
@@ -456,7 +475,8 @@ local function Main()
 				if kind ~= Enum.UserInputType.MouseMovement and kind ~= Enum.UserInputType.MouseWheel then
 					return
 				end
-				if not canRecord(event, processed) then
+				local dragging = kind == Enum.UserInputType.MouseMovement and next(capture.Buttons) ~= nil
+				if not dragging and not canRecord(event, processed) then
 					return
 				end
 				if kind == Enum.UserInputType.MouseMovement and input.MouseBehavior ~= Enum.MouseBehavior.Default then
@@ -482,6 +502,12 @@ local function Main()
 				end
 			end)
 			state("Recording")
+			for _, event in ipairs(input:GetMouseButtonsPressed()) do
+				if recording ~= capture then
+					break
+				end
+				beginInput(event, false)
+			end
 			return true
 		end
 
@@ -539,15 +565,22 @@ local function Main()
 				elseif not run.Buttons[event.Button] then
 					return
 				end
-				backend.Button(event.Button, down, x, y, true)
+				backend.Button(event.Button, down, x, y, down or x ~= run.X or y ~= run.Y)
+				run.X, run.Y = x, y
 				if not down then
 					run.Buttons[event.Button] = nil
 				end
 			elseif event.Kind == "RelativeMove" then
 				backend.RelativeMove(event.DeltaX, event.DeltaY)
+				run.X, run.Y = nil, nil
 			else
 				local x, y = pixels(event)
 				backend[event.Kind](x, y, event.Delta)
+				if event.Kind == "Move" then
+					run.X, run.Y = x, y
+				else
+					run.X, run.Y = nil, nil
+				end
 			end
 		end
 
