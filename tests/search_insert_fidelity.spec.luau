@@ -30,6 +30,37 @@ do
 	angle = spinner.Rotation
 	Explorer.AdvanceSearchSpinner(1)
 	assert(spinner.Rotation == angle, "idle searches do not animate their spinner")
+	local savedRun, savedActive, savedVisible = service.RunService, Explorer.Active, Explorer.Window.IsVisible
+	local activeFrames = 0
+	service.RunService = {
+		Heartbeat = {
+			Connect = function()
+				activeFrames += 1
+				return {
+					Disconnect = function()
+						activeFrames -= 1
+					end,
+				}
+			end,
+		},
+	}
+	Explorer.Active = true
+	Explorer.Window.IsVisible = function()
+		return true
+	end
+	Explorer.UpdateSearchSpinner()
+	assert(activeFrames == 0, "idle Explorer does not bind the spinner")
+	Explorer.SetSearchBusy(true, "example")
+	Explorer.UpdateSearchSpinner()
+	assert(activeFrames == 1, "a visible search binds one spinner callback")
+	Explorer.Active = false
+	Explorer.UpdateSearchSpinner()
+	assert(activeFrames == 0, "hiding Explorer disconnects the spinner")
+	Explorer.Active = true
+	Explorer.UpdateSearchSpinner()
+	Explorer.SetSearchBusy(false, "example")
+	assert(activeFrames == 0, "completing a search disconnects the spinner")
+	service.RunService, Explorer.Active, Explorer.Window.IsVisible = savedRun, savedActive, savedVisible
 	Explorer.RememberSearch("  Door\nhandle\r  ")
 	assert(Explorer.SearchHistory[1] == "Door handle", "history trims and normalizes committed queries")
 	for index = 1, 12 do

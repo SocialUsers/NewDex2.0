@@ -542,6 +542,18 @@ assert(
 )
 tools.SetEnabled(false)
 assert(not tools.Toolbar.Visible and not gizmo.Visible, "disabled tools hide their toolbar and world handles")
+local largeModel = Instance.new("Model", workspace)
+local modelChild = newPart(largeModel, vec(), vec(2, 2, 2))
+local originalDescendants = methods.GetDescendants
+local walks = 0
+methods.GetDescendants = function(self)
+	if self == largeModel then
+		walks += 1
+	end
+	return originalDescendants(self)
+end
+Apps.Explorer.Selection:SetTable({ { Obj = largeModel } })
+assert(walks == 0, "disabled transform tools do not walk selected models")
 local savedGuiTools, savedMenu = Apps.GuiTransformTools, Main.MenuApps
 local uiEnabled, menuEnabled = false, false
 Apps.GuiTransformTools = {
@@ -564,6 +576,9 @@ assert(
 	tools.Enabled and uiEnabled and menuEnabled,
 	"tool activation restores UI controller and menu state after disabling"
 )
+assert(walks > 0 and tools.Toolbar.Visible, "enabling selects current geometry")
+assert(modelChild._signals.Locked and not modelChild._signals.CFrame, "Select only watches transform eligibility")
+methods.GetDescendants = originalDescendants
 Apps.GuiTransformTools, Main.MenuApps = savedGuiTools, savedMenu
 tools.SetEnabled(false)
 Main.Shutdown()

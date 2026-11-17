@@ -89,6 +89,7 @@ local function CreateModule()
 			ImageColor3 = Settings.Theme.Text,
 		})
 		local spinElapsed, spinPending = 0, 0
+		local spinConnection
 		local function advanceSpinner(delta)
 			if not Explorer.SearchBusy then
 				spinPending = 0
@@ -103,9 +104,24 @@ local function CreateModule()
 			spinner.Rotation = spinElapsed * 270 % 360 - 180
 		end
 		Explorer.AdvanceSearchSpinner = advanceSpinner
-		if service.RunService and service.RunService.Heartbeat then
-			Main.TrackSignal(service.RunService.Heartbeat, advanceSpinner)
+		local function stopSpinner()
+			if spinConnection then
+				spinConnection:Disconnect()
+				spinConnection = nil
+			end
+			spinPending = 0
 		end
+		function Explorer.UpdateSearchSpinner()
+			if Main.Alive ~= false and Explorer.SearchBusy and Explorer.Active and Explorer.Window:IsVisible() then
+				local signal = service.RunService and service.RunService.Heartbeat
+				if signal and not spinConnection then
+					spinConnection = signal:Connect(advanceSpinner)
+				end
+			else
+				stopSpinner()
+			end
+		end
+		Main.AddCleanup(stopSpinner)
 		local previous = Apps.SearchBrowserButton.Create(renderer, status, "Previous", UDim2.new(1, -84, 0, 0))
 		local nextMatch = Apps.SearchBrowserButton.Create(renderer, status, "Next", UDim2.new(1, -64, 0, 0))
 		local all = Apps.SearchBrowserButton.Create(renderer, status, "SelectAll", UDim2.new(1, -44, 0, 0))

@@ -398,6 +398,17 @@ local function CreateModule()
 		end
 		table.clear(selectionConnections)
 		lastHit = nil
+		if not T.Enabled then
+			T.Roots = {}
+			T.Active = false
+			if connection then
+				connection:Disconnect()
+				connection = nil
+				view:Hide()
+				clearCursor()
+			end
+			return
+		end
 		T.Roots = Apps.GuiTransformSession.Collect(objects())
 		T.Active = #T.Roots > 0
 		editCapabilities = capabilities()

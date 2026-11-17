@@ -211,11 +211,6 @@ local function CreateModule()
 			bind(state.Connections, part:GetPropertyChangedSignal("LocalTransparencyModifier"), function()
 				updatePart(record, state)
 			end)
-			bind(state.Connections, part.AncestryChanged, function()
-				if part ~= record.Object and not part:IsDescendantOf(record.Object) then
-					removePart(record, part)
-				end
-			end)
 			if not record.Collecting then
 				updateRoot(record)
 				if state.Invisible and not record.PreparingMask and not record.MaskActive then

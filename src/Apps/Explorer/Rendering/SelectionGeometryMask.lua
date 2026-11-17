@@ -15,6 +15,9 @@ local function CreateModule()
 	local COPY_ALPHA = 0.9999999
 	local MAX_PARTS = 8192
 	local MAX_TOTAL_PARTS = 16384
+	local BULK_MOVE_THRESHOLD = 32
+	local copies = setmetatable({}, { __mode = "k" })
+	Main.SelectionGeometryObjects = copies
 	local totalParts = 0
 	local activeMasks = 0
 	local root
@@ -33,6 +36,7 @@ local function CreateModule()
 	local function copyInstance(source)
 		assert(type(Instance.fromExisting) == "function", "Shallow geometry copying is unavailable")
 		local copy = Instance.fromExisting(source)
+		copies[copy] = true
 		local ok, problem = pcall(function()
 			copy.Archivable = false
 			for _, tag in ipairs(copy:GetTags()) do
@@ -53,6 +57,7 @@ local function CreateModule()
 			return root
 		end
 		root = Instance.new("Folder")
+		copies[root] = true
 		root.Name = "DexSelectionGeometry"
 		root.Archivable = false
 		Main.SelectionGeometryRoots = Main.SelectionGeometryRoots or setmetatable({}, { __mode = "k" })
@@ -81,18 +86,23 @@ local function CreateModule()
 		end
 		local sources = {}
 		for source in pairs(parts) do
+			if #sources == MAX_PARTS then
+				return nil, "Geometry mask size limit"
+			end
 			if unsupportedGeometry(source) then
 				return nil, "Wrapped geometry requires the original renderer"
 			end
 			sources[#sources + 1] = source
 		end
-		if #sources == 0 or #sources > MAX_PARTS then
+		if #sources == 0 then
 			return nil, "Geometry mask size limit"
 		end
 		local model = Instance.new("Model")
+		copies[model] = true
 		model.Name = "SelectionMask"
 		model.Archivable = false
 		local humanoid = Instance.new("Humanoid")
+		copies[humanoid] = true
 		humanoid.Name = "MaskRenderer"
 		humanoid.AutoRotate = false
 		humanoid.AutomaticScalingEnabled = false
@@ -122,9 +132,9 @@ local function CreateModule()
 			queued[source] = true
 		end
 		activeMasks += 1
-		model.Parent = getRoot()
 		local scheduled = false
 		local pump
+		local movedParts, movedPoses, movedEntries = {}, {}, {}
 		local function changed()
 			if not self.Destroyed and onChanged then
 				onChanged()
@@ -155,7 +165,7 @@ local function CreateModule()
 			assert(not unsupportedGeometry(source), "Wrapped geometry requires the original renderer")
 			local copy = copyInstance(source)
 			local connections, bones = {}, {}
-			local entry = { Copy = copy, Connections = connections, Bones = bones }
+			local entry = { Copy = copy, Connections = connections, Bones = bones, LastPose = copy.CFrame }
 			local ok, problem = pcall(function()
 				copy.Anchored = true
 				copy.CanCollide = false
@@ -211,9 +221,10 @@ local function CreateModule()
 						return
 					end
 					if property == "CFrame" or property == "Size" or property == "Shape" then
-						copy[property] = source[property]
+						local value = source[property]
+						copy[property] = value
 						if property == "CFrame" then
-							entry.LastPose = source.CFrame
+							entry.LastPose = value
 						end
 					elseif property == "Anchored" then
 						self.Dynamic[source] = not source.Anchored and entry or nil
@@ -278,6 +289,9 @@ local function CreateModule()
 			else
 				table.clear(queue)
 				head = 1
+				if not model.Parent then
+					model.Parent = getRoot()
+				end
 				self.Ready = true
 				self.Version += 1
 				changed()
@@ -307,15 +321,36 @@ local function CreateModule()
 			destroyEntry(source)
 		end
 		function self:Step()
-			if self.Destroyed or self.Failed then
+			if self.Destroyed or self.Failed or not model.Parent then
 				return
 			end
 			for source, entry in pairs(self.Dynamic) do
 				local pose = source.CFrame
 				if entry.LastPose ~= pose then
-					entry.Copy.CFrame = pose
+					if self.Count < BULK_MOVE_THRESHOLD then
+						entry.Copy.CFrame = pose
+						entry.LastPose = pose
+					else
+						local index = #movedParts + 1
+						movedParts[index], movedPoses[index], movedEntries[index] = entry.Copy, pose, entry
+					end
+				end
+			end
+			if #movedParts > 0 then
+				local bulk = #movedParts >= BULK_MOVE_THRESHOLD and service.Workspace.BulkMoveTo
+				if bulk then
+					bulk = pcall(bulk, service.Workspace, movedParts, movedPoses, Enum.BulkMoveMode.FireCFrameChanged)
+				end
+				for index, entry in ipairs(movedEntries) do
+					local pose = movedPoses[index]
+					if not bulk then
+						entry.Copy.CFrame = pose
+					end
 					entry.LastPose = pose
 				end
+				table.clear(movedParts)
+				table.clear(movedPoses)
+				table.clear(movedEntries)
 			end
 			for source, binding in pairs(self.Bones) do
 				local pose, transform = source.CFrame, source.Transform

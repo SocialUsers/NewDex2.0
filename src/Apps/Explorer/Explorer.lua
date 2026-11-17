@@ -325,6 +325,7 @@ local function CreateModule()
 	addObject = function(root)
 		if
 			nodes[root]
+			or (Main.SelectionGeometryObjects and Main.SelectionGeometryObjects[root])
 			or (Main.SelectionGeometryRoots and Main.SelectionGeometryRoots[root])
 			or (Apps.History and Apps.History.IsHidden(root))
 		then
@@ -2456,6 +2457,9 @@ local function CreateModule()
 		local revision = Explorer.ConnectionRevision
 		local pending, scheduled = {}, false
 		local function reconcile(obj, renamed)
+			if Main.SelectionGeometryObjects and Main.SelectionGeometryObjects[obj] then
+				return
+			end
 			pending[obj] = bit32.bor(pending[obj] or 0, renamed and 2 or 1)
 			if scheduled then
 				return
@@ -2511,7 +2515,7 @@ local function CreateModule()
 			watchedProperties[property] = true
 		end
 		itemChangedCon = Main.TrackSignal(game.ItemChanged, function(obj, prop)
-			if not watchedProperties[prop] then
+			if not watchedProperties[prop] or Main.SelectionGeometryObjects and Main.SelectionGeometryObjects[obj] then
 				return
 			end
 			if Apps.RowStatus.ChangedProperties[prop] then
@@ -5553,6 +5557,7 @@ return search]==]
 		local spinner = status:FindFirstChild("LoadingSpinner")
 		if spinner then
 			spinner.Visible = Explorer.SearchBusy == true
+			Explorer.UpdateSearchSpinner()
 		end
 		status.Count.TextColor3 = not Explorer.SearchBusy and Explorer.SearchError and Color3.fromRGB(255, 160, 150)
 			or Settings.Theme.PlaceholderText
@@ -6617,6 +6622,7 @@ return search]==]
 		end)
 		local function resumeTree()
 			Explorer.Active = true
+			Explorer.UpdateSearchSpinner()
 			characterSearch.Schedule()
 			if Explorer.SearchInputPending and window:IsVisible() then
 				Explorer.DoSearch(Explorer.GuiElems.SearchBar.Text)
@@ -6630,12 +6636,14 @@ return search]==]
 		window.OnRestore:Connect(resumeTree)
 		window.OnDeactivate:Connect(function()
 			Explorer.Active = false
+			Explorer.UpdateSearchSpinner()
 			if Explorer.ScrollBarBorders then
 				Explorer.ScrollBarBorders.Update()
 			end
 		end)
 		window.OnMinimize:Connect(function()
 			Explorer.Active = false
+			Explorer.UpdateSearchSpinner()
 			if Explorer.ScrollBarBorders then
 				Explorer.ScrollBarBorders.Update()
 			end

@@ -506,6 +506,18 @@ local function CreateModule()
 			return
 		end
 		releaseConnections()
+		if not Tools.Enabled then
+			roots = {}
+			Tools.Roots = roots
+			bar.Visible = false
+			options.Visible = false
+			toolbarDrag = nil
+			table.clear(buttonHovers)
+			lastPivot, hover = nil, nil
+			updateButtons()
+			updateFrameBinding()
+			return
+		end
 		local objects = {}
 		for _, entry in ipairs(Apps.Explorer.Selection.List) do
 			objects[#objects + 1] = entry.Obj
@@ -513,12 +525,13 @@ local function CreateModule()
 		roots = Apps.TransformSession.Collect(objects)
 		Tools.Roots = roots
 		boundsDirty = true
-		bar.Visible = Tools.Enabled and (#roots > 0 or guiActive())
+		bar.Visible = #roots > 0 or guiActive()
 		if not bar.Visible then
 			options.Visible = false
 			toolbarDrag = nil
 			table.clear(buttonHovers)
 		end
+		local watchBounds = Tools.Tool ~= "Select"
 		for _, object in ipairs(objects) do
 			if not (object:IsA("BasePart") or object:IsA("Model")) or not object:IsDescendantOf(workspace) then
 				continue
@@ -535,9 +548,11 @@ local function CreateModule()
 			end
 			local function watch(part)
 				if part:IsA("BasePart") then
-					for _, key in ipairs({ "CFrame", "Size", "PivotOffset" }) do
-						selectionConnections[#selectionConnections + 1] = part:GetPropertyChangedSignal(key)
-							:Connect(dirty)
+					if watchBounds then
+						for _, key in ipairs({ "CFrame", "Size", "PivotOffset" }) do
+							selectionConnections[#selectionConnections + 1] = part:GetPropertyChangedSignal(key)
+								:Connect(dirty)
+						end
 					end
 					selectionConnections[#selectionConnections + 1] = part:GetPropertyChangedSignal("Locked")
 						:Connect(function()
@@ -554,10 +569,12 @@ local function CreateModule()
 				for _, part in ipairs(object:GetDescendants()) do
 					watch(part)
 				end
-				selectionConnections[#selectionConnections + 1] =
-					object:GetPropertyChangedSignal("WorldPivot"):Connect(dirty)
-				selectionConnections[#selectionConnections + 1] =
-					object:GetPropertyChangedSignal("PrimaryPart"):Connect(dirty)
+				if watchBounds then
+					selectionConnections[#selectionConnections + 1] =
+						object:GetPropertyChangedSignal("WorldPivot"):Connect(dirty)
+					selectionConnections[#selectionConnections + 1] =
+						object:GetPropertyChangedSignal("PrimaryPart"):Connect(dirty)
+				end
 				local function topology()
 					if drag then
 						finish(true)

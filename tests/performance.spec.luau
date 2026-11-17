@@ -373,6 +373,17 @@ do
 		"real subtree removal removes indexed descendants"
 	)
 	assert(index.Stats.Builds == builds, "ordinary Explorer events never rebuild the complete name index")
+	local copies = Main.SelectionGeometryObjects
+	local renderCopy = Instance.new("Part")
+	Main.SelectionGeometryObjects = { [renderCopy] = true }
+	renderCopy.Parent = workspace
+	game.DescendantAdded:Fire(renderCopy)
+	game.ItemChanged:Fire(renderCopy, "Name")
+	game.ItemChanged:Fire(renderCopy, "Parent")
+	flushTasks()
+	assert(not nodes[renderCopy], "selection copies do not enter the Explorer index")
+	renderCopy:Destroy()
+	Main.SelectionGeometryObjects = copies
 	added.Parent = nil
 	Explorer.SyncHistoryObject(added)
 	Explorer.ClearSearch()

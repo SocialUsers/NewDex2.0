@@ -98,7 +98,7 @@ do
 	local mask = assert(Geometry.Create({ [visible] = true, [hidden] = true }, function()
 		updates += 1
 	end))
-	assert(not mask.Ready, "geometry building is deferred")
+	assert(not mask.Ready and not mask.Model.Parent, "geometry builds off-scene before publishing")
 	drain()
 	assert(mask.Ready and not mask.Failed and mask.Count == 2 and updates == 1, "complete mask publishes once")
 	assert(
@@ -110,6 +110,7 @@ do
 		"render copies can be excluded from Explorer"
 	)
 	local a, b = mask.Entries[visible].Copy, mask.Entries[hidden].Copy
+	assert(Main.SelectionGeometryObjects[a] and Main.SelectionGeometryObjects[b], "render copies bypass Explorer reconciliation")
 	assert(
 		not mask.Entries[foreground] and mask.Count == 2,
 		"overlapping foreign objects do not enter the selected geometry set"
@@ -189,6 +190,49 @@ do
 		"destroy removes root registration and queued copies"
 	)
 	assert(activeSignals() == baseline, "all source/helper observers are released")
+
+	local moving = {}
+	local oldBulkMove = methods.BulkMoveTo
+	local bulkCalls, denyBulk = 0, false
+	methods.BulkMoveTo = function(_, parts, poses, mode)
+		assert(#parts == 64 and #poses == #parts and mode == Enum.BulkMoveMode.FireCFrameChanged)
+		bulkCalls += 1
+		assert(not denyBulk, "bulk move denied")
+		for index, part in ipairs(parts) do
+			part._props.CFrame = poses[index]
+		end
+	end
+	for index = 1, 64 do
+		local part = Instance.new("Part", workspace)
+		part.Anchored = false
+		part.CFrame = { Id = index }
+		moving[part] = true
+	end
+	local movingMask = assert(Geometry.Create(moving))
+	drain()
+	movingMask:Step()
+	assert(bulkCalls == 0, "initial copies already match source poses")
+	for part in pairs(moving) do
+		part._props.CFrame = { Id = 100 }
+	end
+	movingMask:Step()
+	movingMask:Step()
+	assert(bulkCalls == 1, "64 changed copies use one native movement call, with no idle repeat")
+	for part, entry in pairs(movingMask.Entries) do
+		assert(entry.Copy.CFrame == part.CFrame)
+		part._props.CFrame = { Id = 101 }
+	end
+	denyBulk = true
+	movingMask:Step()
+	assert(bulkCalls == 2, "failed batch falls back to individual moves")
+	for part, entry in pairs(movingMask.Entries) do
+		assert(entry.Copy.CFrame == part.CFrame)
+	end
+	movingMask:Destroy()
+	for part in pairs(moving) do
+		part:Destroy()
+	end
+	methods.BulkMoveTo = oldBulkMove
 
 	-- Exercise the real renderer switching one retained Highlight to a combined
 	-- model, rather than keeping the old Highlight-plus-wireframe rendering.
