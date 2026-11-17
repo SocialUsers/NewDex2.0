@@ -428,18 +428,39 @@ local function Main()
 			if destroyed or self.State ~= "Idle" then
 				return false, "Input Macros is busy"
 			end
-			local capture = { Started = os.clock(), Events = {}, Keys = {}, Buttons = {} }
+			local capture = {
+				Started = os.clock(),
+				Events = {},
+				Keys = {},
+				Buttons = {},
+				ObservedButtons = {},
+				HeldButtons = {},
+			}
+			local initialButtons = {}
+			for _, event in ipairs(input:GetMouseButtonsPressed()) do
+				initialButtons[#initialButtons + 1] = { Event = event, Allowed = canRecord(event, false) }
+			end
 			recording = capture
+			engine.State = "Recording"
 			watchSession()
-			local function beginInput(event, processed)
+			local function beginInput(event, processed, allowed)
+				if recording ~= capture then
+					return
+				end
 				if isStop(event) then
 					self:Stop()
 					return
 				end
-				if not canRecord(event, processed) then
+				local button = buttons[event.UserInputType]
+				if button then
+					if capture.ObservedButtons[button] then
+						return
+					end
+					capture.ObservedButtons[button] = true
+				end
+				if allowed == false or (allowed == nil and not canRecord(event, processed)) then
 					return
 				end
-				local button = buttons[event.UserInputType]
 				if event.UserInputType == Enum.UserInputType.Keyboard then
 					local key = event.KeyCode.Name
 					if getKeys()[key] and not capture.Keys[key] then
@@ -455,7 +476,19 @@ local function Main()
 				end
 			end
 			connect(input.InputBegan, beginInput)
+			local function endButton(button)
+				capture.ObservedButtons[button] = nil
+				if capture.Buttons[button] then
+					capture.Buttons[button] = nil
+					local x, y = normalizedPosition()
+					capture.X, capture.Y = x, y
+					append(capture, { Kind = "ButtonUp", Button = button, X = x, Y = y })
+				end
+			end
 			connect(input.InputEnded, function(event)
+				if recording ~= capture then
+					return
+				end
 				local button = buttons[event.UserInputType]
 				if event.UserInputType == Enum.UserInputType.Keyboard then
 					local key = event.KeyCode.Name
@@ -463,14 +496,14 @@ local function Main()
 						capture.Keys[key] = nil
 						append(capture, { Kind = "KeyUp", Key = key })
 					end
-				elseif button and capture.Buttons[button] then
-					capture.Buttons[button] = nil
-					local x, y = normalizedPosition()
-					capture.X, capture.Y = x, y
-					append(capture, { Kind = "ButtonUp", Button = button, X = x, Y = y })
+				elseif button then
+					endButton(button)
 				end
 			end)
 			connect(input.InputChanged, function(event, processed)
+				if recording ~= capture then
+					return
+				end
 				local kind = event.UserInputType
 				if kind ~= Enum.UserInputType.MouseMovement and kind ~= Enum.UserInputType.MouseWheel then
 					return
@@ -497,16 +530,38 @@ local function Main()
 				end
 			end)
 			connect(service.RunService.Heartbeat, function()
+				if recording ~= capture then
+					return
+				end
 				if os.clock() - capture.Started >= Engine.MaxDuration then
 					self:Stop("Recording limit reached")
+					return
+				end
+				local held = capture.HeldButtons
+				table.clear(held)
+				for _, event in ipairs(input:GetMouseButtonsPressed()) do
+					local button = buttons[event.UserInputType]
+					if button then
+						held[button] = true
+						beginInput(event, false)
+					end
+				end
+				for button = 1, #mouseTypes do
+					if recording ~= capture then
+						break
+					elseif capture.ObservedButtons[button] and not held[button] then
+						endButton(button)
+					end
 				end
 			end)
-			state("Recording")
-			for _, event in ipairs(input:GetMouseButtonsPressed()) do
+			for _, initial in ipairs(initialButtons) do
 				if recording ~= capture then
 					break
 				end
-				beginInput(event, false)
+				beginInput(initial.Event, false, initial.Allowed)
+			end
+			if recording == capture then
+				state("Recording")
 			end
 			return true
 		end
@@ -611,7 +666,7 @@ local function Main()
 				eventsCopy[index] = table.clone(event)
 			end
 			local loop = options.Loop == true
-			local run = { Backend = backend, Keys = {}, Buttons = {} }
+			local run = { Backend = backend, Keys = {}, Buttons = {}, MouseTransitions = {} }
 			local started, index = os.clock(), 1
 			local busy = false
 			playback = run
@@ -630,8 +685,18 @@ local function Main()
 				local elapsed = (now - started) * speed
 				local deadline = now + 0.002
 				local lastIndex = index
+				local transitions = run.MouseTransitions
+				table.clear(transitions)
 				while index <= #eventsCopy and eventsCopy[index].Time <= elapsed do
-					local ok, problem = pcall(dispatch, run, eventsCopy[index])
+					local event = eventsCopy[index]
+					if isButton(event) then
+						local down = event.Kind == "ButtonDown"
+						if transitions[event.Button] ~= nil and transitions[event.Button] ~= down then
+							break
+						end
+						transitions[event.Button] = down
+					end
+					local ok, problem = pcall(dispatch, run, event)
 					if playback ~= run then
 						return
 					elseif not ok then
@@ -647,7 +712,14 @@ local function Main()
 					callback(config.OnProgress, index - 1, #eventsCopy)
 				end
 				if playback == run and index > #eventsCopy then
-					if not loop then
+					local pressedThisFrame = false
+					for button in pairs(run.Buttons) do
+						pressedThisFrame = pressedThisFrame or transitions[button] == true
+					end
+					if pressedThisFrame then
+						busy = false
+						return
+					elseif not loop then
 						self:Stop("Finished")
 					elseif not releasePlayback(run) then
 						self:Stop("Could not release inputs between loops")

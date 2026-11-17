@@ -276,12 +276,12 @@ local function CreateModule()
 	end
 
 	local function suspendWindow()
-		if window and window:IsVisible() then
-			shownDuringAction = true
-			window:Hide()
-		end
 		if Main.SetGameInputLocked then
 			Main.SetGameInputLocked(false)
+		end
+		if window and window:IsVisible() then
+			shownDuringAction = true
+			window:Hide(true)
 		end
 	end
 
@@ -289,6 +289,9 @@ local function CreateModule()
 		playbackProgress = nil
 		if state ~= "Idle" then
 			suspendWindow()
+			if engine.State ~= state then
+				return
+			end
 			if not hud then
 				createHud()
 			end
@@ -338,8 +341,8 @@ local function CreateModule()
 		if kind == Enum.UserInputType.MouseMovement then
 			return true
 		end
-		local position = event.Position
-		return not position or not Main.IsPointInDexUI or not Main.IsPointInDexUI(position.X, position.Y)
+		local position = input:GetMouseLocation()
+		return not Main.IsPointInDexUI or not Main.IsPointInDexUI(position.X, position.Y)
 	end
 
 	function app.Init()

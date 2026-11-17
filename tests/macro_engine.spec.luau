@@ -19,7 +19,10 @@ local function signal()
 			end
 			return count
 		end,
-		Fire = function(_, ...)
+		Fire = function(self, ...)
+			if self.Before then
+				self.Before(...)
+			end
 			for key, callback in pairs(table.clone(connections)) do
 				if connections[key] then
 					callback(...)
@@ -77,6 +80,25 @@ local mouseRight = { UserInputType = Enum.UserInputType.MouseButton2 }
 local mouseMiddle = { UserInputType = Enum.UserInputType.MouseButton3 }
 local mouseMove = { UserInputType = Enum.UserInputType.MouseMovement }
 local pressed = {}
+input.InputBegan.Before = function(event)
+	for _, kind in ipairs({ Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2, Enum.UserInputType.MouseButton3 }) do
+		if event.UserInputType == kind then
+			for _, held in ipairs(pressed) do
+				if held.UserInputType == kind then
+					return
+				end
+			end
+			table.insert(pressed, event)
+		end
+	end
+end
+input.InputEnded.Before = function(event)
+	for index = #pressed, 1, -1 do
+		if pressed[index].UserInputType == event.UserInputType then
+			table.remove(pressed, index)
+		end
+	end
+end
 function input:GetMouseButtonsPressed()
 	return pressed
 end
@@ -215,6 +237,8 @@ camera.ViewportSize = vec(400, 200)
 tick(0.41)
 assert(#inputLog == 1 and inputLog[1][1] == "Down" and inputLog[1][2] == 87)
 tick(0.9)
+assert(recordCount == 8 and progress == 2, "mouse release waits for the next input frame")
+tick(0.91)
 assert(recordCount == 8 and progress == 7, "synthetic input was replayed without recording")
 assert(inputLog[2][1] == "Position" and inputLog[2][2] == 80 and inputLog[2][3] == 100)
 assert(inputLog[8][1] == "Delta" and inputLog[8][2] == -8)
@@ -354,4 +378,94 @@ tick(start + 0.125)
 assert(inputLog[3][1] == "VirtualDelta" and inputLog[3][2] == 7)
 tick(start + 0.25)
 assert(inputLog[4][1] == "VirtualRelease" and inputLog[4][2] == 80 and clean())
+
+MacroModule.InitDeps({ env = { MacroInput = funcs }, service = service })
+input.MouseBehavior = Enum.MouseBehavior.Default
+local capturedClicks
+local overUI = true
+local clicks = Engine.Create({
+	ShouldRecord = function()
+		return not overUI
+	end,
+	OnState = function(state, _, captured)
+		if state == "Recording" then
+			overUI = false
+		elseif state == "Idle" then
+			capturedClicks = captured
+		end
+	end,
+})
+pressed = { mouseLeft }
+assert(clicks:StartRecording())
+tick(now + 0.016)
+input.InputChanged:Fire(mouseMove, true)
+input.InputEnded:Fire(mouseLeft, true)
+input.InputBegan:Fire(mouseLeft, true)
+input.InputBegan:Fire(mouseLeft, true)
+input.InputEnded:Fire(mouseLeft, true)
+clicks:Stop()
+local buttonEvents = {}
+for _, event in ipairs(capturedClicks) do
+	if event.Button then
+		table.insert(buttonEvents, event)
+	end
+end
+assert(#buttonEvents == 2 and buttonEvents[1].Kind == "ButtonDown" and buttonEvents[2].Kind == "ButtonUp",
+	"record-button hold stays excluded after the window hides; game-processed clicks are captured once")
+
+assert(clicks:StartRecording())
+pressed = { mouseLeft, mouseRight, mouseMiddle }
+tick(now + 0.016)
+tick(now + 0.016)
+pressed = {}
+tick(now + 0.016)
+input.InputEnded:Fire(mouseLeft)
+clicks:Stop()
+assert(#capturedClicks == 6 and Engine.Validate(capturedClicks), "physical state recovers missing down/up callbacks without duplicates")
+for index = 1, 3 do
+	assert(capturedClicks[index].Kind == "ButtonDown" and capturedClicks[index].Button == index)
+	assert(capturedClicks[index + 3].Kind == "ButtonUp" and capturedClicks[index + 3].Button == index)
+end
+
+table.clear(inputLog)
+assert(clicks:Play({
+	{ Kind = "ButtonDown", Button = 1, X = 0.2, Y = 0.3, Time = 0 },
+	{ Kind = "ButtonUp", Button = 1, X = 0.2, Y = 0.3, Time = 0.001 },
+	{ Kind = "ButtonDown", Button = 1, X = 0.2, Y = 0.3, Time = 0.002 },
+	{ Kind = "ButtonUp", Button = 1, X = 0.2, Y = 0.3, Time = 0.003 },
+}))
+tick(now + 0.5)
+assert(inputLog[#inputLog][1] == "Click" and clicks.State == "Playing", "a stalled frame must not swallow a complete click")
+tick(now + 0.016)
+assert(inputLog[#inputLog][1] == "Release" and clicks.State == "Playing")
+tick(now + 0.016)
+assert(inputLog[#inputLog][1] == "Click" and clicks.State == "Playing")
+tick(now + 0.016)
+assert(inputLog[#inputLog][1] == "Release" and clicks.State == "Idle" and clean())
+
+table.clear(inputLog)
+assert(clicks:Play({ { Kind = "ButtonDown", Button = 1, X = 0.2, Y = 0.3, Time = 0 } }))
+tick(now + 0.016)
+assert(inputLog[#inputLog][1] == "Click" and clicks.State == "Playing")
+tick(now + 0.016)
+assert(inputLog[#inputLog][1] == "Release" and clicks.State == "Idle" and clean(), "final held click survives a frame before cleanup")
+clicks:Destroy()
+local transitionEvents
+local transitionEngine
+pressed = { mouseLeft }
+transitionEngine = Engine.Create({
+	OnState = function(state, _, captured)
+		if state == "Recording" then
+			input.InputEnded:Fire(mouseLeft)
+			transitionEngine:Stop()
+		elseif state == "Idle" then
+			transitionEvents = captured
+		end
+	end,
+})
+assert(transitionEngine:StartRecording())
+assert(#transitionEvents == 2 and transitionEvents[1].Kind == "ButtonDown" and transitionEvents[2].Kind == "ButtonUp",
+	"a release during window hiding cannot be reinserted as a stale held press")
+assert(transitionEngine.State == "Idle" and clean())
+transitionEngine:Destroy()
 print("PASS: macro capture, mouse holds and drags, timing, loop release, failure cleanup, focus loss and bounds")

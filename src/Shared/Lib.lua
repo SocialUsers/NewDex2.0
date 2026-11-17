@@ -4903,7 +4903,7 @@ local function CreateModule()
 			updateWindows(silent)
 		end
 
-		funcs.Close = function(self)
+		funcs.Close = function(self, instant)
 			self.Closed = true
 			self:SetResizableInternal(false)
 
@@ -4917,7 +4917,9 @@ local function CreateModule()
 			self.Side = nil
 			self.OnDeactivate:Fire()
 
-			if not self.Aligned then
+			if instant == true then
+				self:StopTweens()
+			elseif not self.Aligned then
 				self:StopTweens()
 				local ti = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 

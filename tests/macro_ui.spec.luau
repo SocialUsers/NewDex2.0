@@ -58,7 +58,8 @@ Lib.Window.new = function()
 		self.Hidden = false
 		self.OnActivate:Fire()
 	end
-	function window:Hide()
+	function window:Hide(instant)
+		assert(instant == true and focusLock == false, "macro capture and playback remove the window and input lock immediately")
 		self.Hidden = true
 		self.OnDeactivate:Fire()
 	end
@@ -271,8 +272,15 @@ heartbeat:Fire(12.2)
 assert(statusStrip.Metric.Text == "00:12")
 local stopInput = { UserInputType = Enum.UserInputType.Keyboard, KeyCode = Enum.KeyCode.F8 }
 assert(callback.IsStopInput(stopInput), "F8 is reserved for stopping")
-assert(not callback.ShouldRecord({ UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(1, 0) }))
-assert(callback.ShouldRecord({ UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(2, 0) }))
+local mousePosition = Vector2.new(1, 0)
+service.UserInputService.GetMouseLocation = function()
+	return mousePosition
+end
+local staleClick = { UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(2, 0) }
+assert(not callback.ShouldRecord(staleClick), "current pointer over Dex is excluded despite stale input coordinates")
+mousePosition = Vector2.new(2, 0)
+assert(callback.ShouldRecord({ UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(1, 0) }, true),
+	"game UI clicks use current pointer coordinates and remain recordable when processed")
 engine:Stop({
 	{ Kind = "KeyDown", Time = 0, Key = "W" },
 	{ Kind = "RelativeMove", Time = 0.25, DeltaX = 3, DeltaY = -4 },
@@ -359,6 +367,53 @@ assert(
 failSave = false
 transport.Loop.Activated:Fire()
 assert(chosen[1].Loop and pane.Status.Text ~= "Could not save macros")
+local normalHide = usedWindow.Hide
+usedWindow.Hide = function(self)
+	self.Hidden = true
+	engine:Stop()
+end
+transport.Record.Activated:Fire()
+assert(engine.State == "Idle" and not hud.Enabled and not usedWindow.Hidden,
+	"stopping during window hiding does not reopen the recording HUD")
+usedWindow.Hide = normalHide
+do
+	local funcs = {}
+	local leftSide, rightSide, visibleWindows = { Windows = {} }, { Windows = {} }, {}
+	local waits, tweens, layouts, cancelled = 0, 0, 0, 0
+	local Lib = {
+		FindAndRemove = function(list, item)
+			local index = table.find(list, item)
+			if index then
+				table.remove(list, index)
+			end
+		end,
+		FastWait = function()
+			waits += 1
+		end,
+	}
+	local Enum = { EasingStyle = { Quad = "Quad" }, EasingDirection = { Out = "Out" } }
+	local TweenInfo = { new = function() return {} end }
+	local tick = function() return 1 end
+	local updateWindows = function() layouts += 1 end
+	-- WINDOW_CLOSE
+	local sample = {
+		Gui = { Parent = game },
+		GuiElems = { Main = {}, Title = {}, Minimize = { ImageLabel = {} }, Close = { ImageLabel = {} }, TopBar = {}, Outlines = {} },
+		SizeX = 400,
+		SetResizableInternal = function() end,
+		MinimizeAnim = { Disable = function() end },
+		CloseAnim = { Disable = function() end },
+		OnDeactivate = { Fire = function() end },
+		StopTweens = function() cancelled += 1 end,
+		DoTween = function() tweens += 1 end,
+	}
+	table.insert(visibleWindows, sample)
+	funcs.Close(sample, true)
+	assert(sample.Closed and sample.Gui.Parent == nil and #visibleWindows == 0 and layouts == 1)
+	assert(waits == 0 and tweens == 0 and cancelled == 1, "instant macro hiding executes the actual close path without a yield")
+	funcs.Close(sample)
+	assert(waits == 2 and tweens == 6 and cancelled == 2, "normal window closing retains its animation")
+end
 cleanup()
 input.InputBegan:Fire(pressed, false)
 assert(plays == 1 and engine.Destroyed and usedWindow.Destroyed, "cleanup removes hotkey and window")
