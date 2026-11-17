@@ -1,6 +1,6 @@
 --!strict
 
-local ref="d850398b4043e7cc497c9f2725aae8ecbbb6d6e3"
+local ref="57ac6e2c76b976a312017e5ab2d2c9cb67e49675"
 local base="https://raw.githubusercontent.com/wooxps/dex-explorer/"..ref.."/"
 local path="dex-explorer/runtime/"..ref..".lua"
 local chunk
