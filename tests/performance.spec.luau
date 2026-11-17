@@ -206,6 +206,38 @@ do
 end
 
 do
+	Explorer.ClearSearch()
+	local parent = Instance.new("Folder", workspace)
+	local children = {}
+	for i = 1, 2048 do
+		children[i] = Instance.new("Part", parent)
+	end
+	Explorer.SyncHistoryObject(parent)
+	local parentNode = nodes[parent]
+	local removed = {}
+	for index, object in ipairs(children) do
+		if index % 2 == 0 then
+			object.Parent = nil
+			removed[#removed + 1] = object
+			game.DescendantRemoving:Fire(object)
+			game.ItemChanged:Fire(object, "Parent")
+		end
+	end
+	flushTasks()
+	assert(#parentNode == 1024 and not parentNode.HasDel, "a removal burst compacts siblings once before repaint")
+	for _, object in ipairs(removed) do
+		assert(nodes[object] == nil, "removed instances leave the live registry")
+	end
+	for index, node in ipairs(parentNode) do
+		assert(node.Obj == children[index * 2 - 1] and not node.Del, "compaction preserves surviving sibling order")
+	end
+	parent.Parent = nil
+	Explorer.SyncHistoryObject(parent)
+	Explorer.CleanDeletedChildren()
+	flushTasks()
+end
+
+do
 	-- Snapshot searches yield without exposing partial results and are cancelled
 	-- by user intent, not by unrelated background hierarchy notifications.
 	local previousWait = task.wait

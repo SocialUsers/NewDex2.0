@@ -230,6 +230,19 @@ local function CreateModule()
 	local updateDebounce, refreshDebounce = false, false
 	local updateTicket, refreshTicket = 0, 0
 	local dirtyParents = {}
+	local cleanupScheduled = false
+	local function scheduleDeletedChildrenCleanup()
+		if cleanupScheduled then
+			return
+		end
+		cleanupScheduled = true
+		task.delay(0.5, function()
+			cleanupScheduled = false
+			if Main.Alive ~= false and Explorer.CleanDeletedChildren() and not refreshDebounce then
+				Explorer.PerformRefresh()
+			end
+		end)
+	end
 	local searchGeneration, searchTreeVersion = 0, 0
 	local function changeSearchTree()
 		searchTreeVersion += 1
@@ -425,6 +438,7 @@ local function CreateModule()
 		if par then
 			par.HasDel = true
 			dirtyParents[par] = true
+			scheduleDeletedChildrenCleanup()
 		end
 
 		local function recur(root)
@@ -824,7 +838,7 @@ local function CreateModule()
 		return compareNodes(a, b, sortingNames)
 	end
 	local defaultNodeSorter = Explorer.NodeSorter
-	local function sortSearchSiblings(children, sort)
+	local function sortSiblings(children, sort)
 		if #children < 512 or sort ~= defaultNodeSorter then
 			table.sort(children, sort)
 			return
@@ -1106,7 +1120,7 @@ local function CreateModule()
 				Sort = function(parent)
 					if sortingEnabled and not parent.Sorted then
 						sortingNames = {}
-						local ok, problem = pcall(table.sort, parent, Explorer.NodeSorter)
+						local ok, problem = pcall(sortSiblings, parent, Explorer.NodeSorter)
 						sortingNames = nil
 						if not ok then
 							error(problem, 0)
@@ -1149,7 +1163,6 @@ local function CreateModule()
 		local font = Enum.Font.BuilderSans
 		local size = Vector2.new(math.huge, 20)
 		local useNameWidth = true
-		local tSort = table.sort
 		local sortFunc = Explorer.NodeSorter
 		local isSearching = (expanded == Explorer.SearchExpanded)
 		local provisional = isSearching and retainedSearchQuery ~= nil
@@ -1173,13 +1186,13 @@ local function CreateModule()
 				for parent, children in pairs(searchChildren) do
 					if #children * 4 >= #parent then
 						if not parent.Sorted then
-							sortSearchSiblings(parent, sortFunc)
+							sortSiblings(parent, sortFunc)
 							parent.Sorted = true
 							changeSearchTree()
 						end
 						searchChildren[parent] = parent
 					else
-						sortSearchSiblings(children, sortFunc)
+						sortSiblings(children, sortFunc)
 					end
 				end
 			end)
@@ -1230,7 +1243,7 @@ local function CreateModule()
 			if not searchChildren and sortingEnabled and not root.Sorted then
 				changeSearchTree()
 				sortingNames = {}
-				local sorted, sortError = pcall(tSort, root, sortFunc)
+				local sorted, sortError = pcall(sortSiblings, root, sortFunc)
 				sortingNames = nil
 				if not sorted then
 					error(sortError, 0)
@@ -1409,7 +1422,7 @@ local function CreateModule()
 		return #roots > 0
 	end
 
-	Explorer.SyncHistoryObject = function(obj)
+	Explorer.SyncHistoryObject = function(obj, batchRemoval)
 		if obj == game or Explorer.IsReadOnlyInferenceObject(obj) then
 			return
 		end
@@ -1420,6 +1433,9 @@ local function CreateModule()
 			local parent = node and node.Parent
 			removeObject(obj)
 			if parent then
+				if batchRemoval then
+					return true
+				end
 				local i = table.find(parent, node)
 				if i then
 					table.remove(parent, i)
@@ -2440,36 +2456,42 @@ local function CreateModule()
 		local revision = Explorer.ConnectionRevision
 		local pending, scheduled = {}, false
 		local function reconcile(obj, renamed)
-			Apps.RowStatus.Invalidate(obj, "Parent")
-			pending[obj] = pending[obj] or renamed or false
+			pending[obj] = bit32.bor(pending[obj] or 0, renamed and 2 or 1)
 			if scheduled then
 				return
 			end
 			scheduled = true
 			task.defer(function()
-				if not Main.Alive or revision ~= Explorer.ConnectionRevision then
+				if Main.Alive == false or revision ~= Explorer.ConnectionRevision then
 					return
 				end
 				local batch = pending
 				pending = {}
 				scheduled = false
-				local renamedVisible, needsPaint = false, false
-				for object, renamed in pairs(batch) do
-					if object:IsA("PackageLink") then
-						needsPaint = true
+				local renamedVisible, needsPaint, removals = false, false, false
+				for object, flags in pairs(batch) do
+					if bit32.band(flags, 1) ~= 0 then
+						needsPaint = Apps.RowStatus.Invalidate(object, "Parent") or needsPaint
+						local ok, removed = pcall(Explorer.SyncHistoryObject, object, true)
+						removals = removals or (ok and removed == true)
 					end
-					Apps.RowStatus.Invalidate(object, "Parent")
-					pcall(Explorer.SyncHistoryObject, object)
-					local node = nodes[object]
-					if renamed and node and Explorer.IsNodeVisible(node) then
-						renamedVisible = true
+					if flags >= 2 then
+						local node = nodes[object]
+						if node and Explorer.IsNodeVisible(node) then
+							renamedVisible = true
+						end
 					end
 				end
-				if renamedVisible and not (searchRefreshQueued and searchView) then
-					Explorer.Update(true)
-					Explorer.Refresh()
-				elseif needsPaint then
-					Explorer.Refresh()
+				if removals then
+					Explorer.CleanDeletedChildren()
+				end
+				if Explorer.Window:IsVisible() then
+					if renamedVisible and not (searchRefreshQueued and searchView) then
+						Explorer.Update(true)
+						Explorer.Refresh()
+					elseif needsPaint then
+						Explorer.Refresh()
+					end
 				end
 			end)
 		end
@@ -6088,6 +6110,9 @@ return search]==]
 	end
 
 	Explorer.CleanDeletedChildren = function()
+		if not next(dirtyParents) then
+			return false
+		end
 		local processed = false
 
 		local pendingParents = dirtyParents
@@ -6095,36 +6120,30 @@ return search]==]
 
 		for node in pairs(pendingParents) do
 			if node.HasDel then
-				changeSearchTree()
 				local write = 1
 				local count = #node
 				for read = 1, count do
 					local child = node[read]
 					if not child.Del then
-						node[write] = child
+						if write ~= read then
+							node[write] = child
+						end
 						write += 1
 					end
 				end
-				for i = write, count do
-					node[i] = nil
+				if write <= count then
+					for i = write, count do
+						node[i] = nil
+					end
+					processed = true
 				end
 				node.HasDel = false
-				processed = true
-				Lib.FastWait()
 			end
 		end
+		if processed then
+			changeSearchTree()
+		end
 		return processed
-	end
-
-	Explorer.InitDelCleaner = function()
-		coroutine.wrap(function()
-			while Main.Alive do
-				if Explorer.CleanDeletedChildren() and not refreshDebounce then
-					Explorer.PerformRefresh()
-				end
-				Lib.FastWait(0.5)
-			end
-		end)()
 	end
 
 	Explorer.SelectObject = function(object)
@@ -6572,7 +6591,6 @@ return search]==]
 				Explorer.ShowRightClick(event.Position)
 			end
 		end)
-		Explorer.InitDelCleaner()
 		selection.Changed:Connect(Explorer.UpdateSelectionVisuals)
 		local previousSelection = selection.Map
 		selection.Changed:Connect(function()

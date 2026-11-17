@@ -1,6 +1,5 @@
 --!strict
 
-Explorer.InitDelCleaner = function() end -- background cleanup loop requires a live scheduler
 Explorer.UpdateSelectionVisuals = function() end -- 3D adornments are outside this UI smoke test
 Explorer.Init()
 assert(Explorer.GuiElems.ToolBar.SearchFrame.Size.Y.Offset == 20, "search height")

@@ -160,18 +160,18 @@ local function Main()
 					self.Parents[node] = nil
 				end
 			end
-			local first = #rows + 1
 			for index = #plans, 1, -1 do
 				local plan = plans[index]
 				local oldCount = #rows
 				local removed = plan.Last - plan.First + 1
 				local delta = #plan.Rows - removed
-				table.move(rows, plan.Last + 1, oldCount, plan.First + #plan.Rows, rows)
-				table.move(plan.Rows, 1, #plan.Rows, plan.First, rows)
-				for at = oldCount + delta + 1, oldCount do
-					rows[at] = nil
+				if delta ~= 0 then
+					table.move(rows, plan.Last + 1, oldCount, plan.First + #plan.Rows, rows)
+					for at = oldCount + delta + 1, oldCount do
+						rows[at] = nil
+					end
 				end
-				first = math.min(first, plan.First)
+				table.move(plan.Rows, 1, #plan.Rows, plan.First, rows)
 			end
 			for _, plan in ipairs(plans) do
 				for _, node in ipairs(plan.Rows) do
@@ -196,9 +196,25 @@ local function Main()
 					self.Depth = math.max(self.Depth, depth)
 				end
 			end
-			for index = first, #rows do
-				indices[rows[index]] = index
-				self.Stats.Reindexed += 1
+			local function reindex(first, last)
+				for index = first, last do
+					indices[rows[index]] = index
+				end
+				self.Stats.Reindexed += last - first + 1
+			end
+			local offset, nextRow = 0, 1
+			for _, plan in ipairs(plans) do
+				local first = plan.First + offset
+				local last = first + #plan.Rows - 1
+				if offset ~= 0 then
+					reindex(nextRow, first - 1)
+				end
+				reindex(first, last)
+				offset += #plan.Rows - (plan.Last - plan.First + 1)
+				nextRow = last + 1
+			end
+			if offset ~= 0 then
+				reindex(nextRow, #rows)
 			end
 			table.clear(self.Dirty)
 			self.Stats.Patches += 1

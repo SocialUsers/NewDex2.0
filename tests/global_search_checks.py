@@ -159,6 +159,8 @@ print("PASS: global search scopes, dirty buffers, exact lines, unavailable code,
 '''
 explorer=(root/'src/Apps/Explorer/Explorer.lua').read_text()
 program+='\ndo\nlocal Explorer={} local game={} local searchTreeVersion=0 local characterSearch={} local dirtyParents={} local nilMap={} local nodes={}\nlocal Apps={History={IsHidden=function() return false end}}\nlocal updateDebounce=true local function markSearchDirty() end\nlocal function moveObject() end\nlocal removeObject\n'
+program+='local task={delay=function() end}\n'
+program+=explorer[explorer.index('\tlocal cleanupScheduled ='):explorer.index('\tlocal searchGeneration,')]
 program+=explorer[explorer.index('\tlocal function changeSearchTree()'):explorer.index('\tlocal nilNode =')]
 program+=explorer[explorer.index('\tlocal evidenceCandidates ='):explorer.index('\tExplorer.HasReconstructedSelection =')]
 program+=explorer[explorer.index('\tremoveObject = function(root)'):explorer.index('\n\tmoveObject = function(obj)')]

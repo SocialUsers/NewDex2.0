@@ -58,7 +58,9 @@ local function Main()
 				cache[parent] = nil
 			end
 			linkParents[object] = parent
+			return true
 		end
+		return false
 	end
 	function Status.Resolve(object, className)
 		if not object then

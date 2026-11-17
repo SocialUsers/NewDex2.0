@@ -60,13 +60,30 @@ for i = 1, 17500 do
 end
 full()
 assert(#rows == 70001)
+local firstGroup, secondGroup = service[1], service[2]
+local reindexed = p.Stats.Reindexed
+firstGroup[1], firstGroup[3] = firstGroup[3], firstGroup[1]
+p:Mark(firstGroup)
+assert(p:Try(context))
+assert(p.Stats.Reindexed - reindexed == 3, "equal-length edits leave the unchanged tail indexed")
+check()
+reindexed = p.Stats.Reindexed
+local child = table.remove(firstGroup, 1)
+child.Parent = secondGroup
+secondGroup[#secondGroup + 1] = child
+p:Mark(firstGroup)
+p:Mark(secondGroup)
+assert(p:Try(context))
+assert(p.Stats.Reindexed - reindexed == 7, "a paired move only reindexes its affected range")
+check()
+local projectedBeforeInsertion = p.Stats.Projected
 local group = service[8700]
 local added = { Parent = group, NameWidth = 120 }
 group[#group + 1] = added
 p:Mark(group)
 assert(p:Try(context))
 check()
-assert(p.Stats.Projected == 4, "small branch change traverses unrelated branches")
+assert(p.Stats.Projected - projectedBeforeInsertion == 4, "small branch change traverses unrelated branches")
 local gone = table.remove(group, 4)
 gone.Del = true
 p:Mark(group)
