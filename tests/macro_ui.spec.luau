@@ -277,10 +277,12 @@ service.UserInputService.GetMouseLocation = function()
 	return mousePosition
 end
 local staleClick = { UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(2, 0) }
-assert(not callback.ShouldRecord(staleClick), "current pointer over Dex is excluded despite stale input coordinates")
+assert(callback.ShouldRecord(staleClick), "an actual press outside Dex stays accepted after the pointer moves over Dex")
+assert(not callback.ShouldRecord(staleClick, false, mousePosition), "held-button sampling explicitly uses the current pointer")
 mousePosition = Vector2.new(2, 0)
-assert(callback.ShouldRecord({ UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(1, 0) }, true),
-	"game UI clicks use current pointer coordinates and remain recordable when processed")
+assert(not callback.ShouldRecord({ UserInputType = Enum.UserInputType.MouseButton1, Position = Vector2.new(1, 0) }, true),
+	"a press inside Dex stays excluded after the pointer moves outside")
+assert(callback.ShouldRecord(staleClick, true), "game-processed clicks outside Dex remain recordable")
 engine:Stop({
 	{ Kind = "KeyDown", Time = 0, Key = "W" },
 	{ Kind = "RelativeMove", Time = 0.25, DeltaX = 3, DeltaY = -4 },

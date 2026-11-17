@@ -154,7 +154,7 @@ local function Main()
 		return if ok then result else nil
 	end
 
-	local function openBackend(input)
+	local function openBackend(input, events)
 		local inputFunctions = (env and env.MacroInput) or {}
 		local virtual = tryCreate(function()
 			return input:CreateVirtualInput()
@@ -172,6 +172,29 @@ local function Main()
 		local wheel = inputFunctions.mousescroll
 		local mouseDown = { inputFunctions.mouse1press, inputFunctions.mouse2press, inputFunctions.mouse3press }
 		local mouseUp = { inputFunctions.mouse1release, inputFunctions.mouse2release, inputFunctions.mouse3release }
+		local function hasMouseFunctions(button)
+			return type(mouseDown[button]) == "function" and type(mouseUp[button]) == "function"
+		end
+		local executorMouse = type(absolute) == "function" or type(relative) == "function"
+		if events then
+			local canPosition = executorMouse
+			executorMouse = true
+			for _, event in ipairs(events) do
+				if isButton(event) and (not hasMouseFunctions(event.Button) or not canPosition) then
+					executorMouse = false
+				elseif event.Kind == "Move" and not canPosition then
+					executorMouse = false
+				elseif event.Kind == "RelativeMove" and type(relative) ~= "function" then
+					executorMouse = false
+				elseif event.Kind == "Wheel" and type(wheel) ~= "function" then
+					executorMouse = false
+				end
+			end
+		else
+			executorMouse = executorMouse and hasMouseFunctions(1)
+		end
+		local mouseVirtual = not executorMouse and virtual
+		local mouseManager = not executorMouse and not virtual and manager
 
 		local hasExecutorKeys = type(keyDown) == "function" and type(keyUp) == "function"
 		if hasExecutorKeys or virtual or manager then
@@ -190,26 +213,26 @@ local function Main()
 			return (hasExecutorKeys and virtualKeys[key] ~= nil) or virtual ~= nil or not not manager
 		end
 
-		if type(absolute) == "function" then
+		if executorMouse and type(absolute) == "function" then
 			backend.Move = absolute
-		elseif virtual then
-			function backend.Move(x, y)
-				virtual:SendMousePosition(Vector2.new(x, y))
-			end
-		elseif manager then
-			function backend.Move(x, y)
-				manager:SendMouseMoveEvent(x, y, game)
-			end
-		elseif type(relative) == "function" then
+		elseif executorMouse and type(relative) == "function" then
 			function backend.Move(x, y)
 				local current = input:GetMouseLocation()
 				relative(x - current.X, y - current.Y)
 			end
+		elseif mouseVirtual then
+			function backend.Move(x, y)
+				virtual:SendMousePosition(Vector2.new(x, y))
+			end
+		elseif mouseManager then
+			function backend.Move(x, y)
+				manager:SendMouseMoveEvent(x, y, game)
+			end
 		end
 
-		if type(relative) == "function" then
+		if executorMouse and type(relative) == "function" then
 			backend.RelativeMove = relative
-		elseif virtual then
+		elseif mouseVirtual then
 			function backend.RelativeMove(x, y)
 				local delta = Vector2.new(x, y)
 				if input.MouseBehavior == Enum.MouseBehavior.Default then
@@ -220,14 +243,18 @@ local function Main()
 			end
 		end
 
-		if type(wheel) == "function" then
+		if executorMouse and type(wheel) == "function" then
 			function backend.Wheel(x, y, delta)
 				if backend.Move and input.MouseBehavior == Enum.MouseBehavior.Default then
 					backend.Move(x, y)
 				end
 				wheel(math.round(delta * 120))
 			end
-		elseif manager then
+		elseif mouseVirtual then
+			function backend.Wheel(x, y, delta)
+				virtual:SendPointerAction(Vector2.new(x, y), { Wheel = delta })
+			end
+		elseif mouseManager then
 			function backend.Wheel(x, y, delta)
 				for _ = 1, math.max(1, math.round(math.abs(delta))) do
 					manager:SendMouseWheelEvent(x, y, delta > 0, game)
@@ -235,14 +262,11 @@ local function Main()
 			end
 		end
 
-		local function hasMouseFunctions(button)
-			return backend.Move ~= nil and type(mouseDown[button]) == "function" and type(mouseUp[button]) == "function"
-		end
 		function backend.HasButton(button)
-			return hasMouseFunctions(button) or virtual ~= nil or manager ~= nil
+			return not not ((executorMouse and backend.Move and hasMouseFunctions(button)) or mouseVirtual or mouseManager)
 		end
 		function backend.Button(button, down, x, y, reposition)
-			if hasMouseFunctions(button) then
+			if executorMouse then
 				if reposition and input.MouseBehavior == Enum.MouseBehavior.Default then
 					backend.Move(x, y)
 				end
@@ -252,7 +276,7 @@ local function Main()
 					local current = input:GetMouseLocation()
 					x, y = current.X, current.Y
 				end
-				if virtual then
+				if mouseVirtual then
 					virtual:SendMouseButton(Vector2.new(x, y), mouseTypes[button], down, 0)
 				else
 					manager:SendMouseButtonEvent(x, y, button - 1, down, game, 0)
@@ -320,12 +344,12 @@ local function Main()
 			local camera = service.Workspace.CurrentCamera
 			return if camera then camera.ViewportSize else Vector2.new(0, 0)
 		end
-		local function normalizedPosition()
+		local function normalizedPosition(_position)
 			local size = viewport()
 			if size.X <= 0 or size.Y <= 0 then
 				return 0, 0
 			end
-			local position = input:GetMouseLocation()
+			local position = _position or input:GetMouseLocation()
 			return math.clamp(position.X / size.X, 0, 1), math.clamp(position.Y / size.Y, 0, 1)
 		end
 		local function pixels(event)
@@ -420,8 +444,8 @@ local function Main()
 				engine:Stop("Recording limit reached")
 			end
 		end
-		local function canRecord(event, processed)
-			return not config.ShouldRecord or config.ShouldRecord(event, processed)
+		local function canRecord(event, processed, position)
+			return not config.ShouldRecord or config.ShouldRecord(event, processed, position)
 		end
 
 		function engine:StartRecording()
@@ -434,16 +458,25 @@ local function Main()
 				Keys = {},
 				Buttons = {},
 				ObservedButtons = {},
-				HeldButtons = {},
 			}
 			local initialButtons = {}
+			local initialPosition = input:GetMouseLocation()
 			for _, event in ipairs(input:GetMouseButtonsPressed()) do
-				initialButtons[#initialButtons + 1] = { Event = event, Allowed = canRecord(event, false) }
+				initialButtons[#initialButtons + 1] = { Event = event, Allowed = canRecord(event, false, initialPosition) }
 			end
 			recording = capture
 			engine.State = "Recording"
 			watchSession()
-			local function beginInput(event, processed, allowed)
+			local function endButton(button, position)
+				capture.ObservedButtons[button] = nil
+				if capture.Buttons[button] then
+					capture.Buttons[button] = nil
+					local x, y = normalizedPosition(position)
+					capture.X, capture.Y = x, y
+					append(capture, { Kind = "ButtonUp", Button = button, X = x, Y = y })
+				end
+			end
+			local function beginInput(event, processed, allowed, _position)
 				if recording ~= capture then
 					return
 				end
@@ -452,13 +485,20 @@ local function Main()
 					return
 				end
 				local button = buttons[event.UserInputType]
+				local position = _position or event.Position or input:GetMouseLocation()
 				if button then
-					if capture.ObservedButtons[button] then
+					local previous = capture.ObservedButtons[button]
+					if previous == event then
 						return
+					elseif previous then
+						endButton(button, position)
+						if recording ~= capture then
+							return
+						end
 					end
-					capture.ObservedButtons[button] = true
+					capture.ObservedButtons[button] = event
 				end
-				if allowed == false or (allowed == nil and not canRecord(event, processed)) then
+				if allowed == false or (allowed == nil and not canRecord(event, processed, position)) then
 					return
 				end
 				if event.UserInputType == Enum.UserInputType.Keyboard then
@@ -468,7 +508,7 @@ local function Main()
 						append(capture, { Kind = "KeyDown", Key = key })
 					end
 				elseif button and not capture.Buttons[button] then
-					local x, y = normalizedPosition()
+					local x, y = normalizedPosition(position)
 					capture.X, capture.Y = x, y
 					local entry = { Kind = "ButtonDown", Button = button, X = x, Y = y }
 					capture.Buttons[button] = entry
@@ -476,15 +516,6 @@ local function Main()
 				end
 			end
 			connect(input.InputBegan, beginInput)
-			local function endButton(button)
-				capture.ObservedButtons[button] = nil
-				if capture.Buttons[button] then
-					capture.Buttons[button] = nil
-					local x, y = normalizedPosition()
-					capture.X, capture.Y = x, y
-					append(capture, { Kind = "ButtonUp", Button = button, X = x, Y = y })
-				end
-			end
 			connect(input.InputEnded, function(event)
 				if recording ~= capture then
 					return
@@ -497,7 +528,14 @@ local function Main()
 						append(capture, { Kind = "KeyUp", Key = key })
 					end
 				elseif button then
-					endButton(button)
+					local observed = capture.ObservedButtons[button]
+					if observed and (
+						observed == event
+						or observed.UserInputState == Enum.UserInputState.End
+						or observed.UserInputState == Enum.UserInputState.Cancel
+					) then
+						endButton(button, event.Position)
+					end
 				end
 			end)
 			connect(input.InputChanged, function(event, processed)
@@ -518,7 +556,7 @@ local function Main()
 						append(capture, { Kind = "RelativeMove", DeltaX = x, DeltaY = y })
 					end
 				else
-					local x, y = normalizedPosition()
+					local x, y = normalizedPosition(if kind == Enum.UserInputType.MouseMovement then event.Position else nil)
 					if kind == Enum.UserInputType.MouseWheel then
 						if event.Position.Z ~= 0 then
 							append(capture, { Kind = "Wheel", X = x, Y = y, Delta = event.Position.Z })
@@ -537,20 +575,24 @@ local function Main()
 					self:Stop("Recording limit reached")
 					return
 				end
-				local held = capture.HeldButtons
-				table.clear(held)
+				local position = input:GetMouseLocation()
 				for _, event in ipairs(input:GetMouseButtonsPressed()) do
 					local button = buttons[event.UserInputType]
-					if button then
-						held[button] = true
-						beginInput(event, false)
+					local state = event.UserInputState
+					if button and state ~= Enum.UserInputState.End and state ~= Enum.UserInputState.Cancel then
+						beginInput(event, false, nil, position)
 					end
 				end
 				for button = 1, #mouseTypes do
 					if recording ~= capture then
 						break
-					elseif capture.ObservedButtons[button] and not held[button] then
-						endButton(button)
+					end
+					local observed = capture.ObservedButtons[button]
+					if observed then
+						local state = observed.UserInputState
+						if state == Enum.UserInputState.End or state == Enum.UserInputState.Cancel then
+							endButton(button)
+						end
 					end
 				end
 			end)
@@ -558,7 +600,7 @@ local function Main()
 				if recording ~= capture then
 					break
 				end
-				beginInput(initial.Event, false, initial.Allowed)
+				beginInput(initial.Event, false, initial.Allowed, initialPosition)
 			end
 			if recording == capture then
 				state("Recording")
@@ -593,7 +635,7 @@ local function Main()
 			elseif #events == 0 then
 				return false, "This macro has no inputs"
 			end
-			local backend = openBackend(input)
+			local backend = openBackend(input, events)
 			local supported, issue = canSend(backend, events)
 			backend.Close()
 			return supported, issue
@@ -654,7 +696,7 @@ local function Main()
 			if not finite(speed, Engine.MinSpeed, Engine.MaxSpeed) then
 				return false, "Invalid playback speed"
 			end
-			local backend = openBackend(input)
+			local backend = openBackend(input, events)
 			local supported, problem = canSend(backend, events)
 			if not supported then
 				backend.Close()

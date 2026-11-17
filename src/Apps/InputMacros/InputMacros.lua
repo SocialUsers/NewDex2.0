@@ -331,7 +331,7 @@ local function CreateModule()
 		end
 	end
 
-	local function shouldRecord(event)
+	local function shouldRecord(event, _, _position)
 		local key = playingKey(event)
 		if key then
 			local focused = input:GetFocusedTextBox()
@@ -341,7 +341,7 @@ local function CreateModule()
 		if kind == Enum.UserInputType.MouseMovement then
 			return true
 		end
-		local position = input:GetMouseLocation()
+		local position = _position or event.Position or input:GetMouseLocation()
 		return not Main.IsPointInDexUI or not Main.IsPointInDexUI(position.X, position.Y)
 	end
 

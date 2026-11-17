@@ -61,6 +61,7 @@ local Enum = {
 		MouseWheel = "Wheel",
 	},
 	MouseBehavior = { Default = "Default", LockCenter = "Locked" },
+	UserInputState = { Begin = "Begin", Change = "Change", End = "End", Cancel = "Cancel" },
 }
 local Instance = {
 	new = function()
@@ -81,6 +82,7 @@ local mouseMiddle = { UserInputType = Enum.UserInputType.MouseButton3 }
 local mouseMove = { UserInputType = Enum.UserInputType.MouseMovement }
 local pressed = {}
 input.InputBegan.Before = function(event)
+	event.UserInputState = Enum.UserInputState.Begin
 	for _, kind in ipairs({ Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2, Enum.UserInputType.MouseButton3 }) do
 		if event.UserInputType == kind then
 			for _, held in ipairs(pressed) do
@@ -93,8 +95,10 @@ input.InputBegan.Before = function(event)
 	end
 end
 input.InputEnded.Before = function(event)
+	event.UserInputState = Enum.UserInputState.End
 	for index = #pressed, 1, -1 do
 		if pressed[index].UserInputType == event.UserInputType then
+			pressed[index].UserInputState = Enum.UserInputState.End
 			table.remove(pressed, index)
 		end
 	end
@@ -114,8 +118,11 @@ end
 local heartbeat = signal()
 local camera = { ViewportSize = vec(200, 100) }
 local inputLog = {}
+local heldByBackend = false
 local function emitted(...)
-	table.insert(inputLog, { ... })
+	local entry = { ... }
+	entry.MouseHeld = heldByBackend
+	table.insert(inputLog, entry)
 end
 local service =
 	{ UserInputService = input, RunService = { Heartbeat = heartbeat }, Workspace = { CurrentCamera = camera } }
@@ -128,9 +135,11 @@ local funcs = {
 		emitted("Up", code)
 	end,
 	mouse1press = function()
+		heldByBackend = true
 		emitted("Click")
 	end,
 	mouse1release = function()
+		heldByBackend = false
 		emitted("Release")
 	end,
 	mousemoveabs = function(x, y)
@@ -333,6 +342,7 @@ assert(not engine:StartRecording() and not engine:Play(held) and clean())
 MacroModule.InitDeps({ env = {}, service = service })
 local closed = 0
 function input:CreateVirtualInput()
+	local virtualHeld = false
 	return {
 		SendKey = function(_, down, code, repeated)
 			assert(code == keyCode.W and repeated == false)
@@ -340,10 +350,15 @@ function input:CreateVirtualInput()
 		end,
 		SendMouseButton = function(_, point, kind, down, repeats)
 			assert(kind == Enum.UserInputType.MouseButton1 and repeats == 0)
+			virtualHeld = down
 			emitted(if down then "VirtualClick" else "VirtualRelease", point.X, point.Y)
 		end,
 		SendMousePosition = function(_, point)
 			emitted("VirtualPosition", point.X, point.Y)
+			inputLog[#inputLog].VirtualMouseHeld = virtualHeld
+		end,
+		SendPointerAction = function(_, _, action)
+			emitted("VirtualScroll", action.Wheel)
 		end,
 		SendMouseDelta = function(_, point)
 			assert(input.MouseBehavior == Enum.MouseBehavior.LockCenter)
@@ -415,8 +430,14 @@ assert(#buttonEvents == 2 and buttonEvents[1].Kind == "ButtonDown" and buttonEve
 
 assert(clicks:StartRecording())
 pressed = { mouseLeft, mouseRight, mouseMiddle }
+for _, event in ipairs(pressed) do
+	event.UserInputState = Enum.UserInputState.Begin
+end
 tick(now + 0.016)
 tick(now + 0.016)
+for _, event in ipairs(pressed) do
+	event.UserInputState = Enum.UserInputState.End
+end
 pressed = {}
 tick(now + 0.016)
 input.InputEnded:Fire(mouseLeft)
@@ -468,4 +489,79 @@ assert(#transitionEvents == 2 and transitionEvents[1].Kind == "ButtonDown" and t
 	"a release during window hiding cannot be reinserted as a stale held press")
 assert(transitionEngine.State == "Idle" and clean())
 transitionEngine:Destroy()
+
+local dragEvents
+local dragging = Engine.Create({
+	ShouldRecord = function(_, _, position)
+		return position.X < 200
+	end,
+	OnState = function(state, _, captured)
+		if state == "Idle" then
+			dragEvents = captured
+		end
+	end,
+})
+pressed = {}
+assert(dragging:StartRecording())
+local dragStart = now
+local heldClick = { UserInputType = Enum.UserInputType.MouseButton1, Position = vec(80, 60) }
+mouse = vec(300, 60)
+input.InputBegan:Fire(heldClick, true)
+pressed = {}
+for index = 1, 20 do
+	local angle = index / 20 * math.pi * 2
+	local point = vec(150 + math.cos(angle) * 100, 80 + math.sin(angle) * 40)
+	now = dragStart + index * 0.1
+	input.InputChanged:Fire({ UserInputType = Enum.UserInputType.MouseMovement, Position = point }, true)
+	tick(now)
+end
+now += 0.1
+heldClick.Position = vec(250, 80)
+input.InputEnded:Fire(heldClick, true)
+dragging:Stop()
+assert(#dragEvents == 22 and dragEvents[1].Kind == "ButtonDown" and dragEvents[#dragEvents].Kind == "ButtonUp")
+assert(dragEvents[1].X == 0.2 and dragEvents[1].Time == 0 and dragEvents[#dragEvents].Time > 2,
+	"press origin survives pointer movement, processed input and empty button snapshots for the entire circle")
+table.clear(inputLog)
+assert(dragging:Play(dragEvents))
+local replayStart = now
+tick(replayStart)
+for index = 1, 21 do
+	tick(replayStart + index * 0.101)
+end
+local moved = 0
+for index, entry in ipairs(inputLog) do
+	if entry[1] == "Delta" and index > 2 then
+		assert(entry.MouseHeld, "every replayed circle movement must run while left mouse is held")
+		moved += 1
+	end
+end
+assert(moved == 20 and not heldByBackend and dragging.State == "Idle" and clean())
+assert(dragging:StartRecording())
+local cancelledClick = { UserInputType = Enum.UserInputType.MouseButton1, Position = vec(80, 60) }
+input.InputBegan:Fire(cancelledClick, true)
+cancelledClick.UserInputState = Enum.UserInputState.Cancel
+pressed = {}
+tick(now + 0.016)
+dragging:Stop()
+assert(#dragEvents == 2 and dragEvents[2].Kind == "ButtonUp", "cancelled button lifecycles release even without InputEnded")
+local nativePress = funcs.mouse1press
+funcs.mouse1press = nil
+table.clear(inputLog)
+assert(dragging:Play({
+	{ Kind = "ButtonDown", Button = 1, X = 0.2, Y = 0.3, Time = 0 },
+	{ Kind = "Move", X = 0.3, Y = 0.4, Time = 0.1 },
+	{ Kind = "Wheel", X = 0.3, Y = 0.4, Delta = 1, Time = 0.2 },
+	{ Kind = "ButtonUp", Button = 1, X = 0.3, Y = 0.4, Time = 0.3 },
+}))
+local virtualStart = now
+for index = 0, 3 do
+	tick(virtualStart + index * 0.101)
+end
+assert(#inputLog == 4 and inputLog[1][1] == "VirtualClick" and inputLog[2][1] == "VirtualPosition")
+assert(inputLog[2].VirtualMouseHeld and inputLog[3][1] == "VirtualScroll" and inputLog[4][1] == "VirtualRelease",
+	"virtual button fallback must use virtual movement and scrolling even when native mouse movement exists")
+assert(dragging.State == "Idle" and clean())
+funcs.mouse1press = nativePress
+dragging:Destroy()
 print("PASS: macro capture, mouse holds and drags, timing, loop release, failure cleanup, focus loss and bounds")
