@@ -246,8 +246,11 @@ local function CreateModule()
 		end)
 	end
 	local searchGeneration, searchTreeVersion = 0, 0
-	local function changeSearchTree()
+	local function changeSearchTree(removal)
 		searchTreeVersion += 1
+		if not removal then
+			characterSearch.ContentVersion = (characterSearch.ContentVersion or 0) + 1
+		end
 		characterSearch.Layout = nil
 		if characterSearch.Schedule and not characterSearch.Pending then
 			characterSearch.Schedule()
@@ -430,7 +433,10 @@ local function CreateModule()
 		if not node then
 			return
 		end
-		changeSearchTree()
+		if characterSearch.RemovedNodes then
+			characterSearch.RemovedNodes[node] = true
+		end
+		changeSearchTree(true)
 
 		if nilMap[node.Obj] and not (Apps.History and Apps.History.IsHidden(root)) then
 			moveObject(node.Obj)
@@ -766,8 +772,8 @@ local function CreateModule()
 	end
 
 	local sortingNames
-	local function compareNodes(a, b, names)
-		if a.Del or b.Del then
+	local function compareNodes(a, b, names, includeDeleted)
+		if not includeDeleted and (a.Del or b.Del) then
 			return false
 		end
 		if a.Parent == b.Parent and (a.ManualOrder or b.ManualOrder) then
@@ -1018,7 +1024,7 @@ local function CreateModule()
 			return items
 		end
 		local items = {}
-		for i, child in ipairs(parent) do
+		for i, child in ipairs(table.clone(parent)) do
 			if not child.Del and child.Parent == parent then
 				items[#items + 1] = child
 			end
@@ -1033,7 +1039,7 @@ local function CreateModule()
 				return remember(items)
 			end
 			less = function(a, b)
-				return compareNodes(a, b, names)
+				return compareNodes(a, b, names, true)
 			end
 		end
 		if #items <= 512 then
@@ -5263,15 +5269,18 @@ return search]==]
 			for _ = 1, 2 do
 				local version = searchTreeVersion
 				local budget = 0.006
+				local contentVersion = characterSearch.ContentVersion
+				local removed = {}
+				characterSearch.RemovedNodes = removed
 				local deadline = os.clock() + budget
 				local function checkpoint()
-					if not current() or searchTreeVersion ~= version then
+					if not current() or characterSearch.ContentVersion ~= contentVersion then
 						error(changed, 0)
 					end
 					local now = os.clock()
 					if now >= deadline then
 						local waited = task.wait()
-						if not current() or searchTreeVersion ~= version then
+						if not current() or characterSearch.ContentVersion ~= contentVersion then
 							error(changed, 0)
 						end
 						budget = if waited and waited > 1 / 60 then 0.004 else math.min(budget + 0.002, 0.010)
@@ -5286,13 +5295,19 @@ return search]==]
 						return node == nilNode or Apps.ServiceVisibility.IsVisible(node.Obj)
 					end,
 				}, checkpoint, layout)
+				if characterSearch.RemovedNodes == removed then
+					characterSearch.RemovedNodes = nil
+				end
 				if not current() then
 					if generation == searchGeneration then
 						Explorer.SetSearchBusy(false, query)
 					end
 					return false
 				end
-				if ok and version == searchTreeVersion then
+				if ok and characterSearch.ContentVersion == contentVersion then
+					for node in pairs(removed) do
+						view:Remove(node)
+					end
 					view.TreeVersion = version
 					engine.LastResult, engine.LastTerms = view, terms
 					return publishSearchView(view, query, current, started)

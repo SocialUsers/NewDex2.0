@@ -397,6 +397,40 @@ do
 	game.ItemChanged:Fire(children[1], "Name")
 	assert(Explorer.DoSearch("piece0") and #Explorer.MatchList == 151)
 	assert(Explorer.Matches[nodes[children[1]]], "renames invalidate cached sibling order and names")
+	local nestedMatch = Instance.new("Part", children[2])
+	nestedMatch.Name = "RepeatedPieceNested"
+	Explorer.SyncHistoryObject(nestedMatch)
+	local nestedNode = nodes[nestedMatch]
+	Explorer.ClearSearch()
+	local createCold = Apps.SearchResults.CreateCold
+	local scans, removed = 0, false
+	Apps.SearchResults.CreateCold = function(roots, terms, context, checkpoint, previousLayout)
+		scans += 1
+		local name = context.Name
+		local first = true
+		context.Name = function(node)
+			if first then
+				first = false
+				local deadline = os.clock() + 0.008
+				repeat until os.clock() >= deadline
+			end
+			return name(node)
+		end
+		return createCold(roots, terms, context, checkpoint, previousLayout)
+	end
+	local deletedNode = nodes[children[2]]
+	task.wait = function()
+		if not removed then
+			removed = true
+			children[2].Parent = nil
+			Explorer.SyncHistoryObject(children[2])
+		end
+		return 0
+	end
+	assert(Explorer.DoSearch("repeatedpiece") and removed and scans == 1, "a deletion restarted the foreground scan")
+	assert(#Explorer.MatchList == 1198 and not Explorer.Matches[deletedNode], "deleted matches survived publication")
+	assert(not Explorer.Matches[nestedNode], "a descendant of a deleted subtree survived publication")
+	Apps.SearchResults.CreateCold = createCold
 	engine.Search = originalSearch
 	Explorer.ClearSearch()
 	host.Parent = nil

@@ -379,6 +379,10 @@ local function Main()
 		end
 		local readName, readChildren = context.Name, context.Children
 		local nodeCount = #nodes
+		local function snapshotChildren(node)
+			local children = readChildren(node, checkpoint)
+			return if children == node then table.clone(children) else children
+		end
 		local function visit(node, parent, depth, queryable)
 			if node.Del then
 				return
@@ -398,7 +402,7 @@ local function Main()
 			end
 			local included = hit
 			if #node > 0 then
-				for _, child in ipairs(readChildren(node, checkpoint)) do
+				for _, child in ipairs(snapshotChildren(node)) do
 					if child.Parent == node and visit(child, position, depth + 1, true) then
 						included = true
 					end
@@ -447,7 +451,7 @@ local function Main()
 			end
 			return createView(layout, context, checkpoint, positions, top, matchedBits:Prepare(checkpoint), contextBits:Prepare(checkpoint), width, maxDepth)
 		else
-			for _, node in ipairs(readChildren(roots[1], checkpoint)) do
+			for _, node in ipairs(snapshotChildren(roots[1])) do
 				if node.Parent == roots[1] then
 					visit(node, 0, 1, true)
 				end
