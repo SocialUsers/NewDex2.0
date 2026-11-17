@@ -14,6 +14,8 @@ parts.append('local module=(function()\n'+(root/'src/Apps/Explorer/Rendering/Sel
 parts.append((root/'tests/selection_renderer.spec.luau').read_text(encoding='utf-8'))
 parts.append('local MaskModule=(function()\n'+(root/'src/Apps/Explorer/Rendering/SelectionGeometryMask.lua').read_text(encoding='utf-8')+'\nend)()\nMaskModule.InitDeps({Main=Main,service=service})\n')
 parts.append((root/'tests/selection_geometry_mask.spec.luau').read_text(encoding='utf-8'))
+parts.append((root/'tests/transform_session_mock.luau').read_text(encoding='utf-8'))
+parts.append((root/'tests/selection_group_bounds.spec.luau').read_text(encoding='utf-8'))
 with tempfile.TemporaryDirectory(prefix='dex-selection-renderer-') as folder:
     harness=Path(folder)/'selection-renderer.luau'
     harness.write_text('\n'.join(parts),encoding='utf-8')
