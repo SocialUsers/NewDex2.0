@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "c73c0167ba6056a32af0",
+  "release": "40f8b78456f957ee5fbc",
   "entry": "main.lua",
   "assets": "studio_assets.lua",
   "react": "src/Packages/React/Loader.luau",
@@ -549,9 +549,9 @@
       "sha256": "d92e087e0de7c03d3f03c7c4a9d5436f26ffc5379bca5e26fa7a79ff111389e4"
     },
     "src/Apps/InputMacros/MacroEngine.lua": {
-      "bytes": 17901,
-      "checksum": 1975173846,
-      "sha256": "c80035062f0f53e13551a182f76ba08d113e1d62a8e8c48da555b99dbfe731a9"
+      "bytes": 18921,
+      "checksum": 2250766320,
+      "sha256": "a7e69540a85731a636d93f6647e88c9fb936f2be7e0a5991d5d49908a0f5ab89"
     },
     "src/Apps/InputMacros/MacroStore.lua": {
       "bytes": 2731,
