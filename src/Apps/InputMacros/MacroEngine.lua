@@ -344,6 +344,14 @@ local function Main()
 			local camera = service.Workspace.CurrentCamera
 			return if camera then camera.ViewportSize else Vector2.new(0, 0)
 		end
+		local function eventPosition(event)
+			local position = event.Position
+			if not position then
+				return input:GetMouseLocation()
+			end
+			local inset = service.GuiService:GetGuiInset()
+			return Vector2.new(position.X + inset.X, position.Y + inset.Y)
+		end
 		local function normalizedPosition(_position)
 			local size = viewport()
 			if size.X <= 0 or size.Y <= 0 then
@@ -485,7 +493,7 @@ local function Main()
 					return
 				end
 				local button = buttons[event.UserInputType]
-				local position = _position or event.Position or input:GetMouseLocation()
+				local position = _position or eventPosition(event)
 				if button then
 					local previous = capture.ObservedButtons[button]
 					if previous == event then
@@ -534,7 +542,7 @@ local function Main()
 						or observed.UserInputState == Enum.UserInputState.End
 						or observed.UserInputState == Enum.UserInputState.Cancel
 					) then
-						endButton(button, event.Position)
+						endButton(button, eventPosition(event))
 					end
 				end
 			end)
@@ -547,7 +555,8 @@ local function Main()
 					return
 				end
 				local dragging = kind == Enum.UserInputType.MouseMovement and next(capture.Buttons) ~= nil
-				if not dragging and not canRecord(event, processed) then
+				local pointer = if kind == Enum.UserInputType.MouseWheel then input:GetMouseLocation() else nil
+				if not dragging and not canRecord(event, processed, pointer) then
 					return
 				end
 				if kind == Enum.UserInputType.MouseMovement and input.MouseBehavior ~= Enum.MouseBehavior.Default then
@@ -556,7 +565,7 @@ local function Main()
 						append(capture, { Kind = "RelativeMove", DeltaX = x, DeltaY = y })
 					end
 				else
-					local x, y = normalizedPosition(if kind == Enum.UserInputType.MouseMovement then event.Position else nil)
+					local x, y = normalizedPosition(if kind == Enum.UserInputType.MouseMovement then eventPosition(event) else nil)
 					if kind == Enum.UserInputType.MouseWheel then
 						if event.Position.Z ~= 0 then
 							append(capture, { Kind = "Wheel", X = x, Y = y, Delta = event.Position.Z })

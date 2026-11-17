@@ -41,6 +41,19 @@ assert(not Main.IsPointInDexUI(345,305),"clipped descendants cannot claim pointe
 clip.ClipsDescendants=false clip.Visible=false
 assert(not Main.IsPointInDexUI(345,305),"whole hidden branches are excluded")
 clip.Visible=true assert(Main.IsPointInDexUI(345,305),"showing a window takes effect without rebuilding its topology")
+local savedCoreGui=service.CoreGui
+service.CoreGui={GetGuiObjectsAtPosition=function() return {overflow} end}
+assert(Main.IsPointInDexUI(345,305),"native GUI hits remain supported")
+gui.Parent=nil
+assert(not Main.IsPointInDexUI(345,305),"closed windows cannot reject gameplay clicks through either native hits or cached rectangles")
+gui.Parent=game
+assert(Main.IsPointInDexUI(345,305),"reopening the same window restores hit testing immediately")
+gui.Enabled=false
+assert(not Main.IsPointInDexUI(345,305),"disabled roots cannot claim native hits")
+gui.Enabled=true clip.Visible=false
+assert(not Main.IsPointInDexUI(345,305),"native hits under hidden ancestors cannot claim focus")
+clip.Visible=true
+service.CoreGui=savedCoreGui
 for _,cleanup in cleanups do cleanup() end
 print("PASS: pointer broad phase, stable widget snapshots, visibility, ignored roots, insertion/removal and live ownership")
 '''

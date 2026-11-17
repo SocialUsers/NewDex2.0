@@ -586,6 +586,15 @@ Main = (function()
 		end
 		local ancestor = object
 		while ancestor do
+			if Main.InternalGuis[ancestor] and ancestor.Parent == nil then
+				return false
+			end
+			if ancestor:IsA("GuiObject") and not ancestor.Visible then
+				return false
+			end
+			if ancestor:IsA("ScreenGui") and not ancestor.Enabled then
+				return false
+			end
 			if Main.FocusIgnoredGuis and Main.FocusIgnoredGuis[ancestor] then
 				return false
 			end
@@ -623,7 +632,7 @@ Main = (function()
 					return false
 				end
 				if Main.InternalGuis[current] then
-					return true
+					return current.Parent ~= nil
 				end
 				current = current.Parent
 			end
@@ -738,6 +747,9 @@ Main = (function()
 		end
 
 		for gui in pairs(Main.InternalGuis) do
+			if gui.Parent == nil then
+				continue
+			end
 			if Main.FocusIgnoredGuis and Main.FocusIgnoredGuis[gui] then
 				continue
 			end

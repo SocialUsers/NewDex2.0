@@ -124,8 +124,13 @@ local function emitted(...)
 	entry.MouseHeld = heldByBackend
 	table.insert(inputLog, entry)
 end
-local service =
-	{ UserInputService = input, RunService = { Heartbeat = heartbeat }, Workspace = { CurrentCamera = camera } }
+local guiInset = vec(0, 0)
+local service = {
+	UserInputService = input,
+	RunService = { Heartbeat = heartbeat },
+	Workspace = { CurrentCamera = camera },
+	GuiService = { GetGuiInset = function() return guiInset end },
+}
 local funcs = {
 	keypress = function(code)
 		emitted("Down", code)
@@ -564,4 +569,27 @@ assert(inputLog[2].VirtualMouseHeld and inputLog[3][1] == "VirtualScroll" and in
 assert(dragging.State == "Idle" and clean())
 funcs.mouse1press = nativePress
 dragging:Destroy()
+guiInset = vec(0, 58)
+local pointerEvents, checkedPosition
+local pointerEngine = Engine.Create({
+	ShouldRecord = function(_, _, position)
+		checkedPosition = position
+		return true
+	end,
+	OnState = function(state, _, captured)
+		if state == "Idle" then pointerEvents = captured end
+	end,
+})
+pressed = {}
+assert(pointerEngine:StartRecording())
+local pointerClick = { UserInputType = Enum.UserInputType.MouseButton1, Position = vec(80, 60) }
+input.InputBegan:Fire(pointerClick)
+assert(checkedPosition.X == 80 and checkedPosition.Y == 118, "UI filtering receives screen coordinates, including the 58px inset")
+input.InputChanged:Fire({ UserInputType = Enum.UserInputType.MouseMovement, Position = vec(90, 70) })
+pointerClick.Position = vec(100, 80)
+input.InputEnded:Fire(pointerClick)
+pointerEngine:Stop()
+assert(#pointerEvents == 3 and pointerEvents[1].Y == 118 / 200 and pointerEvents[2].Y == 128 / 200 and pointerEvents[3].Y == 138 / 200,
+	"presses, movement and releases use the same screen coordinates as native playback")
+pointerEngine:Destroy()
 print("PASS: macro capture, mouse holds and drags, timing, loop release, failure cleanup, focus loss and bounds")
