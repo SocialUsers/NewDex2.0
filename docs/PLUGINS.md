@@ -2,7 +2,7 @@
 
 # Plugins
 
-Plugins add tools, menu actions, and shortcuts to Dex. Install a `.dexplugin` package, enable it, and its buttons appear in the main menu.
+Install `.dexplugin` files to add tools to Dex. Plugins can also add right-click actions and shortcuts.
 
 [Install](#install-a-plugin) · [Create a plugin](#create-a-plugin) · [Package fields](#package-fields) · [API](#plugin-api) · [Actions](#menu-actions-and-shortcuts)
 
@@ -12,7 +12,7 @@ Plugins add tools, menu actions, and shortcuts to Dex. Install a `.dexplugin` pa
 2. Select a package from `dex-explorer/plugins` in your executor workspace. To use a link or paste a package, open **Import From** instead.
 3. Click **Review**, then **Install** and **Enable**.
 
-Plugins run with the same access as Dex. Review packages from unfamiliar authors before enabling them. **Copy Source** is available when your executor supports the clipboard.
+Only enable plugins you trust. They run with the same access as Dex. Use **Copy Source** to read the code if your executor supports the clipboard.
 
 ## Manage installed plugins
 
@@ -31,7 +31,7 @@ When reviewing an update, click **Update**, then **Enable** to run it.
 
 ## Create a plugin
 
-Keep the package details and Luau source in separate files while you work. This example creates a **Hello** button that opens a window.
+This plugin adds a **Hello** button that opens a window. Put the following three files in one folder.
 
 ### 1. Package details
 
@@ -92,7 +92,7 @@ The generated `.dexplugin` file is JSON. Its `source` field contains the Luau fr
 | Field | Required | Description |
 | :--- | :---: | :--- |
 | `schema` | Yes | `1` |
-| `id` | Yes | Stable plugin ID, such as `example.hello`. Start with a lowercase letter or digit; use lowercase letters, digits, `.`, `_`, or `-`. |
+| `id` | Yes | Plugin ID, such as `example.hello`. Start with a lowercase letter or digit; use lowercase letters, digits, `.`, `_`, or `-`. |
 | `name` | Yes | Plugin name shown in Dex. |
 | `version` | Yes | Version string shown during review, such as `1.0.0`. |
 | `source` | Yes | UTF-8 Luau source, up to 512 KiB. The packaging step adds this. |
@@ -115,11 +115,11 @@ Use `local plugin = ...` to get the plugin API.
 | `plugin:SetButtonActive(id, active)` | Changes whether a toolbar button looks selected. |
 | `plugin:RegisterAction(definition, callback)` | Adds a menu action or shortcut. Returns a function that removes it. |
 | `plugin:CreateWindow(title, width, height)` | Returns a Dex window and its content frame. Call `window:Show()` to open it. Dex closes and cleans up the window when the plugin stops. |
-| `plugin:Track(resource)` | Registers an instance, connection, or cleanup function for Dex to dispose of when the plugin stops. Returns the resource. The entry script can also return a cleanup function. |
+| `plugin:Track(resource)` | Destroy an instance, disconnect a connection, or run a cleanup function when the plugin stops. Returns the resource. The entry script can also return a cleanup function. |
 | `plugin:GetSetting(key, fallback)` and `plugin:SetSetting(key, value)` | Read and save the plugin's settings. Use JSON values. `SetSetting` returns `false` and an error message if saving fails. |
 | `plugin:Log(...)` and `plugin:Warn(...)` | Write a message to **Plugin Output**. |
 
-`plugin.Main`, `plugin.Apps`, `plugin.Lib`, and `plugin.Settings` provide access to Dex internals that can change between releases.
+`plugin.Main`, `plugin.Apps`, `plugin.Lib`, and `plugin.Settings` are Dex's internal objects. They can change between releases.
 
 ## Menu actions and shortcuts
 
@@ -152,7 +152,7 @@ plugin:RegisterAction({
 end)
 ```
 
-Give each action a unique lowercase `ID`, a `Name`, and a `Surface`. `Tooltip`, `Shortcut`, and `When` are optional except that `Global` requires a shortcut. If you supply `When`, return a boolean without yielding.
+Each action needs a unique lowercase `ID`, a `Name`, and a `Surface`. `Tooltip`, `Shortcut`, and `When` are optional, though `Global` actions need a shortcut. `When` must return a boolean without yielding.
 
 | Surface | Menu and callback context |
 | --- | --- |

@@ -22,8 +22,6 @@
   <a href="docs/mcp/SETUP.md">Dex MCP</a>
 </p>
 
-Dex Explorer builds on Dex++ with a Studio-style interface, a Luau editor, custom plugins, and MCP support.
-
 ## Run Dex
 
 Paste this into your executor.
@@ -42,18 +40,18 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 | Tool | What you can do |
 | :--- | :--- |
-| **Explorer & Properties** | Search by name, class, or property. Edit multiple objects, find references, and use object-specific right-click actions. |
-| **Script Editor** | Edit Luau with autocomplete, type information, formatting, and Ctrl-click navigation to definitions. |
-| **Find in Place** | Search across scripts and open matches at their line. Replace matches in editor tabs. |
-| **Asset Manager** | Preview and download images, sounds, meshes, and animations. Jump to the objects that use them. |
+| **Explorer & Properties** | Search by name, class, or property and edit several objects at once. Right-click to highlight an object, view a player, or find references. |
+| **Script Editor** | Write Luau with autocomplete and auto-formatting. Hover for types and docs, or Ctrl-click to open a definition. |
+| **Find in Place** | Search scripts, then click a result to open the matching line. Replace text across editor tabs. |
+| **Asset Manager** | Preview and download images, sounds, meshes, and animations. Click a reference to select the object that uses an asset. |
 | **3D Viewer** | Inspect parts and models in a separate viewport. Orbit, pan, and zoom without moving the game camera. |
 | **Selection & Transform** | Pick parts or UI elements on screen, then move, rotate, or resize them. |
-| **Console** | Read client output, filter messages, and run Luau from the command bar. |
+| **Console** | Client logs with message filters and a Luau command bar. |
 | **Input Macros** | Record keyboard and mouse input, edit delays, adjust playback speed, and loop recordings. **F8** stops recording or playback. |
 | **Save Instance** | Export objects with UniversalSynSaveInstance or your executor's `saveinstance`. |
 | **Reconstructor** | Build an inferred object tree from script paths and tracebacks. |
-| **Plugins** | Add your own tools, menu actions, and keyboard shortcuts. [Plugin guide](docs/PLUGINS.md). |
-| **Dex MCP** | Give an MCP client access to Dex tools, object inspection, client logs, and Luau execution. [Setup](docs/mcp/SETUP.md). |
+| **Plugins** | Add your own tools, right-click actions, and shortcuts. [Plugin guide](docs/PLUGINS.md). |
+| **Dex MCP** | Use Dex from Codex or another MCP client. [Setup](docs/mcp/SETUP.md). |
 
 For example, search `is:BasePart and Anchored=false` in Explorer to find unanchored parts.
 
@@ -64,16 +62,14 @@ Script source, downloads, and input playback depend on your executor. Find in Pl
 | Task | Measured time |
 | :--- | :--- |
 | First Explorer search with 70,000 matches | **1.6 seconds** |
-| Repeat the same search | **0.04 ms**, compared with **126 ms** in Moon's Dex |
+| Repeat the same search with no object changes | **0.04 ms**, compared with **126 ms** in Moon's Dex (**over 1,000× faster**) |
 | Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
 | Update code colors after ten edits in a 10,000-line script | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
-
-The repeat-search result is over **1,000× faster than Moon's Dex** in this test. It measures reusing unchanged results, not the first search.
 
 <details>
 <summary>Test details</summary>
 
-These are controlled tests with sample data on an Intel i7-12700H. Game size, executor, and hardware affect the results.
+Tested with sample data on an Intel i7-12700H. Times vary by game, executor, and hardware.
 
 First-search, asset-filter, and highlighting times are medians of three runs. Repeat-search times are medians of five batches using the same unchanged tree in both versions.
 
@@ -91,7 +87,7 @@ First-search, asset-filter, and highlighting times are medians of three runs. Re
 | [Dex MCP](docs/mcp/SETUP.md) | Server setup, pairing, permissions, and troubleshooting |
 | [Building](BUILDING.md) | Local builds, tests, source layout, and publishing |
 
-Found a bug? [Open an issue](https://github.com/wooxps/dex-explorer/issues/new) with the steps to reproduce it, your executor, and any error text. A screenshot or short recording helps with UI bugs.
+[Report a bug](https://github.com/wooxps/dex-explorer/issues/new) with the steps to reproduce it, your executor, and the error text. For UI bugs, include a screenshot or recording.
 
 ## Credits
 

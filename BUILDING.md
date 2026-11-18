@@ -12,9 +12,9 @@ cd dex-explorer
 python build.py build
 ```
 
-The build writes `out.lua` by default. Run `python build.py output` to see the configured path or pass a new path to change it.
+The build writes `out.lua` by default. Run `python build.py output` to see the output path or pass a new path to change it.
 
-For the interactive builder, run `python build.py` or double-click `build.bat` on Windows.
+Run `python build.py` for the builder menu, or double-click `build.bat` on Windows.
 
 ## Development commands
 
@@ -43,7 +43,7 @@ The test command downloads Luau if needed. Tool versions are listed in [tools.lo
 | [mcp](mcp) | Dex MCP server |
 | [tests](tests) | Tests and fixtures |
 
-Give each `.lua` module under `src` a unique filename. The loader uses the filename without its extension as the module name.
+Each `.lua` file under `src` needs a unique filename. The loader uses that name, without the extension, as the module name.
 
 Run `python scripts/package_runtime.py` to generate the hosted files in `dist/github`. This also updates the root `manifest.json`.
 
@@ -65,7 +65,7 @@ python scripts/publish_github.py --publish --message "Update Dex"
 
 The script runs the tests, commits the source, pins `loader.lua` to that commit, and pushes `main`. Git must already be signed in through Git Credential Manager.
 
-Documentation-only changes can be committed and pushed normally.
+If you're only editing docs, commit and push normally.
 
 ## Workspace files
 

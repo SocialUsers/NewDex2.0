@@ -2,7 +2,7 @@
 
 # Dex MCP
 
-Connect Codex or another MCP client to Dex on the same PC as Roblox. Inspect objects, search scripts, read client logs, edit properties, or run Luau through your executor.
+Use Dex from Codex or another MCP client on the same PC as Roblox.
 
 [Build](#1-build-the-server) · [Configure](#2-configure-your-mcp-client) · [Pair](#3-pair-dex) · [Permissions](#permissions-and-activity) · [Troubleshooting](#troubleshooting)
 
@@ -21,9 +21,9 @@ If you already have the repo, start in its `mcp` folder and run the two npm comm
 
 ## 2. Configure your MCP client
 
-Add `dex_mcp` as a stdio server. Your MCP client starts it automatically; you do not need a separate terminal running the server.
+Add `dex_mcp` as a stdio server. Your MCP client starts it.
 
-In the examples below, replace `C:\Tools\dex-explorer` with the folder where you cloned the repo. Change the Node path too if yours differs.
+Replace `C:\Tools\dex-explorer` with your repo folder. Change the Node path if needed.
 
 ### Codex
 
