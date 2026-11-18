@@ -1,4 +1,4 @@
-[Readme](../../README.md) / **Dex MCP**
+[Dex Explorer](../../README.md) / Dex MCP
 
 # Dex MCP
 
@@ -25,7 +25,8 @@ Add `dex_mcp` as a stdio server. Your MCP client starts it.
 
 Replace `C:\Tools\dex-explorer` with your repo folder. Change the Node path if needed.
 
-### Codex
+<details>
+<summary>Codex</summary>
 
 Add this to `%USERPROFILE%\.codex\config.toml`.
 
@@ -35,7 +36,10 @@ command = 'C:\Program Files\nodejs\node.exe'
 args = ['C:\Tools\dex-explorer\mcp\dist\dex-mcp.mjs']
 ```
 
-### Claude Desktop
+</details>
+
+<details>
+<summary>Claude Desktop</summary>
 
 Open `%APPDATA%\Claude\claude_desktop_config.json` and add the `dex_mcp` entry under `mcpServers`.
 
@@ -50,7 +54,9 @@ Open `%APPDATA%\Claude\claude_desktop_config.json` and add the `dex_mcp` entry u
 }
 ```
 
-Save the config, then restart your MCP client or reload its servers.
+</details>
+
+Save the config, then restart your MCP client or reload its servers. Dex tools should now appear in the client.
 
 ## 3. Pair Dex
 

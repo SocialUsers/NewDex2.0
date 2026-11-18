@@ -38,24 +38,38 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 ## Tools
 
-| Tool | What you can do |
-| :--- | :--- |
-| **Explorer & Properties** | Search by name, class, or property and edit several objects at once. Right-click to highlight an object, view a player, or find references. |
-| **Script Editor** | Write Luau with autocomplete and auto-formatting. Hover for types and docs, or Ctrl-click to open a definition. |
-| **Find in Place** | Search scripts, then click a result to open the matching line. Replace text across editor tabs. |
-| **Asset Manager** | Preview and download images, sounds, meshes, and animations. Click a reference to select the object that uses an asset. |
-| **3D Viewer** | Inspect parts and models in a separate viewport. Orbit, pan, and zoom without moving the game camera. |
-| **Selection & Transform** | Pick parts or UI elements on screen, then move, rotate, or resize them. |
-| **Console** | Client logs with message filters and a Luau command bar. |
-| **Input Macros** | Record keyboard and mouse input, edit delays, adjust playback speed, and loop recordings. **F8** stops recording or playback. |
-| **Save Instance** | Export objects with UniversalSynSaveInstance or your executor's `saveinstance`. |
-| **Reconstructor** | Build an inferred object tree from script paths and tracebacks. |
-| **Plugins** | Add your own tools, right-click actions, and shortcuts. [Plugin guide](docs/PLUGINS.md). |
-| **Dex MCP** | Use Dex from Codex or another MCP client. [Setup](docs/mcp/SETUP.md). |
+### Explorer and Properties
 
-For example, search `is:BasePart and Anchored=false` in Explorer to find unanchored parts.
+Search the object tree by name, class, or property. For example, `is:BasePart and Anchored=false` finds unanchored parts. Select several objects to edit them together in Properties.
 
-Script source, downloads, and input playback depend on your executor. Find in Place can only search source available to the client.
+Right-click to highlight an object, view a player, listen to a sound, or find references to an object elsewhere in the game.
+
+### Script Editor
+
+Autocomplete works with Luau, Roblox APIs, local tables, and required modules. Hover over a name for its type and documentation, or Ctrl-click to open its definition. The editor also formats code as you type and paste.
+
+**Find in Place** searches across scripts. Click a result to open the script at that line, or replace text across editor tabs. Script access depends on your executor; searches can only include source available to the client.
+
+### Assets and exports
+
+**Asset Manager** lists the game's images, sounds, meshes, and animations. Preview or download an asset, then click one of its references to select the object using it. **3D Viewer** opens parts and models in a separate viewport, with its own camera controls.
+
+**Save Instance** uses UniversalSynSaveInstance by default. Its options are available in the menu, and you can switch to your executor's `saveinstance` if you prefer. File saving requires executor support.
+
+### Other tools
+
+- **Selection and Transform:** Pick parts or UI elements on screen and move, rotate, or resize them.
+- **Console:** Read client logs, filter messages, and run Luau in the command bar.
+- **Input Macros:** Record keyboard and mouse input, change the timing, and play it back on a loop or at a different speed. Press **F8** to stop. Playback requires executor support.
+- **Reconstructor:** Build an inferred object hierarchy from paths found in scripts and tracebacks.
+
+### Plugins
+
+Plugins appear in the main menu alongside the built-in tools. They can open windows, add right-click actions, and register shortcuts. Install a `.dexplugin` file or [write your own plugin](docs/PLUGINS.md).
+
+### Dex MCP
+
+[Dex MCP](docs/mcp/SETUP.md) connects Dex to Codex and other MCP clients. You choose which commands are enabled and whether the client can edit objects or run code. Click a call in the Activity tab to see its arguments and result.
 
 ## Performance
 
@@ -79,13 +93,9 @@ First-search, asset-filter, and highlighting times are medians of three runs. Re
 
 </details>
 
-## Documentation
+## Guides
 
-| Guide | Contents |
-| :--- | :--- |
-| [Plugins](docs/PLUGINS.md) | Installation, a first plugin, package fields, and the plugin API |
-| [Dex MCP](docs/mcp/SETUP.md) | Server setup, pairing, permissions, and troubleshooting |
-| [Building](BUILDING.md) | Local builds, tests, source layout, and publishing |
+[Plugins](docs/PLUGINS.md) · [Dex MCP setup](docs/mcp/SETUP.md) · [Building from source](BUILDING.md)
 
 [Report a bug](https://github.com/wooxps/dex-explorer/issues/new) with the steps to reproduce it, your executor, and the error text. For UI bugs, include a screenshot or recording.
 

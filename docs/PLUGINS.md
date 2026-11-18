@@ -1,8 +1,8 @@
-[Readme](../README.md) / **Plugins**
+[Dex Explorer](../README.md) / Plugins
 
 # Plugins
 
-Install `.dexplugin` files to add tools to Dex. Plugins can also add right-click actions and shortcuts.
+A `.dexplugin` file contains the plugin's details and Luau source. Its buttons appear under **Plugins** in the Dex menu. Plugins can also add right-click actions and shortcuts.
 
 [Install](#install-a-plugin) · [Create a plugin](#create-a-plugin) · [Package fields](#package-fields) · [API](#plugin-api) · [Actions](#menu-actions-and-shortcuts)
 
@@ -16,22 +16,15 @@ Only enable plugins you trust. They run with the same access as Dex. Use **Copy 
 
 ## Manage installed plugins
 
-Right-click a plugin button to open its menu. On touch screens, tap the ellipsis on the button.
+Right-click a plugin button for its menu. On a phone or tablet, tap the ellipsis.
 
-| Action | Result |
-| :--- | :--- |
-| **Reload** | Restart the installed copy. |
-| **Review Local Changes** | Read the original file again and review the changes. |
-| **Check for Update** | Fetch the original link and review the changes. |
-| **Disable** | Stop the plugin and keep it installed. |
-| **Uninstall** | Remove the plugin and its buttons. |
-| **Plugin Output** | Open the plugin's logs, warnings, and errors. |
+For a plugin installed from a file, choose **Review Local Changes** to read the file again. For one installed from a link, choose **Check for Update**. Review the changes, then click **Update** and **Enable**.
 
-When reviewing an update, click **Update**, then **Enable** to run it.
+**Reload** restarts the installed copy. **Disable** stops it but keeps it installed; **Uninstall** removes it and its buttons. Open **Plugin Output** from the same menu to read its logs and errors.
 
 ## Create a plugin
 
-This plugin adds a **Hello** button that opens a window. Put the following three files in one folder.
+The example below adds a **Hello** button that opens a window. Keep its details in `plugin.json` and its code in `main.luau`. A short Node.js script combines them into the file Dex installs.
 
 ### 1. Package details
 
@@ -110,16 +103,18 @@ Use `local plugin = ...` to get the plugin API.
 
 | Method | What it does |
 | --- | --- |
-| `plugin:RegisterButton(id, callback)` | Runs the callback when you click a button declared in the package. |
-| `plugin:RegisterButton({ ID = id, Name = name, Icon = icon, Tooltip = tip }, callback)` | Adds or updates a button once the plugin loads. Declare buttons in the package to show them before the plugin loads. |
+| `plugin:RegisterButton(idOrDefinition, callback)` | Register a callback for a declared button, or pass a definition to add or update a button after loading. |
 | `plugin:SetButtonActive(id, active)` | Changes whether a toolbar button looks selected. |
 | `plugin:RegisterAction(definition, callback)` | Adds a menu action or shortcut. Returns a function that removes it. |
 | `plugin:CreateWindow(title, width, height)` | Returns a Dex window and its content frame. Call `window:Show()` to open it. Dex closes and cleans up the window when the plugin stops. |
 | `plugin:Track(resource)` | Destroy an instance, disconnect a connection, or run a cleanup function when the plugin stops. Returns the resource. The entry script can also return a cleanup function. |
-| `plugin:GetSetting(key, fallback)` and `plugin:SetSetting(key, value)` | Read and save the plugin's settings. Use JSON values. `SetSetting` returns `false` and an error message if saving fails. |
+| `plugin:GetSetting(key, fallback)` | Read a saved setting, or return the fallback. |
+| `plugin:SetSetting(key, value)` | Save a setting as a JSON value. Returns `false` and an error message if saving fails. |
 | `plugin:Log(...)` and `plugin:Warn(...)` | Write a message to **Plugin Output**. |
 
-`plugin.Main`, `plugin.Apps`, `plugin.Lib`, and `plugin.Settings` are Dex's internal objects. They can change between releases.
+A button definition accepts `ID`, `Name`, `Icon`, and `Tooltip`. Declare buttons in the package's `buttons` list if they should appear before the plugin loads.
+
+`plugin.Main`, `plugin.Apps`, `plugin.Lib`, and `plugin.Settings` are Dex's internal objects. You can use them, but they may change between releases.
 
 ## Menu actions and shortcuts
 

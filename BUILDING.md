@@ -1,4 +1,4 @@
-[Readme](README.md) / **Building**
+[Dex Explorer](README.md) / Building
 
 # Building Dex Explorer
 
@@ -57,13 +57,13 @@ The report contains Dex counters and recent slow frames. Frame timings cover the
 
 ## Publishing
 
-For maintainers with push access to `wooxps/dex-explorer`:
+To publish to `wooxps/dex-explorer`, sign in through Git Credential Manager with an account that has push access, then run:
 
 ```powershell
 python scripts/publish_github.py --publish --message "Update Dex"
 ```
 
-The script runs the tests, commits the source, pins `loader.lua` to that commit, and pushes `main`. Git must already be signed in through Git Credential Manager.
+The script runs the tests and commits the source. It then updates `loader.lua` to use that commit and pushes `main`.
 
 If you're only editing docs, commit and push normally.
 
@@ -74,9 +74,13 @@ Dex Explorer keeps its settings in `dex-explorer/settings.json` inside the execu
 <details>
 <summary>Migrating from an older version</summary>
 
-If an older Dex build stops at a `ShowAttributes` error after using Dex Explorer, close Roblox and rename `DexSettings.json` in the executor workspace to `DexSettings.backup.json`. Reopen Roblox and start the older Dex again to use its defaults.
+To move your Dex Explorer data from the old `dex/` folder:
 
-To bring over your Dex Explorer data, copy files you want to keep from the old `dex/` folder into `dex-explorer/`. Copy your `.dexplugin` files into `dex-explorer/plugins/`, then install them from the menu. If the backed-up settings came from Dex Explorer, you can copy that file to `dex-explorer/settings.json` while Dex is closed.
+1. Close Dex and copy the files you want to keep into `dex-explorer/`.
+2. Put `.dexplugin` files in `dex-explorer/plugins/`, then install them from the menu.
+3. If you have a settings backup from Dex Explorer, copy it to `dex-explorer/settings.json` while Dex is closed.
+
+If an older Dex build gives a `ShowAttributes` error, close Roblox and rename `DexSettings.json` in the executor workspace to `DexSettings.backup.json`. Start the older Dex again to use its defaults.
 
 </details>
 
