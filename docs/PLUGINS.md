@@ -1,25 +1,41 @@
+[Readme](../README.md) / **Plugins**
+
 # Plugins
 
-Plugins add tools to the Dex menu. A `.dexplugin` file contains JSON with the plugin's details and Luau code. Plugins run with the same access as Dex, so enable packages from authors you trust.
+Plugins add tools, menu actions, and shortcuts to Dex. Install a `.dexplugin` package, enable it, and its buttons appear in the main menu.
+
+[Install](#install-a-plugin) · [Create a plugin](#create-a-plugin) · [Package fields](#package-fields) · [API](#plugin-api) · [Actions](#menu-actions-and-shortcuts)
 
 ## Install a plugin
 
 1. Open the Dex menu and click **+** next to **Plugins**.
-2. Choose a `.dexplugin` file from `dex-explorer/plugins` in your executor workspace. For an HTTPS link or the contents of a package, use **Import From**.
-3. Click **Review** to check the package details. Use **Copy Source** if you want to read the code and your executor supports clipboard access.
-4. Click **Install**, then **Enable**. The plugin's buttons appear under **Plugins**.
+2. Select a package from `dex-explorer/plugins` in your executor workspace. To use a link or paste a package, open **Import From** instead.
+3. Click **Review**, then **Install** and **Enable**.
 
-## Update or reload
+Plugins run with the same access as Dex. Review packages from unfamiliar authors before enabling them. **Copy Source** is available when your executor supports the clipboard.
+
+## Manage installed plugins
 
 Right-click a plugin button to open its menu. On touch screens, tap the ellipsis on the button.
 
-- **Reload** restarts the installed copy.
-- **Review Local Changes** reads the package from disk again. **Check for Update** does the same for a package installed from a link. Click **Update**, then **Enable** to run the new copy.
-- **Disable** stops the plugin and leaves it installed. **Uninstall** removes it from Dex.
+| Action | Result |
+| :--- | :--- |
+| **Reload** | Restart the installed copy. |
+| **Review Local Changes** | Read the original file again and review the changes. |
+| **Check for Update** | Fetch the original link and review the changes. |
+| **Disable** | Stop the plugin and keep it installed. |
+| **Uninstall** | Remove the plugin and its buttons. |
+| **Plugin Output** | Open the plugin's logs, warnings, and errors. |
 
-## Write a plugin
+When reviewing an update, click **Update**, then **Enable** to run it.
 
-Save this example as `hello.dexplugin` in UTF-8 and install it. Click **Hello** in the Dex menu to write a message to **Plugin Output**.
+## Create a plugin
+
+Keep the package details and Luau source in separate files while you work. This example creates a **Hello** button that opens a window.
+
+### 1. Package details
+
+Save as `plugin.json`:
 
 ```json
 {
@@ -27,36 +43,13 @@ Save this example as `hello.dexplugin` in UTF-8 and install it. Click **Hello** 
   "id": "example.hello",
   "name": "Hello",
   "version": "1.0.0",
-  "source": "local plugin = ...\nplugin:RegisterButton(\"open\", function()\n    plugin:Log(\"Hello from Dex\")\nend)"
+  "description": "A first Dex plugin."
 }
 ```
 
-### Package fields
+### 2. Luau source
 
-| Field | Meaning |
-| --- | --- |
-| `schema` | Use `1`. |
-| `id` | Starts with a lowercase letter or digit. Use lowercase letters, digits, `.`, `_`, and `-`. Keep the ID the same across updates. |
-| `name`, `version` | Name and version shown during review. |
-| `source` | Luau code as a UTF-8 JSON string, up to 512 KiB. |
-| `author`, `description`, `icon` | Optional. Use a Roblox asset ID for the icon, such as `rbxassetid://123456`. |
-| `startup` | Optional. Set to `true` to run the plugin when you enable it and when Dex opens. Otherwise, it runs when you click its button. |
-| `buttons` | Optional list of up to 24 buttons, each with an `id`, a `name`, and an optional `icon` and `tooltip`. The default button has ID `open` and uses the plugin's name. |
-
-### Keep the source in a separate file
-
-Save your package fields in `plugin.json` and your code in `main.luau`. Run this in their folder with Node.js to copy the code into the package.
-
-```sh
-node -e "
-const fs = require('node:fs');
-const pkg = JSON.parse(fs.readFileSync('plugin.json', 'utf8'));
-pkg.source = fs.readFileSync('main.luau', 'utf8');
-fs.writeFileSync('hello.dexplugin', JSON.stringify(pkg, null, 2));
-"
-```
-
-For example, this `main.luau` opens a window when you click the default button.
+Save as `main.luau`:
 
 ```luau
 local plugin = ...
@@ -71,8 +64,45 @@ label.Parent = content
 
 plugin:RegisterButton("open", function()
     window:Show()
+    plugin:Log("Opened Hello")
 end)
 ```
+
+### 3. Build the package
+
+Save as `package.mjs` in the same folder:
+
+```js
+import { readFileSync, writeFileSync } from "node:fs";
+
+const manifest = JSON.parse(readFileSync("plugin.json", "utf8"));
+manifest.source = readFileSync("main.luau", "utf8");
+
+writeFileSync("hello.dexplugin", JSON.stringify(manifest, null, 2));
+```
+
+Run `node package.mjs`, then copy `hello.dexplugin` into `dex-explorer/plugins` and [install it](#install-a-plugin). Click **Hello** in the Dex menu to open the window.
+
+After editing either file, run `node package.mjs` again and use **Review Local Changes** to update the installed copy.
+
+## Package fields
+
+The generated `.dexplugin` file is JSON. Its `source` field contains the Luau from `main.luau`.
+
+| Field | Required | Description |
+| :--- | :---: | :--- |
+| `schema` | Yes | `1` |
+| `id` | Yes | Stable plugin ID, such as `example.hello`. Start with a lowercase letter or digit; use lowercase letters, digits, `.`, `_`, or `-`. |
+| `name` | Yes | Plugin name shown in Dex. |
+| `version` | Yes | Version string shown during review, such as `1.0.0`. |
+| `source` | Yes | UTF-8 Luau source, up to 512 KiB. The packaging step adds this. |
+| `author` | No | Author name shown during review. |
+| `description` | No | Description shown during review. |
+| `icon` | No | Custom icon, such as `rbxassetid://123456`. |
+| `startup` | No | `true` runs the entry script when enabled and when Dex starts. Defaults to `false`, which loads it on the first button click. |
+| `buttons` | No | Up to 24 button definitions with `id`, `name`, and optional `icon` and `tooltip` fields. |
+
+Without `buttons`, Dex creates one button with ID `open`, using the plugin's name and icon. Keep the plugin ID unchanged when publishing updates.
 
 ## Plugin API
 
@@ -91,7 +121,7 @@ Use `local plugin = ...` to get the plugin API.
 
 `plugin.Main`, `plugin.Apps`, `plugin.Lib`, and `plugin.Settings` provide access to Dex internals that can change between releases.
 
-## Add a menu action or shortcut
+## Menu actions and shortcuts
 
 Call `RegisterAction` from your plugin's entry script. Set `startup` to `true` if the action should be ready as soon as the plugin is enabled.
 
@@ -134,4 +164,10 @@ Use `Ctrl+Alt` or `Alt+Shift` with a letter, number, or function key. You can al
 
 ## Plugin Output
 
-Right-click a plugin button and choose **Plugin Output** to see its logs, warnings, and errors. This includes calls to `print` and `warn` from the plugin. Click a row for details, or click a line number to open the source that produced the message. **Clear** removes that plugin's messages from the current session.
+Right-click a plugin button and choose **Plugin Output**. Calls to `plugin:Log`, `plugin:Warn`, `print`, and `warn` appear here, along with errors.
+
+Click a row for details. An error's line number opens its source in the Script Editor. **Clear** removes only that plugin's messages from the current session.
+
+---
+
+[Readme](../README.md) · [Dex MCP](mcp/SETUP.md) · [Building](../BUILDING.md)

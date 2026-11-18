@@ -17,8 +17,12 @@
   &nbsp;·&nbsp;
   <a href="#performance">Performance</a>
   &nbsp;·&nbsp;
-  <a href="#guides">Guides</a>
+  <a href="docs/PLUGINS.md">Plugins</a>
+  &nbsp;·&nbsp;
+  <a href="docs/mcp/SETUP.md">Dex MCP</a>
 </p>
+
+Dex Explorer builds on Dex++ with a Studio-style interface, a Luau editor, custom plugins, and MCP support.
 
 ## Run Dex
 
@@ -36,36 +40,42 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 ## Tools
 
-- **Explorer and Properties** let you find objects and edit them together. Search `is:BasePart and Anchored=false` to find unanchored parts.
-- **Script Editor** has Luau autocomplete and type hints on hover. Ctrl-click a name to jump to its definition.
-- **Find in Place** searches across scripts. Click a match to jump to that line, or use **Replace All** to edit the matches in your tabs.
-- **Asset Manager** previews images, sounds, meshes, and animations. It also shows which objects use them. **3D Viewer** lets you inspect a model from any angle.
-- **Console** shows client logs and has a Luau command bar.
-- **Input Macros** record keyboard and mouse input. Edit delays, change the playback speed, or loop a recording. Press **F8** to stop.
+| Tool | What you can do |
+| :--- | :--- |
+| **Explorer & Properties** | Search by name, class, or property. Edit multiple objects, find references, and use object-specific right-click actions. |
+| **Script Editor** | Edit Luau with autocomplete, type information, formatting, and Ctrl-click navigation to definitions. |
+| **Find in Place** | Search across scripts and open matches at their line. Replace matches in editor tabs. |
+| **Asset Manager** | Preview and download images, sounds, meshes, and animations. Jump to the objects that use them. |
+| **3D Viewer** | Inspect parts and models in a separate viewport. Orbit, pan, and zoom without moving the game camera. |
+| **Selection & Transform** | Pick parts or UI elements on screen, then move, rotate, or resize them. |
+| **Console** | Read client output, filter messages, and run Luau from the command bar. |
+| **Input Macros** | Record keyboard and mouse input, edit delays, adjust playback speed, and loop recordings. **F8** stops recording or playback. |
+| **Save Instance** | Export objects with UniversalSynSaveInstance or your executor's `saveinstance`. |
+| **Reconstructor** | Build an inferred object tree from script paths and tracebacks. |
+| **Plugins** | Add your own tools, menu actions, and keyboard shortcuts. [Plugin guide](docs/PLUGINS.md). |
+| **Dex MCP** | Give an MCP client access to Dex tools, object inspection, client logs, and Luau execution. [Setup](docs/mcp/SETUP.md). |
 
-<details>
-<summary>More tools</summary>
+For example, search `is:BasePart and Anchored=false` in Explorer to find unanchored parts.
 
-- Pick parts and UI elements on screen, then move, rotate, or resize them with the transform tools.
-- Right-click an object to find references to it or watch it for changes.
-- **Save Instance** exports objects to a file. **Reconstructor** shows inferred paths and where they came from.
-
-</details>
+Script source, downloads, and input playback depend on your executor. Find in Place can only search source available to the client.
 
 ## Performance
 
-| Feature | Result |
+| Task | Measured time |
 | :--- | :--- |
-| **Finding objects** | **Over 1,000× faster than Moon's Dex** when repeating the same search in a test with 70,000 matches. The first search took **1.6 seconds**. |
-| **Filtering assets** | Eight filter changes on 20,000 assets took **0.06 seconds** with the list already sorted and **1.2 seconds** when sorting it each time. |
-| **Editing long scripts** | Updating code colors for ten edits in a 10,000-line script took **under 1 ms** total. Coloring the whole file after each edit took about **0.2 seconds**. |
+| First Explorer search with 70,000 matches | **1.6 seconds** |
+| Repeat the same search | **0.04 ms**, compared with **126 ms** in Moon's Dex |
+| Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
+| Update code colors after ten edits in a 10,000-line script | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
+
+The repeat-search result is over **1,000× faster than Moon's Dex** in this test. It measures reusing unchanged results, not the first search.
 
 <details>
 <summary>Test details</summary>
 
-The first search, asset filters, and script highlighting were each tested three times with sample data on an Intel i7-12700H. The table shows the middle time for each.
+These are controlled tests with sample data on an Intel i7-12700H. Game size, executor, and hardware affect the results.
 
-The repeat search used the same unchanged tree in both versions. Moon's Dex took 126 ms per search. Dex Explorer reused the previous results in 0.04 ms. Both figures are medians of five batches.
+First-search, asset-filter, and highlighting times are medians of three runs. Repeat-search times are medians of five batches using the same unchanged tree in both versions.
 
 - [70,000-match search fixture](tests/search_engine.spec.luau)
 - [Asset filter test](tests/asset_query.spec.luau)
@@ -73,13 +83,15 @@ The repeat search used the same unchanged tree in both versions. Moon's Dex took
 
 </details>
 
-## Guides
+## Documentation
 
-- [Install or write a plugin](docs/PLUGINS.md)
-- [Set up Dex MCP](docs/mcp/SETUP.md)
-- [Build and test Dex](BUILDING.md)
+| Guide | Contents |
+| :--- | :--- |
+| [Plugins](docs/PLUGINS.md) | Installation, a first plugin, package fields, and the plugin API |
+| [Dex MCP](docs/mcp/SETUP.md) | Server setup, pairing, permissions, and troubleshooting |
+| [Building](BUILDING.md) | Local builds, tests, source layout, and publishing |
 
-Script source, file saves, and input playback depend on your executor.
+Found a bug? [Open an issue](https://github.com/wooxps/dex-explorer/issues/new) with the steps to reproduce it, your executor, and any error text. A screenshot or short recording helps with UI bugs.
 
 ## Credits
 
