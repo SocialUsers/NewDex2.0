@@ -2,7 +2,7 @@
 
 # Plugins
 
-A `.dexplugin` file contains the plugin's details and Luau source. Its buttons appear under **Plugins** in the Dex menu. Plugins can also add right-click actions and shortcuts.
+A `.dexplugin` file contains the plugin's details and Luau source. Its buttons appear under **Plugins** in the Dex menu. Plugins can also add menu actions and shortcuts.
 
 [Install](#install-a-plugin) · [Create a plugin](#create-a-plugin) · [Package fields](#package-fields) · [API](#plugin-api) · [Actions](#menu-actions-and-shortcuts)
 
@@ -16,7 +16,7 @@ Only enable plugins you trust. They run with the same access as Dex. Use **Copy 
 
 ## Manage installed plugins
 
-Right-click a plugin button for its menu. On a phone or tablet, tap the ellipsis.
+Right click a plugin button for its menu. On a phone or tablet, tap the ellipsis.
 
 For a plugin installed from a file, choose **Review Local Changes** to read the file again. For one installed from a link, choose **Check for Update**. Review the changes, then click **Update** and **Enable**.
 
@@ -152,14 +152,14 @@ Each action needs a unique lowercase `ID`, a `Name`, and a `Surface`. `Tooltip`,
 | Surface | Menu and callback context |
 | --- | --- |
 | `Explorer` | Appears in **Plugins** in the Explorer context menu. `Selection` is an array of selected instances. `Target` is the instance the action applies to, when one is available. |
-| `Editor` | Appears in **Plugins** in the Script Editor context menu. The callback receives `Editor`, `Document`, `Script`, `Selection`, `Selections`, and `Editable`. Selection offsets are 1-based UTF-8 byte offsets, with `Last` pointing just past the selection. |
+| `Editor` | Appears in **Plugins** in the Script Editor context menu. The callback receives `Editor`, `Document`, `Script`, `Selection`, `Selections`, and `Editable`. Selection offsets count UTF-8 bytes, starting at 1. `Last` points just past the selection. |
 | `Global` | Runs from its shortcut. The callback receives `Surface = "Global"`. |
 
 Use `Ctrl+Alt` or `Alt+Shift` with a letter, number, or function key. You can also add `Shift` to `Ctrl+Alt`. Pick a combination that Dex or Roblox hasn't reserved. A shortcut can be shared between Explorer and Script Editor. Global shortcuts must be unique across both panels.
 
 ## Plugin Output
 
-Right-click a plugin button and choose **Plugin Output**. Calls to `plugin:Log`, `plugin:Warn`, `print`, and `warn` appear here, along with errors.
+Right click a plugin button and choose **Plugin Output**. Calls to `plugin:Log`, `plugin:Warn`, `print`, and `warn` appear here, along with errors.
 
 Click a row for details. An error's line number opens its source in the Script Editor. **Clear** removes only that plugin's messages from the current session.
 

@@ -79,7 +79,7 @@ All commands start enabled. Use **Commands** to disable individual tools. Permis
 
 In **Activity**, click a call to inspect its arguments and result. Click the connection status to pause or disconnect.
 
-The connection stays on localhost. Your MCP client may send tool results to its model provider. Logs are client-only; clearing them removes Dex's log buffer, not Roblox Output.
+Dex connects over localhost. Your MCP client may send tool results to its model provider. Logs come from the Roblox client. Clearing them empties Dex's buffer without clearing Roblox Output.
 
 ## Troubleshooting
 

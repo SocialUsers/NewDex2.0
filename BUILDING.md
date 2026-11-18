@@ -14,7 +14,7 @@ python build.py build
 
 The build writes `out.lua` by default. Run `python build.py output` to see the output path or pass a new path to change it.
 
-Run `python build.py` for the builder menu, or double-click `build.bat` on Windows.
+Run `python build.py` for the builder menu, or open `build.bat` on Windows.
 
 ## Development commands
 
@@ -24,7 +24,7 @@ Run these from the repo root:
 | :--- | :--- |
 | `python build.py build` | Build `out.lua`. |
 | `python build.py watch` | Rebuild when a source file changes. Press Ctrl+C to stop. |
-| `python build.py test` | Run the Luau tests and hosted-loader checks. |
+| `python build.py test` | Run the Luau tests and check the loader. |
 | `python build.py check` | Check Luau compilation. |
 | `python build.py format --check` | Check formatting without changing files. |
 | `python build.py lint` | Check for common code errors. |
@@ -84,7 +84,7 @@ If an older Dex build gives a `ShowAttributes` error, close Roblox and rename `D
 
 </details>
 
-## Third-party licenses
+## Licenses
 
 - [Luau](docs/LUAU-LICENSE.txt)
 - [UniversalSynSaveInstance](docs/USSI-LICENSE.txt)

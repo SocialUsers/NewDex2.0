@@ -42,11 +42,11 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
 
 Search the object tree by name, class, or property. For example, `is:BasePart and Anchored=false` finds unanchored parts. Select several objects to edit them together in Properties.
 
-Right-click to highlight an object, view a player, listen to a sound, or find references to an object elsewhere in the game.
+Right click an object to highlight it, view a player, listen to a sound, or find references elsewhere in the game.
 
 ### Script Editor
 
-Autocomplete works with Luau, Roblox APIs, local tables, and required modules. Hover over a name for its type and documentation, or Ctrl-click to open its definition. The editor also formats code as you type and paste.
+Autocomplete works with Luau, Roblox APIs, local tables, and modules you require. Hover over a name for its type and documentation. Hold Ctrl and click to open its definition. The editor also formats code as you type and paste.
 
 **Find in Place** searches across scripts. Click a result to open the script at that line, or replace text across editor tabs. Script access depends on your executor; searches can only include source available to the client.
 
@@ -65,7 +65,7 @@ Autocomplete works with Luau, Roblox APIs, local tables, and required modules. H
 
 ### Plugins
 
-Plugins appear in the main menu alongside the built-in tools. They can open windows, add right-click actions, and register shortcuts. Install a `.dexplugin` file or [write your own plugin](docs/PLUGINS.md).
+Plugins appear in the main menu with the other tools. They can open windows, add menu actions, and register shortcuts. Install a `.dexplugin` file or [write your own plugin](docs/PLUGINS.md).
 
 ### Dex MCP
 
@@ -78,16 +78,16 @@ Plugins appear in the main menu alongside the built-in tools. They can open wind
 | First Explorer search with 70,000 matches | **1.6 seconds** |
 | Repeat the same search with no object changes | **0.04 ms**, compared with **126 ms** in Moon's Dex (**over 1,000× faster**) |
 | Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
-| Update code colors after ten edits in a 10,000-line script | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
+| Update code colors after ten edits in a script with 10,000 lines | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
 
 <details>
 <summary>Test details</summary>
 
 Tested with sample data on an Intel i7-12700H. Times vary by game, executor, and hardware.
 
-First-search, asset-filter, and highlighting times are medians of three runs. Repeat-search times are medians of five batches using the same unchanged tree in both versions.
+The first search, asset filters, and highlighting each ran three times. The table uses the middle time. Repeated searches used five batches with the same unchanged tree in both versions.
 
-- [70,000-match search fixture](tests/search_engine.spec.luau)
+- [Search test with 70,000 matches](tests/search_engine.spec.luau)
 - [Asset filter test](tests/asset_query.spec.luau)
 - [Script highlighting test](tests/editor_highlight_checks.py)
 
