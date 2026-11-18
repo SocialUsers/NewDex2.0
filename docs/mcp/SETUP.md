@@ -104,4 +104,4 @@ Adapted tools retain the [Executor MCP license](../../mcp/third-party/executor-m
 
 ---
 
-[Readme](../../README.md) · [Plugins](../PLUGINS.md) · [Building](../../BUILDING.md)
+[Readme](../../README.md) · [User guide](../USAGE.md) · [Plugins](../PLUGINS.md) · [Building](../../BUILDING.md)

@@ -47,6 +47,8 @@ Each `.lua` file under `src` needs a unique filename. The loader uses that name,
 
 Run `python scripts/package_runtime.py` to generate the hosted files in `dist/github`. This also updates the root `manifest.json`.
 
+## Performance reports
+
 To inspect performance in a running Dex session:
 
 ```luau
@@ -93,4 +95,4 @@ If an older Dex build gives a `ShowAttributes` error, close Roblox and rename `D
 
 ---
 
-[Readme](README.md) · [Plugins](docs/PLUGINS.md) · [Dex MCP](docs/mcp/SETUP.md)
+[Readme](README.md) · [User guide](docs/USAGE.md) · [Plugins](docs/PLUGINS.md) · [Dex MCP](docs/mcp/SETUP.md)

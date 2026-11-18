@@ -1,21 +1,18 @@
-<h1 align="center">
+<p align="center">
   <img src="docs/dex-cover.png" width="760" alt="Dex Explorer">
-</h1>
+</p>
 
 <p align="center">An in-game Explorer for Roblox</p>
 
 <p align="center">
   <a href="https://luau.org/"><img src="https://img.shields.io/badge/language-Luau-5e6ad2?style=flat-square" alt="Language: Luau"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="License: MIT"></a>
-  <a href="https://github.com/wooxps/dex-explorer/issues/new"><img src="https://img.shields.io/badge/GitHub-report%20an%20issue-64748b?style=flat-square&amp;logo=github" alt="Report an issue"></a>
 </p>
 
 <p align="center">
   <a href="#run-dex"><strong>Run Dex</strong></a>
   &nbsp;·&nbsp;
-  <a href="#tools">Tools</a>
-  &nbsp;·&nbsp;
-  <a href="#performance">Performance</a>
+  <a href="docs/USAGE.md">User guide</a>
   &nbsp;·&nbsp;
   <a href="docs/PLUGINS.md">Plugins</a>
   &nbsp;·&nbsp;
@@ -36,40 +33,18 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wooxps/dex-explorer/m
   </a>
 </p>
 
-## Tools
+## Features
 
-### Explorer and Properties
+- [Explorer and Properties](docs/USAGE.md#explorer-and-properties) with searches by class or property, editing several objects at once, and actions such as highlighting objects or viewing players.
+- [Script Editor](docs/USAGE.md#script-editor) with Luau autocomplete, types and docs on hover, formatting, and navigation to definitions.
+- [Find in Place](docs/USAGE.md#find-in-place) to search scripts and open a result at its line.
+- [Asset Manager and 3D Viewer](docs/USAGE.md#assets-and-3d-previews) to preview assets, download them, and see where they're used.
+- [Save Instance](docs/USAGE.md#save-instance) with UniversalSynSaveInstance by default and an option to use the executor's version.
+- [Input Macros](docs/USAGE.md#input-macros) to record and replay keyboard and mouse input, with speed, timing, and loop controls.
+- [Plugins](docs/PLUGINS.md) for adding tools, menu actions, and shortcuts.
+- [Dex MCP](docs/mcp/SETUP.md) for using Dex from Codex and other MCP clients.
 
-Search the object tree by name, class, or property. For example, `is:BasePart and Anchored=false` finds unanchored parts. Select several objects to edit them together in Properties.
-
-Right click an object to highlight it, view a player, listen to a sound, or find references elsewhere in the game.
-
-### Script Editor
-
-Autocomplete works with Luau, Roblox APIs, local tables, and modules you require. Hover over a name for its type and documentation. Hold Ctrl and click to open its definition. The editor also formats code as you type and paste.
-
-**Find in Place** searches across scripts. Click a result to open the script at that line, or replace text across editor tabs. Script access depends on your executor; searches can only include source available to the client.
-
-### Assets and exports
-
-**Asset Manager** lists the game's images, sounds, meshes, and animations. Preview or download an asset, then click one of its references to select the object using it. **3D Viewer** opens parts and models in a separate viewport, with its own camera controls.
-
-**Save Instance** uses UniversalSynSaveInstance by default. Its options are available in the menu, and you can switch to your executor's `saveinstance` if you prefer. File saving requires executor support.
-
-### Other tools
-
-- **Selection and Transform:** Pick parts or UI elements on screen and move, rotate, or resize them.
-- **Console:** Read client logs, filter messages, and run Luau in the command bar.
-- **Input Macros:** Record keyboard and mouse input, change the timing, and play it back on a loop or at a different speed. Press **F8** to stop. Playback requires executor support.
-- **Reconstructor:** Build an inferred object hierarchy from paths found in scripts and tracebacks.
-
-### Plugins
-
-Plugins appear in the main menu with the other tools. They can open windows, add menu actions, and register shortcuts. Install a `.dexplugin` file or [write your own plugin](docs/PLUGINS.md).
-
-### Dex MCP
-
-[Dex MCP](docs/mcp/SETUP.md) connects Dex to Codex and other MCP clients. You choose which commands are enabled and whether the client can edit objects or run code. Click a call in the Activity tab to see its arguments and result.
+Also includes [Transform Tools](docs/USAGE.md#transform-tools), a [Console](docs/USAGE.md#console), and a [Reconstructor](docs/USAGE.md#reconstructor).
 
 ## Performance
 
@@ -77,11 +52,14 @@ Plugins appear in the main menu with the other tools. They can open windows, add
 | :--- | :--- |
 | First Explorer search with 70,000 matches | **1.6 seconds** |
 | Repeat the same search with no object changes | **0.04 ms**, compared with **126 ms** in Moon's Dex (**over 1,000× faster**) |
-| Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
-| Update code colors after ten edits in a script with 10,000 lines | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
 
 <details>
-<summary>Test details</summary>
+<summary>More results and test details</summary>
+
+| Task | Measured time |
+| :--- | :--- |
+| Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
+| Update code colors after ten edits in a script with 10,000 lines | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
 
 Tested with sample data on an Intel i7-12700H. Times vary by game, executor, and hardware.
 
@@ -93,9 +71,14 @@ The first search, asset filters, and highlighting each ran three times. The tabl
 
 </details>
 
-## Guides
+## Documentation
 
-[Plugins](docs/PLUGINS.md) · [Dex MCP setup](docs/mcp/SETUP.md) · [Building from source](BUILDING.md)
+- [User guide](docs/USAGE.md)
+- [Installing and writing plugins](docs/PLUGINS.md)
+- [Dex MCP setup](docs/mcp/SETUP.md)
+- [Building from source](BUILDING.md)
+
+## Help
 
 [Report a bug](https://github.com/wooxps/dex-explorer/issues/new) with the steps to reproduce it, your executor, and the error text. For UI bugs, include a screenshot or recording.
 

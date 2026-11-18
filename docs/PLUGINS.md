@@ -165,4 +165,4 @@ Click a row for details. An error's line number opens its source in the Script E
 
 ---
 
-[Readme](../README.md) · [Dex MCP](mcp/SETUP.md) · [Building](../BUILDING.md)
+[Readme](../README.md) · [User guide](USAGE.md) · [Dex MCP](mcp/SETUP.md) · [Building](../BUILDING.md)
