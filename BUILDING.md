@@ -49,6 +49,15 @@ Run `python scripts/package_runtime.py` to generate the hosted files in `dist/gi
 
 ## Performance reports
 
+To rerun the README search benchmarks:
+
+```powershell
+python build.py setup --tools luau
+python tests/benchmark_explorer_scan.py
+```
+
+The benchmark compares the two commits listed in the README and saves its measurements to `.build/explorer-scan-benchmark.json`. It checks the match and row counts for both versions. Use `--runs` to change the sample count or `--luau` to choose a Luau executable. A shallow clone needs both commits fetched first.
+
 To inspect performance in a running Dex session:
 
 ```luau

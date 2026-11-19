@@ -48,26 +48,26 @@ Also includes [Transform Tools](docs/USAGE.md#transform-tools), a [Console](docs
 
 ## Performance
 
-| Task | Measured time |
-| :--- | :--- |
-| First Explorer search with 70,000 matches | **1.6 seconds** |
-| Repeat the same search with no object changes | **0.04 ms**, compared with **126 ms** in Moon's Dex (**over 1,000× faster**) |
+Local scan benchmarks with 60,600 simulated objects:
+
+| Search | Before | After | Less time |
+| :--- | ---: | ---: | ---: |
+| Cold scan | 72.1 ms | 61.0 ms | **15%** |
+| New search using an existing tree | 44.6 ms | 40.6 ms | **9%** |
+| Filtered scan, with two thirds of the tree hidden | 63.2 ms | 19.6 ms | **69%** |
 
 <details>
-<summary>More results and test details</summary>
+<summary>Benchmark details</summary>
 
-| Task | Measured time |
-| :--- | :--- |
-| Eight filter changes across 20,000 assets | **0.06 seconds**, compared with **1.2 seconds** when sorting after every change |
-| Update code colors after ten edits in a script with 10,000 lines | **Under 1 ms** total, compared with about **0.2 seconds** when recoloring the entire file |
+Median of nine runs per version, alternating between [7bf94c1](https://github.com/wooxps/dex-explorer/commit/7bf94c1e83d2) and [7293899](https://github.com/wooxps/dex-explorer/commit/7293899c2d84) in one Luau process.
 
-Tested with sample data on an Intel i7-12700H. Times vary by game, executor, and hardware.
+Measured locally on an Intel Core i7-12700H.
 
-The first search, asset filters, and highlighting each ran three times. The table uses the middle time. Repeated searches used five batches with the same unchanged tree in both versions.
+These measure time spent scanning and building results in the Luau CLI. Sorting, frame waits and UI rendering are excluded. They do not measure full search time or FPS in Roblox.
 
-- [Search test with 70,000 matches](tests/search_engine.spec.luau)
-- [Asset filter test](tests/asset_query.spec.luau)
-- [Script highlighting test](tests/editor_highlight_checks.py)
+The filtered test hides 400 of 600 branches. Results vary by game, executor, hardware and how much of the tree is visible.
+
+[Run the benchmark](BUILDING.md#performance-reports) · [Benchmark source](tests/benchmark_explorer_scan.py)
 
 </details>
 
