@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "cd83868c639e0ac44810",
+  "release": "1b397eab916e4da81ef3",
   "entry": "main.lua",
   "assets": "studio_assets.lua",
   "react": "src/Packages/React/Loader.luau",
@@ -104,10 +104,14 @@
     "Reconstructor": "src/Apps/Reconstructor/Reconstructor.lua",
     "BytecodePaths": "src/Apps/Reconstructor/Services/BytecodePaths.lua",
     "BytecodeStrings": "src/Apps/Reconstructor/Services/BytecodeStrings.lua",
+    "HeapMiner": "src/Apps/Reconstructor/Services/HeapMiner.lua",
+    "ModuleGraph": "src/Apps/Reconstructor/Services/ModuleGraph.lua",
     "ModuleReconstruction": "src/Apps/Reconstructor/Services/ModuleReconstruction.lua",
     "ReconstructorEvidence": "src/Apps/Reconstructor/Services/ReconstructorEvidence.lua",
     "ReconstructorSession": "src/Apps/Reconstructor/Services/ReconstructorSession.lua",
+    "RemoteProber": "src/Apps/Reconstructor/Services/RemoteProber.lua",
     "RetainedFunctionEvidence": "src/Apps/Reconstructor/Services/RetainedFunctionEvidence.lua",
+    "RuntimeEvidence": "src/Apps/Reconstructor/Services/RuntimeEvidence.lua",
     "ScriptEvidenceReader": "src/Apps/Reconstructor/Services/ScriptEvidenceReader.lua",
     "ServerReferenceAnalysis": "src/Apps/Reconstructor/Services/ServerReferenceAnalysis.lua",
     "ReferenceFinder": "src/Apps/ReferenceFinder/ReferenceFinder.lua",
@@ -649,9 +653,9 @@
       "sha256": "ec1c3c436deb4e4e26aeca35b5534ab9511c1f09a7c609e3dc6848c39f73e38f"
     },
     "src/Apps/Reconstructor/Reconstructor.lua": {
-      "bytes": 18224,
-      "checksum": 1383330807,
-      "sha256": "c302db031ab73db3bbc6e55ce958095aec8e64cbb1d52d9fd9a7f80780aaaf80"
+      "bytes": 18993,
+      "checksum": 50584065,
+      "sha256": "a59ce4fd76b20248ee3ca8123c09cf1affb9a327228dddd50716363874a37dc9"
     },
     "src/Apps/Reconstructor/Services/BytecodePaths.lua": {
       "bytes": 27167,
@@ -662,6 +666,16 @@
       "bytes": 2391,
       "checksum": 3736656879,
       "sha256": "82fe8fab44eab076d71289ff7b51b50f911750da4c834627e39afd96de3e09f5"
+    },
+    "src/Apps/Reconstructor/Services/HeapMiner.lua": {
+      "bytes": 6004,
+      "checksum": 1463086931,
+      "sha256": "e8511621d6db6219b49e0e2ce43ed6c670fea9cb81ab8ec5c62aa6782a96e53d"
+    },
+    "src/Apps/Reconstructor/Services/ModuleGraph.lua": {
+      "bytes": 3689,
+      "checksum": 4117446171,
+      "sha256": "de9f899d59e55c78b8ea788f30f6fc5352bb6ad2a5d2c83f32e23f2be3240b90"
     },
     "src/Apps/Reconstructor/Services/ModuleReconstruction.lua": {
       "bytes": 8454,
@@ -674,14 +688,24 @@
       "sha256": "369620a7b42ce5337ae2bf6be41caf5e1a16325c440ee0a739312760070d8b80"
     },
     "src/Apps/Reconstructor/Services/ReconstructorSession.lua": {
-      "bytes": 21068,
-      "checksum": 74463116,
-      "sha256": "805b50922e67e6b9d9373d462ceabac4fe3cf207a8f7a7adaf5ed48beb773b85"
+      "bytes": 22481,
+      "checksum": 1640361331,
+      "sha256": "bbd550e348ca7e0ca7fd8e3ffd41ebebf26a139cd0c003aa64a4189b6f4b03f7"
+    },
+    "src/Apps/Reconstructor/Services/RemoteProber.lua": {
+      "bytes": 5393,
+      "checksum": 948984092,
+      "sha256": "57e0688435e4b0bdab4359ca6dc0d6f09abf47b764f08a590032d61e9604b51c"
     },
     "src/Apps/Reconstructor/Services/RetainedFunctionEvidence.lua": {
       "bytes": 5833,
       "checksum": 985188237,
       "sha256": "861d36b16d1612a954c98e862609f5eb8ba2d7be8d204d57b8b129813698260f"
+    },
+    "src/Apps/Reconstructor/Services/RuntimeEvidence.lua": {
+      "bytes": 8583,
+      "checksum": 4048621505,
+      "sha256": "aad083f75f1627a15a010113e4ceb3a518a788ac0e40bec2fa128fd294c45fd1"
     },
     "src/Apps/Reconstructor/Services/ScriptEvidenceReader.lua": {
       "bytes": 7792,

@@ -61,6 +61,7 @@ local function CreateModule()
 		local self = {
 			ModuleBudget = { Count = 0, Limit = 32768, Dropped = 0 },
 			Tree = Apps.ReconstructorEvidence.Create(),
+			Graph = Apps.ModuleGraph and Apps.ModuleGraph.Create() or nil,
 			Running = false,
 			Stats = {},
 			ProbePending = false,
@@ -88,6 +89,20 @@ local function CreateModule()
 			then
 				self.Tree.Revision += 1
 			end
+			if self.Graph then
+				if evidence.Member then
+					self.Graph:RecordMember(path, evidence.Member)
+				end
+				if evidence.Kind == "bytecode require target" or evidence.Kind == "require target" then
+					local base = type(evidence.Source) == "string" and evidence.Source:match("^(.-)%s*%(") or nil
+					if base then
+						local segments = string.split(base, ".")
+						if #segments >= 2 then
+							self.Graph:RecordRequire(segments, path)
+						end
+					end
+				end
+			end
 		end
 		local reader = Apps.ScriptEvidenceReader
 			and Apps.ScriptEvidenceReader.Create({
@@ -113,6 +128,16 @@ local function CreateModule()
 					)
 				end,
 			})
+		local collector = Apps.RuntimeEvidence and Apps.RuntimeEvidence.Create(emit) or nil
+		local prober = Apps.RemoteProber and Apps.RemoteProber.Create(emit, changed) or nil
+		function self.GetRemoteSchemas()
+			return collector and collector:Schemas() or {}
+		end
+		function self.GetRemoteUsage()
+			return collector and collector:Usage() or {}
+		end
+		self.Collector = collector
+		self.Prober = prober
 		function self:Import(text, label)
 			Apps.ServerReferenceAnalysis.Source(text, label or "Pasted source", emit)
 			Apps.ServerReferenceAnalysis.Log(text, label or "Pasted log", emit)
@@ -142,6 +167,9 @@ local function CreateModule()
 			end)
 			if success then
 				logConnection = connection
+			end
+			if collector then
+				collector:Start()
 			end
 		end
 		function self:Cancel()
@@ -557,6 +585,15 @@ local function CreateModule()
 					elseif self.RetainedStats then
 						stats.Retained = self.RetainedStats
 					end
+					if deep and Apps.HeapMiner and ticket == generation and not destroyed then
+						stats.Phase = "Heap sweep"
+						changed("Sweeping the client heap for path evidence...")
+						stats.Heap = Apps.HeapMiner.Sweep(
+							emit,
+							checkpoint,
+							Apps.BytecodePaths and Apps.BytecodePaths.Analyze
+						)
+					end
 					if ticket == generation and not destroyed then
 						self.Running = false
 						stats.Seconds = os.clock() - scanStarted
@@ -699,6 +736,12 @@ local function CreateModule()
 			if logConnection then
 				logConnection:Disconnect()
 				logConnection = nil
+			end
+			if collector then
+				collector:Stop()
+			end
+			if prober then
+				prober:Destroy()
 			end
 		end
 		if Main.AddCleanup then

@@ -458,6 +458,30 @@ local function CreateModule()
 					showText("", false)
 				end,
 			})
+			menu:Add({
+				Name = "Copy module graph JSON",
+				Disabled = session.Graph == nil,
+				OnClick = function()
+					local json = service.HttpService:JSONEncode(session.Graph:Export())
+					if type(env.setclipboard) == "function" then
+						local ok = pcall(env.setclipboard, json)
+						notice = ok and "Module graph copied" or "Could not copy graph"
+					else
+						showText(json, true)
+					end
+					updateStatus()
+				end,
+			})
+			menu:Add({
+				Name = "Arm remote probes",
+				Disabled = session.Prober == nil,
+				OnClick = function()
+					local armed = session.Prober.SetArmed(not session.Prober.Armed)
+					notice = armed and "Probes ARMED — queued calls may change server state"
+						or "Probes disarmed; queue cleared"
+					updateStatus()
+				end,
+			})
 			menu:Show(more.AbsolutePosition.X, more.AbsolutePosition.Y + 24)
 		end)
 		more.Name = "More"
