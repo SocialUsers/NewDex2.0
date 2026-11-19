@@ -48,26 +48,28 @@ Also includes [Transform Tools](docs/USAGE.md#transform-tools), a [Console](docs
 
 ## Performance
 
-Local scan benchmarks with 60,600 simulated objects:
+Compared with the [original Dex](https://github.com/LorekeeperZinnia/Dex):
 
-| Search | Before | After | Less time |
-| :--- | ---: | ---: | ---: |
-| Cold scan | 72.1 ms | 61.0 ms | **15%** |
-| New search using an existing tree | 44.6 ms | 40.6 ms | **9%** |
-| Filtered scan, with two thirds of the tree hidden | 63.2 ms | 19.6 ms | **69%** |
+| Task | Original Dex | Dex Explorer | Improvement |
+| :--- | ---: | ---: | :--- |
+| Find objects by name among 70,000 objects | 45 ms | 23 ms | **About 2× faster** |
+| Repeat a search with 70,000 matches | 77 ms | 0.02 ms | **Over 1,000× faster** |
+| Update syntax colors after an edit in a 10,000 line script | 21 ms | <0.01 ms | **99.9% less time** |
+
+Local tests with simulated objects and the search index ready. Index setup and UI rendering are excluded.
 
 <details>
 <summary>Benchmark details</summary>
 
-Median of nine runs per version, alternating between [7bf94c1](https://github.com/wooxps/dex-explorer/commit/7bf94c1e83d2) and [7293899](https://github.com/wooxps/dex-explorer/commit/7293899c2d84) in one Luau process.
+Median of nine runs on an Intel Core i7-12700H, alternating both versions in the Luau CLI. The original Dex functions come from [d6286cf](https://github.com/LorekeeperZinnia/Dex/commit/d6286cf27c77af749ad515d517d2500330f63ff2).
 
-Measured locally on an Intel Core i7-12700H.
+- **Name search:** a different search each run, with the same 70,000 simulated parts in both versions. Both return the same objects. Dex Explorer's initial index build is excluded.
+- **Repeat search:** an unchanged query returning all 70,000 parts. Dex Explorer reuses its previous results; original Dex scans again.
+- **Syntax colors:** ordinary edits near the start of a 10,000 line script. This measures updating the colors, not autocomplete or the rest of the editor.
 
-These measure time spent scanning and building results in the Luau CLI. Sorting, frame waits and UI rendering are excluded. They do not measure full search time or FPS in Roblox.
+These compare the search and syntax coloring functions. Sorting, frame waits and UI rendering are excluded. They do not measure FPS or the full time from typing to seeing results. Timings vary by game, executor and hardware.
 
-The filtered test hides 400 of 600 branches. Results vary by game, executor, hardware and how much of the tree is visible.
-
-[Run the benchmark](BUILDING.md#performance-reports) · [Benchmark source](tests/benchmark_explorer_scan.py)
+[Recorded results](tests/fixtures/original-dex-benchmark.json) · [Run the benchmark](BUILDING.md#performance-reports) · [Benchmark source](tests/benchmark_dex.py)
 
 </details>
 

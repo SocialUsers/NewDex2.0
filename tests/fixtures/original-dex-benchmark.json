@@ -1,0 +1,140 @@
+{
+  "originalDexCommit": "d6286cf27c77af749ad515d517d2500330f63ff2",
+  "dexExplorerCommit": "e67653ff44aff44532f600347569d25a79bfcf09",
+  "sourceSha256": {
+    "src/Apps/Explorer/Services/SearchBits.lua": "22f7b45e7d27d5e9d8cf60adb76017c8dbcab66125e04f9d9655ac6bc78e8e53",
+    "src/Apps/Explorer/Services/SearchPostings.lua": "6da4f20218f456ed9df7e52955b32da2f905a3a7e587199e97033f2a5919820a",
+    "src/Apps/Explorer/Services/SearchSnapshot.lua": "0a58c69cb83658e2a73fb54d99b7dfa4b0340f618fc87b7140629192ac12b735",
+    "src/Apps/Explorer/Services/SearchResults.lua": "69fd7bc41c216b38c1d057fc8924011212f3adec9b5802e89c2daf2afc3796bd",
+    "src/Apps/Explorer/Services/SearchTreeResults.lua": "b8db923b2bd3301ce540b57ef68fa6a95c305519049c3ea09f8bd0f0a8f1608f",
+    "src/Apps/Explorer/Services/ExplorerSearch.lua": "cd6d04ace7489cfda9b2212a83d86dd24ce87f3137bd1b8b2147fa38a7bcb9f6",
+    "src/Shared/Lib.lua": "cc4b03c3bb6724998b14b15e7d749adc4f2e04da8f412236d463458fa0ec1470"
+  },
+  "runs": 9,
+  "measurement": "Luau CLI elapsed time for isolated search and syntax-coloring functions",
+  "search": {
+    "objects": 70001,
+    "queries": [
+      "part1201",
+      "part1202",
+      "part1203",
+      "part1204",
+      "part1205",
+      "part1206",
+      "part1207",
+      "part1208",
+      "part1209"
+    ],
+    "indexBuildIncluded": false,
+    "repeatedQueries": false
+  },
+  "repeat": {
+    "query": "part",
+    "matches": 70000,
+    "originalBatchSize": 3,
+    "currentBatchSize": 200
+  },
+  "colors": {
+    "lines": 10000,
+    "editedLine": 5,
+    "editsPerRun": 10,
+    "timeUnit": "ms per edit"
+  },
+  "measurements": {
+    "originalSearch": {
+      "medianMs": 44.847099984,
+      "samplesMs": [
+        39.926400001,
+        40.899300016,
+        41.695400025,
+        44.847099984,
+        40.119300014,
+        49.956700008,
+        79.094099987,
+        48.170999973,
+        54.543200007
+      ]
+    },
+    "currentSearch": {
+      "medianMs": 23.312300036,
+      "samplesMs": [
+        23.312300036,
+        20.066099998,
+        22.716099978,
+        18.126300012,
+        20.350900013,
+        25.311300007,
+        40.122200036,
+        29.987699992,
+        31.141599989
+      ]
+    },
+    "originalRepeat": {
+      "medianMs": 77.141066664,
+      "samplesMs": [
+        65.925333338,
+        62.629599997,
+        58.127266665,
+        58.456900006,
+        81.40096666,
+        98.002800019,
+        101.198266668,
+        86.778199979,
+        77.141066664
+      ]
+    },
+    "currentRepeat": {
+      "medianMs": 0.018616999,
+      "samplesMs": [
+        0.011270501,
+        0.015145,
+        0.015177999,
+        0.017592499,
+        0.018616999,
+        0.0221055,
+        0.025788501,
+        0.0305165,
+        0.020124
+      ]
+    },
+    "originalColors": {
+      "medianMs": 20.753160003,
+      "samplesMs": [
+        17.917699995,
+        17.793929996,
+        19.128109998,
+        19.184890005,
+        20.753160003,
+        21.293909999,
+        33.4989,
+        30.084559997,
+        30.773990002
+      ]
+    },
+    "currentColors": {
+      "medianMs": 0.003900001,
+      "samplesMs": [
+        0.002889999,
+        0.003900001,
+        0.003180001,
+        0.004320004,
+        0.00384,
+        0.004280003,
+        0.005230005,
+        0.003610004,
+        0.003960001
+      ]
+    }
+  },
+  "speedup": {
+    "search": 1.9237526934169904,
+    "repeat": 4143.5822531869935,
+    "colors": 5321.321713250843
+  },
+  "environment": {
+    "cpu": "Intel Core i7-12700H",
+    "os": "Windows",
+    "timing": "os.clock",
+    "order": "alternating versions within one process"
+  }
+}

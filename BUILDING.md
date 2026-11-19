@@ -49,14 +49,16 @@ Run `python scripts/package_runtime.py` to generate the hosted files in `dist/gi
 
 ## Performance reports
 
-To rerun the README search benchmarks:
+To rerun the README comparison with original Dex:
 
 ```powershell
 python build.py setup --tools luau
-python tests/benchmark_explorer_scan.py
+python tests/benchmark_dex.py
 ```
 
-The benchmark compares the two commits listed in the README and saves its measurements to `.build/explorer-scan-benchmark.json`. It checks the match and row counts for both versions. Use `--runs` to change the sample count or `--luau` to choose a Luau executable. A shallow clone needs both commits fetched first.
+The benchmark downloads two source files from a fixed original Dex commit and compares their search and syntax coloring functions with the local source. It checks that both searches return the same objects and saves the measurements to `.build/original-dex-benchmark.json`. Use `--runs` to change the sample count or `--luau` to choose a Luau executable.
+
+For a comparison between the two recent Dex Explorer search builds, run `python tests/benchmark_explorer_scan.py`. That saves `.build/explorer-scan-benchmark.json` and accepts `--before` and `--after` commit references. A shallow clone needs both commits fetched first.
 
 To inspect performance in a running Dex session:
 
