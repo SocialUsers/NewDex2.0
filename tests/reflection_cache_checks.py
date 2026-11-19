@@ -1,13 +1,14 @@
 from pathlib import Path
 import subprocess,tempfile
 ROOT=Path(__file__).resolve().parents[1]
-s=(ROOT/'main.lua').read_text();a=s.index('\tMain.FetchRMD = function()');b=s.index('\n\tMain.ShowGui',a)
+s=(ROOT/'main.lua').read_text();a=s.index('\tMain.FetchRMD = function(');b=s.index('\n\tMain.ShowGui',a)
 source=s[a:b]
 lib_source=(ROOT/'src/Shared/Lib.lua').read_text(encoding='utf-8')
 parser=lib_source[lib_source.index('Lib.ParseXML ='):lib_source.index('Lib.FastWait =')]
 fixture="""local shared={} local getgenv=function() return shared end
-local Main={Elevated=true,RobloxVersion="v1",LocalDepsUpToDate=function() return true end}
+local Main={Elevated=true,RobloxVersion="v1",DepsVersionData={"v1"},LocalDepsUpToDate=function() return true end}
 local raw="xml1" local parses=0
+local game={HttpGet=function() return "downloaded-xml" end}
 local Lib={ReadFile=function() return raw end}
 function Lib.ParseXML()
  parses+=1
@@ -22,6 +23,12 @@ local c=Main.FetchRMD() assert(c.Classes.Folder.Name=="Folder" and not c.Classes
 raw="xml2" Main.FetchRMD() assert(parses==2,"raw XML change invalidates cache")
 Main.RobloxVersion="v2" Main.FetchRMD() assert(parses==3,"engine version change invalidates cache")
 shared.DexReflectionMetadataCache.Schema=0 Main.FetchRMD() assert(parses==4,"parser schema change invalidates cache")
+local progress={}
+Main.FetchRMD(function(message) progress[#progress+1]=message end)
+assert(table.concat(progress,"|")=="Reading dex-explorer/rbx_rmd.dat|Reading ReflectionMetadata.xml","cached reflection status names the file")
+raw=nil progress={}
+Main.FetchRMD(function(message) progress[#progress+1]=message end)
+assert(table.concat(progress,"|")=="Reading dex-explorer/rbx_rmd.dat|Downloading ReflectionMetadata.xml|Reading ReflectionMetadata.xml","missing cache reports the actual download")
 print("PASS: reflection cache isolation, exact XML, engine version and parser schema invalidation")
 """+parser+"""
 local document = Lib.ParseXML([[

@@ -957,6 +957,10 @@ Main = (function()
 
 	Main.LoadModule = function(name)
 		local began = os.clock()
+		if Main.StartupStatus then
+			local path = DexRuntime and DexRuntime.ModulePaths[name]
+			Main.StartupStatus("Loading " .. (path or name))
+		end
 		if EmbeddedModules or Main.Elevated then
 			local control
 
@@ -1447,7 +1451,7 @@ Main = (function()
 		recur(DefaultSettings, Settings)
 	end
 
-	Main.FetchAPI = function(callbackiflong, callbackiftoolong, XD)
+	Main.FetchAPI = function(callbackiflong, callbackiftoolong, XD, onProgress)
 		local downloaded = false
 		local api, rawAPI
 		local function decode(candidate)
@@ -1468,6 +1472,9 @@ Main = (function()
 		end
 		if Main.Elevated then
 			if Main.LocalDepsUpToDate() then
+				if onProgress then
+					onProgress("Reading dex-explorer/rbx_api.dat")
+				end
 				local localAPI = Lib.ReadFile("dex-explorer/rbx_api.dat")
 				api = decode(localAPI)
 				if api then
@@ -1498,6 +1505,9 @@ Main = (function()
 					"https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json",
 				}
 				for _, endpoint in ipairs(endpoints) do
+					if onProgress then
+						onProgress("Downloading " .. endpoint:match("([^/]+)$"))
+					end
 					local ok, response = pcall(game.HttpGet, game, endpoint, true)
 					api = ok and decode(response) or nil
 					if api then
@@ -1520,6 +1530,9 @@ Main = (function()
 			error("Roblox API metadata was unavailable or invalid; please try loading Dex again")
 		end
 		Main.RawAPI = rawAPI
+		if onProgress then
+			onProgress("Reading API-Dump.json")
+		end
 
 		local classes, enums = {}, {}
 		local categoryOrder, seenCategories = {}, {}
@@ -1667,10 +1680,13 @@ Main = (function()
 		}
 	end
 
-	Main.FetchRMD = function()
+	Main.FetchRMD = function(onProgress)
 		local rawXML
 		if Main.Elevated then
 			if Main.LocalDepsUpToDate() then
+				if onProgress then
+					onProgress("Reading dex-explorer/rbx_rmd.dat")
+				end
 				local localRMD = Lib.ReadFile("dex-explorer/rbx_rmd.dat")
 				if localRMD then
 					rawXML = localRMD
@@ -1678,10 +1694,14 @@ Main = (function()
 					Main.DepsVersionData[1] = ""
 				end
 			end
-			rawXML = rawXML
-				or game:HttpGet(
+			if not rawXML then
+				if onProgress then
+					onProgress("Downloading ReflectionMetadata.xml")
+				end
+				rawXML = game:HttpGet(
 					"https://raw.githubusercontent.com/CloneTrooper1019/Roblox-Client-Tracker/roblox/ReflectionMetadata.xml"
 				)
+			end
 		else
 			if script:FindFirstChild("RMD") then
 				rawXML = require(script.RMD)
@@ -1690,6 +1710,9 @@ Main = (function()
 			end
 		end
 		Main.RawRMD = rawXML
+		if onProgress then
+			onProgress("Reading ReflectionMetadata.xml")
+		end
 		local shared = type(getgenv) == "function" and getgenv() or nil
 		local function copy(value)
 			if type(value) ~= "table" then
@@ -3474,9 +3497,20 @@ Main = (function()
 		finishPhase("environment")
 
 		local intro = Main.CreateIntro("Loading src/Shared/Lib.lua")
+		local function reportStartup(message, progress)
+			intro.SetProgress(message, progress)
+		end
+		Main.StartupStatus = reportStartup
+		Main.AddCleanup(function()
+			if Main.StartupStatus == reportStartup then
+				Main.StartupStatus = nil
+			end
+		end)
 		if DexRuntime then
 			DexRuntime.OnModuleLoading = function(path)
-				intro.SetProgress("Loading " .. path)
+				if path ~= "main.lua" then
+					intro.SetProgress("Loading " .. path)
+				end
 			end
 			Main.AddCleanup(function()
 				DexRuntime.OnModuleLoading = nil
@@ -3541,8 +3575,9 @@ Main = (function()
 		})
 
 
-		intro.SetProgress("Checking Roblox version", 0.3)
+		intro.SetProgress(nil, 0.3)
 		if Main.Elevated then
+			intro.SetProgress("Reading dex-explorer/deps_version.dat")
 			local fileVer = Lib.ReadFile("dex-explorer/deps_version.dat")
 			Main.ClientVersion = Version()
 			if fileVer then
@@ -3552,28 +3587,40 @@ Main = (function()
 				end
 			end
 
-			Main.RobloxVersion = Main.RobloxVersion
-				or oldgame
+			if not Main.RobloxVersion then
+				intro.SetProgress("Reading Roblox version: WindowsStudio64/LIVE")
+				Main.RobloxVersion = oldgame
 					:HttpGet("https://clientsettings.roblox.com/v2/client-version/WindowsStudio64/channel/LIVE")
 					:match("(version%-[%w]+)")
+			end
 		end
 
-		intro.SetProgress("Loading class details", 0.35)
+		intro.SetProgress("Loading API-Dump.json", 0.35)
 		local completed, failures = 0, {}
-		local function fetch(label, fn)
+		local pending = { "Loading API-Dump.json", "Loading ReflectionMetadata.xml" }
+		local function reportPending(index)
+			local message = pending[index] or pending[1] or pending[2]
+			intro.SetProgress(message, 0.35 + 0.2 * completed)
+		end
+		local function fetch(index, label, fn)
 			task.spawn(function()
-				local ok, result = pcall(fn)
+				local ok, result = pcall(fn, function(message)
+					pending[index] = message
+					reportPending(index)
+				end)
 				if not ok then
 					failures[#failures + 1] = label .. ": " .. tostring(result)
 				end
+				pending[index] = nil
 				completed += 1
+				reportPending(index)
 			end)
 		end
-		fetch("API", function()
-			API = Main.FetchAPI()
+		fetch(1, "API-Dump.json", function(onProgress)
+			API = Main.FetchAPI(nil, nil, nil, onProgress)
 		end)
-		fetch("Reflection metadata", function()
-			RMD = Main.FetchRMD()
+		fetch(2, "ReflectionMetadata.xml", function(onProgress)
+			RMD = Main.FetchRMD(onProgress)
 		end)
 		while completed < 2 do
 			task.wait()
@@ -3584,32 +3631,41 @@ Main = (function()
 		finishPhase("metadata")
 
 		if Main.Elevated and env.writefile and not Main.LocalDepsUpToDate() then
+			intro.SetProgress("Writing dex-explorer/deps_version.dat")
 			env.writefile("dex-explorer/deps_version.dat", Main.ClientVersion .. "\n" .. Main.RobloxVersion)
+			intro.SetProgress("Writing dex-explorer/rbx_api.dat")
 			env.writefile("dex-explorer/rbx_api.dat", Main.RawAPI)
+			intro.SetProgress("Writing dex-explorer/rbx_rmd.dat")
 			env.writefile("dex-explorer/rbx_rmd.dat", Main.RawRMD)
 		end
 
-		intro.SetProgress("Loading tools", 0.75)
+		intro.SetProgress("Initializing src/Shared/Lib.lua", 0.75)
 		Main.AppControls.Lib.InitDeps(Main.GetInitDeps())
 		Main.LoadModules()
 		Lib.FastWait()
 		finishPhase("modules")
 
-		intro.SetProgress("Preparing windows", 0.9)
-		Explorer.Init()
+		local function initPanel(name, progress, ...)
+			local path = DexRuntime and DexRuntime.ModulePaths[name]
+			intro.SetProgress("Initializing " .. (path or name), progress)
+			Apps[name].Init(...)
+		end
+		initPanel("Explorer", 0.9)
 		finishPhase("explorer")
-		Properties.Init()
-		ScriptViewer.Init(true)
-		Console.Init()
-		SaveInstance.Init()
-		ModelViewer.Init()
+		initPanel("Properties", 0.91)
+		initPanel("ScriptViewer", 0.92, true)
+		initPanel("Console", 0.93)
+		initPanel("SaveInstance", 0.94)
+		initPanel("ModelViewer", 0.95)
 		finishPhase("panels")
 
 
 		Lib.FastWait()
 
+		intro.SetProgress("Initializing Lib.Window", 0.96)
 		Lib.Window.Init()
 		Apps.AntiAFK.SetEnabled(Settings.Interface.AntiAFK == true)
+		intro.SetProgress("Creating Dex menu", 0.97)
 		Main.CreateMainGui()
 		Apps.GuiTransformTools.Init()
 		Apps.TransformTools.Init()
@@ -3640,6 +3696,7 @@ Main = (function()
 				panels[name] = Apps[name].Window
 			end
 		end
+		intro.SetProgress("Restoring window layout", 0.99)
 		Main.WindowLayout = Lib.Window.ConfigureLayoutPersistence(panels)
 		finishPhase("windows-and-tools")
 		Lib.DeferFunc(function()
@@ -3650,6 +3707,7 @@ Main = (function()
 		if DexRuntime then
 			DexRuntime.OnModuleLoading = nil
 		end
+		Main.StartupStatus = nil
 		intro.SetProgress("Ready", 1)
 		if Main.Performance then
 			Main.Performance.Record("startup/ready", os.clock() - (Main.StartupBegan or Main.Performance.Started))

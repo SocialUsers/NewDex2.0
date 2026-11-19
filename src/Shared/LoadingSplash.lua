@@ -11,40 +11,14 @@ end
 
 local function CreateModule()
 	local Splash = {}
-	-- https://github.com/material-components/material-components-android/blob/master/docs/theming/Motion.md
-	local function curve(x: number, x1: number, y1: number, x2: number, y2: number): number
-		if x <= 0 then
-			return 0
-		elseif x >= 1 then
-			return 1
-		end
-		local low, high, t = 0, 1, x
-		for _ = 1, 12 do
-			local a = 1 - t
-			local value = 3 * a * a * t * x1 + 3 * a * t * t * x2 + t * t * t
-			local delta = value - x
-			if math.abs(delta) < 0.000001 then
-				break
-			end
-			if delta < 0 then
-				low = t
-			else
-				high = t
-			end
-			local derivative = 3 * a * a * x1 + 6 * a * t * (x2 - x1) + 3 * t * t * (1 - x2)
-			local nextT = derivative > 0.00001 and t - delta / derivative or -1
-			t = nextT > low and nextT < high and nextT or (low + high) / 2
-		end
-		local a = 1 - t
-		return math.clamp(3 * a * a * t * y1 + 3 * a * t * t * y2 + t * t * t, 0, 1)
-	end
 	local function ramp(t: number, start: number, duration: number): number
-		return curve((t - start) / duration, 0.05, 0.7, 0.1, 1)
+		local value = math.clamp((t - start) / duration, 0, 1)
+		return value * value * (3 - 2 * value)
 	end
 	function Splash.Create(initStatus: string?)
 		local theme = Settings.Theme
 		local brand = theme.Brand or theme.Focus
-		local text = theme.SelectedText or theme.Text
+		local text = Color3.fromRGB(246, 247, 249)
 		local gui = createSimple("ScreenGui", {
 			Name = "DexExplorerLoading",
 			ResetOnSpawn = false,
@@ -56,53 +30,53 @@ local function CreateModule()
 			Parent = gui,
 			BorderSizePixel = 0,
 			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundColor3 = theme.Menu,
+			BackgroundColor3 = Color3.fromRGB(28, 29, 32),
+			BackgroundTransparency = 1,
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.new(1, -32, 0, 280),
 			ClipsDescendants = true,
 		})
 		createSimple("UISizeConstraint", { Parent = panel, MaxSize = Vector2.new(488, 280) })
-		createSimple("UICorner", { Parent = panel, CornerRadius = UDim.new(0, 8) })
-		local outline =
-			createSimple("UIStroke", { Parent = panel, Color = theme.Outline2, Transparency = 1, Thickness = 1 })
-		local wipe = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 0),
-			NumberSequenceKeypoint.new(0.42, 0),
-			NumberSequenceKeypoint.new(0.58, 1),
-			NumberSequenceKeypoint.new(1, 1),
+		createSimple("UIAspectRatioConstraint", {
+			Parent = panel,
+			AspectRatio = 488 / 280,
+			AspectType = Enum.AspectType.FitWithinMaxSize,
+			DominantAxis = Enum.DominantAxis.Width,
 		})
-		local background = createSimple(
-			"UIGradient",
-			{ Parent = panel, Rotation = -22, Transparency = wipe, Offset = Vector2.new(-1.2, 0) }
-		)
+		createSimple("UICorner", { Parent = panel, CornerRadius = UDim.new(0, 4) })
+		local outline = createSimple("UIStroke", {
+			Parent = panel,
+			Color = Color3.fromRGB(91, 93, 100),
+			Transparency = 1,
+			Thickness = 1,
+		})
 		local slab = createSimple("Frame", {
 			Name = "Slab",
 			Parent = panel,
 			BorderSizePixel = 0,
-			BackgroundColor3 = theme.Main2 or theme.Menu,
+			BackgroundColor3 = Color3.fromRGB(34, 35, 39),
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 1),
 		})
 		createSimple("UIGradient", {
 			Parent = slab,
-			Rotation = 25,
+			Rotation = 35,
 			Transparency = NumberSequence.new({
 				NumberSequenceKeypoint.new(0, 1),
-				NumberSequenceKeypoint.new(0.5, 1),
-				NumberSequenceKeypoint.new(0.502, 0),
-				NumberSequenceKeypoint.new(0.94, 0),
-				NumberSequenceKeypoint.new(0.942, 1),
-				NumberSequenceKeypoint.new(1, 1),
+				NumberSequenceKeypoint.new(0.6, 1),
+				NumberSequenceKeypoint.new(0.602, 0),
+				NumberSequenceKeypoint.new(1, 0),
 			}),
 		})
+		createSimple("UICorner", { Parent = slab, CornerRadius = UDim.new(0, 4) })
 
 		local titleMask = createSimple("Frame", {
 			Name = "TitleMask",
 			Parent = panel,
 			BackgroundTransparency = 1,
 			ClipsDescendants = true,
-			Position = UDim2.fromOffset(32, 68),
-			Size = UDim2.new(0.58, 0, 0, 74),
+			Position = UDim2.fromScale(0.096, 0.2),
+			Size = UDim2.fromScale(0.43, 0.28),
 		})
 		local title = createSimple("TextLabel", {
 			Name = "Title",
@@ -110,19 +84,21 @@ local function CreateModule()
 			BackgroundTransparency = 1,
 			Text = "Dex",
 			Font = Enum.Font.BuilderSansBold,
-			TextSize = 49,
+			TextSize = 76,
+			TextScaled = true,
 			TextColor3 = text,
 			TextTransparency = 1,
 			TextXAlignment = Enum.TextXAlignment.Left,
-			Size = UDim2.fromOffset(196, 74),
+			Size = UDim2.fromScale(1, 1),
 		})
+		createSimple("UITextSizeConstraint", { Parent = title, MinTextSize = 24, MaxTextSize = 76 })
 		local subtitleMask = createSimple("Frame", {
 			Name = "SubtitleMask",
 			Parent = panel,
 			BackgroundTransparency = 1,
 			ClipsDescendants = true,
-			Position = UDim2.fromOffset(35, 142),
-			Size = UDim2.new(0.52, 0, 0, 20),
+			Position = UDim2.fromScale(0.096, 0.43),
+			Size = UDim2.fromScale(0.44, 0.125),
 		})
 		local subtitle = createSimple("TextLabel", {
 			Name = "Subtitle",
@@ -130,20 +106,22 @@ local function CreateModule()
 			BackgroundTransparency = 1,
 			Text = "Explorer",
 			Font = Enum.Font.BuilderSansMedium,
-			TextSize = 13,
+			TextSize = 28,
+			TextScaled = true,
 			TextColor3 = theme.PlaceholderText,
 			TextTransparency = 1,
 			TextXAlignment = Enum.TextXAlignment.Left,
-			Size = UDim2.fromOffset(180, 20),
+			Size = UDim2.fromScale(1, 1),
 		})
+		createSimple("UITextSizeConstraint", { Parent = subtitle, MinTextSize = 12, MaxTextSize = 28 })
 
 		local mark = createSimple("Frame", {
 			Name = "Brand",
 			Parent = panel,
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.new(0.77, 0, 0, 126),
-			Size = UDim2.fromOffset(128, 128),
+			Position = UDim2.fromScale(0.77, 0.405),
+			Size = UDim2.fromScale(0.28, 0.49),
 		})
 		local reveal = createSimple("Frame", {
 			Name = "Reveal",
@@ -152,7 +130,6 @@ local function CreateModule()
 			ClipsDescendants = true,
 			Size = UDim2.fromScale(1, 1),
 		})
-		local markScale = createSimple("UIScale", { Name = "EntranceScale", Parent = mark, Scale = 0.9 })
 		local image = Main.GetStudioAsset("branding/dex/toolbar-white-v1")
 		local logo
 		if image then
@@ -164,8 +141,7 @@ local function CreateModule()
 				ImageColor3 = text,
 				ImageTransparency = 1,
 				ScaleType = Enum.ScaleType.Fit,
-				Position = UDim2.fromOffset(14, 14),
-				Size = UDim2.fromOffset(100, 100),
+				Size = UDim2.fromScale(1, 1),
 			})
 		else
 			logo = createSimple("TextLabel", {
@@ -176,8 +152,9 @@ local function CreateModule()
 				Font = Enum.Font.BuilderSansBold,
 				TextColor3 = text,
 				TextSize = 104,
+				TextScaled = true,
 				TextTransparency = 1,
-				Size = UDim2.fromOffset(128, 128),
+				Size = UDim2.fromScale(1, 1),
 			})
 		end
 
@@ -185,34 +162,24 @@ local function CreateModule()
 			Name = "Message",
 			Parent = panel,
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0, 46, 1, -72),
-			Size = UDim2.new(1, -124, 0, 22),
+			Position = UDim2.fromScale(0.05, 0.76),
+			Size = UDim2.fromScale(0.78, 0.08),
 			Font = Enum.Font.BuilderSans,
-			TextSize = 12,
+			TextSize = 14,
 			TextColor3 = theme.PlaceholderText,
 			TextTransparency = 1,
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			TextXAlignment = Enum.TextXAlignment.Left,
-			Text = initStatus or "Loading",
+			Text = initStatus or "Loading Dex Explorer",
 		})
-		local activity = createSimple("Frame", {
-			Name = "Activity",
-			Parent = panel,
-			BorderSizePixel = 0,
-			BackgroundColor3 = brand,
-			BackgroundTransparency = 1,
-			Position = UDim2.new(0, 34, 1, -62),
-			Size = UDim2.fromOffset(3, 3),
-		})
-		createSimple("UICorner", { Parent = activity, CornerRadius = UDim.new(0, 2) })
 		local percent = createSimple("TextLabel", {
 			Name = "Percent",
 			Parent = panel,
 			BackgroundTransparency = 1,
-			Position = UDim2.new(1, -84, 1, -72),
-			Size = UDim2.fromOffset(50, 22),
+			Position = UDim2.fromScale(0.86, 0.76),
+			Size = UDim2.fromScale(0.09, 0.08),
 			Font = Enum.Font.BuilderSans,
-			TextSize = 12,
+			TextSize = 14,
 			TextColor3 = theme.PlaceholderText,
 			TextTransparency = 1,
 			TextXAlignment = Enum.TextXAlignment.Right,
@@ -224,10 +191,11 @@ local function CreateModule()
 			BorderSizePixel = 0,
 			BackgroundColor3 = theme.Outline2,
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 1, -34),
-			Size = UDim2.new(0, 0, 0, 3),
+			Position = UDim2.fromScale(0.05, 0.88),
+			Size = UDim2.new(0.9, 0, 0, 3),
 			ClipsDescendants = true,
 		})
+		createSimple("UICorner", { Parent = track, CornerRadius = UDim.new(0, 2) })
 		local fill = createSimple("Frame", {
 			Name = "Fill",
 			Parent = track,
@@ -237,8 +205,9 @@ local function CreateModule()
 			Size = UDim2.fromScale(0, 1),
 			ClipsDescendants = true,
 		})
+		createSimple("UICorner", { Parent = fill, CornerRadius = UDim.new(0, 2) })
 
-		local elapsed, exitTime, progress, shown, stageAt = 0, 0, 0, 0, -1
+		local elapsed, exitTime, progress, shown = 0, 0, 0, 0
 		local closing, destroyed, connection = false, false, nil
 		local function destroy()
 			if destroyed then
@@ -259,45 +228,32 @@ local function CreateModule()
 				destroy()
 				return
 			end
+			if not closing and elapsed >= 0.32 and shown == progress then
+				return
+			end
 			if closing then
 				exitTime += dt
 			else
 				elapsed += dt
 			end
-			local exit = curve(exitTime / 0.22, 0.3, 0, 0.8, 0.15)
-			local enter = ramp(elapsed, 0, 0.34)
-			local visible = (1 - exit)
-			background.Offset = Vector2.new(-1.2 + 2.4 * enter * visible, 0)
-			panel.Position = UDim2.new(0.5, 0, 0.5, -6 * exit)
-			outline.Transparency = 1 - 0.65 * enter * visible
-			slab.BackgroundTransparency = 1 - 0.75 * enter * visible
-			local word = ramp(elapsed, 0.06, 0.4)
-			title.Position = UDim2.fromOffset(-32 * (1 - word), 0)
-			title.TextTransparency = 1 - word * visible
-			local desc = ramp(elapsed, 0.14, 0.3)
-			subtitle.Position = UDim2.fromOffset(-24 * (1 - desc), 0)
-			subtitle.TextTransparency = 1 - 0.8 * desc * visible
-			local markIn = ramp(elapsed, 0.04, 0.4)
-			markScale.Scale = 0.9 + 0.1 * markIn
-			mark.Position = UDim2.new(0.77, 12 * (1 - markIn), 0, 126 + 6 * (1 - markIn))
+			local visible = 1 - ramp(exitTime, 0, 0.22)
+			local enter = ramp(elapsed, 0, 0.24) * visible
+			panel.BackgroundTransparency = 1 - enter
+			outline.Transparency = 1 - 0.65 * enter
+			slab.BackgroundTransparency = 1 - enter
+			local content = ramp(elapsed, 0.04, 0.28) * visible
+			title.TextTransparency = 1 - content
+			subtitle.TextTransparency = 1 - content
 			if image then
-				logo.ImageTransparency = 1 - markIn * visible
+				logo.ImageTransparency = 1 - content
 			else
-				logo.TextTransparency = 1 - markIn * visible
+				logo.TextTransparency = 1 - content
 			end
 
-			local status = ramp(elapsed, 0.18, 0.24) * visible
-			local stage = ramp(elapsed - stageAt + (closing and exitTime or 0), 0, 0.16)
-			message.TextTransparency = 1 - status * stage
-			message.Position = UDim2.new(0, 46, 1, -72 + 2 * (1 - stage))
-			activity.BackgroundTransparency = 1 - status * (0.55 + 0.2 * math.sin(elapsed * 2.6))
+			local status = ramp(elapsed, 0.08, 0.2) * visible
+			message.TextTransparency = 1 - status
 			percent.TextTransparency = 1 - status
-			local trackIn = ramp(elapsed, 0.16, 0.32)
-			local trackWidth = trackIn
-			track.Position = UDim2.new(0.5, 0, 1, -34)
-			track.Size = UDim2.new(trackWidth, -68 * trackWidth, 0, 3)
-			track.AnchorPoint = Vector2.new(0.5, 0)
-			track.BackgroundTransparency = 1 - 0.8 * status
+			track.BackgroundTransparency = 1 - status
 			fill.BackgroundTransparency = 1 - status
 			shown += (progress - shown) * (1 - math.exp(-dt * 12))
 			if math.abs(progress - shown) < 0.0005 then
@@ -332,7 +288,6 @@ local function CreateModule()
 				end
 				if type(value) == "string" and value ~= message.Text then
 					message.Text = value
-					stageAt = elapsed
 				end
 				if type(target) == "number" and target == target and target ~= math.huge and target ~= -math.huge then
 					progress = math.max(progress, math.clamp(target, 0, 1))
@@ -348,6 +303,8 @@ local function CreateModule()
 					return
 				end
 				closing = true
+				shown = progress
+				fill.Size = UDim2.fromScale(shown, 1)
 				if not connection then
 					destroy()
 				end

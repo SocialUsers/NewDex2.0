@@ -13,6 +13,7 @@ driver = '''
 local Main, Lib, service, game, script, task, require
 local function run(cached, responses, elevated, upToDate)
     local calls = 0
+    local progress = {}
     Main = {Elevated=elevated ~= false, DepsVersionData={"current"}, RobloxVersion="version-test", LocalDepsUpToDate=function() return upToDate ~= false end}
     Lib = {ReadFile=function() return cached end}
     service = {HttpService={JSONDecode=function(_, text)
@@ -33,11 +34,13 @@ local function run(cached, responses, elevated, upToDate)
     require = function() return cached end
     task = {spawn=function() end}
     INSTALL
-    local ok, result = pcall(Main.FetchAPI)
-    return ok, result, calls, Main
+    local ok, result = pcall(Main.FetchAPI, nil, nil, nil, function(message) progress[#progress+1] = message end)
+    return ok, result, calls, Main, progress
 end
 local ok, result, calls, state = run("valid", {})
 assert(ok and result.Classes and calls == 0 and state.RawAPI == "valid")
+local _, _, _, _, progress = run("valid", {})
+assert(table.concat(progress, "|") == "Reading dex-explorer/rbx_api.dat|Reading API-Dump.json", "cached API status names the actual file")
 ok, result, calls, state = run("valid", {"fallback"}, true, false)
 assert(ok and calls == 1 and state.RawAPI == "fallback")
 for _, invalid in ipairs({"", "<html>unavailable</html>", "wrong-schema"}) do
@@ -46,6 +49,8 @@ for _, invalid in ipairs({"", "<html>unavailable</html>", "wrong-schema"}) do
 end
 ok, result, calls, state = run(nil, {false, "fallback"})
 assert(ok and calls == 2 and state.RawAPI == "fallback")
+_, _, _, _, progress = run(nil, {false, "fallback"})
+assert(table.concat(progress, "|") == "Reading dex-explorer/rbx_api.dat|Downloading version-test-API-Dump.json|Downloading API-Dump.json|Reading API-Dump.json", "fallback status follows the actual requested resource")
 ok, result, calls, state = run(nil, {"wrong-schema", "fallback"})
 assert(ok and calls == 2 and state.RawAPI == "fallback")
 ok, result, calls, state = run(nil, {"bad", "bad"})
