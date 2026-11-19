@@ -5,10 +5,6 @@ local Apps
 local function Main()
 	local Bits = Apps.SearchBits
 	local Results = {}
-	local function write(words, position)
-		local word = (position - 1) // 32
-		words[word] = bit32.bor(words[word] or 0, bit32.lshift(1, (position - 1) % 32))
-	end
 
 	local createView
 	function Results.MatchesVisibility(layout, visible)
@@ -28,6 +24,7 @@ local function Main()
 		local nodes, names = table.create(estimate), table.create(estimate)
 		local ends, depths, parents = table.create(estimate), table.create(estimate), table.create(estimate)
 		local positions, top = {}, {}
+		local rootVisibility = context.VisibleOnly and {} or nil
 		local readName, readChildren = context.Name, context.Children
 		local count = 0
 		local function visit(node, parent, depth)
@@ -55,7 +52,11 @@ local function Main()
 			ends[position] = count
 		end
 		for _, node in ipairs(readChildren(roots[1], checkpoint)) do
-			if node.Parent == roots[1] then
+			local shown = not rootVisibility or context.Visible(node)
+			if rootVisibility then
+				rootVisibility[node] = shown
+			end
+			if shown and node.Parent == roots[1] then
 				visit(node, 0, 1)
 			end
 		end
@@ -72,6 +73,7 @@ local function Main()
 			Positions = positions,
 			Top = top,
 			NilRoot = roots[2],
+			RootVisibility = rootVisibility,
 		}
 	end
 
@@ -381,17 +383,6 @@ local function Main()
 			end
 			return hit
 		end
-		local function include(position, node, parent, depth, name)
-			if not layout or not layout.Positions then
-				positions[node] = position
-			end
-			write(contextWords, position)
-			if parent == 0 then
-				top[#top + 1] = position
-			end
-			maxDepth = math.max(maxDepth, depth)
-			width = math.max(width, node.NameWidth or math.min(100, #name) * 14)
-		end
 		local readName, readChildren = context.Name, context.Children
 		local nodeCount = #nodes
 		local function snapshotChildren(node)
@@ -412,8 +403,11 @@ local function Main()
 			nodes[position], names[position] = node, name
 			depths[position], parents[position] = depth, parent
 			local hit = queryable and matchesName(name)
+			local word, rowBit
 			if hit then
-				write(matchWords, position)
+				word = (position - 1) // 32
+				rowBit = bit32.lshift(1, (position - 1) % 32)
+				matchWords[word] = bit32.bor(matchWords[word] or 0, rowBit)
 			end
 			local included = hit
 			if #node > 0 then
@@ -425,34 +419,44 @@ local function Main()
 			end
 			ends[position] = nodeCount
 			if included then
-				include(position, node, parent, depth, name)
+				positions[node] = position
+				if word == nil then
+					word = (position - 1) // 32
+					rowBit = bit32.lshift(1, (position - 1) % 32)
+				end
+				contextWords[word] = bit32.bor(contextWords[word] or 0, rowBit)
+				if parent == 0 then top[#top + 1] = position end
+				if depth > maxDepth then maxDepth = depth end
+				local nameWidth = node.NameWidth or math.min(100, #name) * 14
+				if nameWidth > width then width = nameWidth end
 			end
 			return included
 		end
 		if layout then
-			local pending = {}
+			local nextMatch = math.huge
 			local matchWord, contextWord = 0, 0
 			local matchedBits, contextBits = Bits.Dense(#nodes), Bits.Dense(#nodes)
 			for position = #nodes, 1, -1 do
 				local node, name = nodes[position], names[position]
 				local hit = node ~= roots[2] and matchesName(name)
+				local rowBit = bit32.lshift(1, (position - 1) % 32)
 				if hit then
-					matchWord = bit32.bor(matchWord, bit32.lshift(1, (position - 1) % 32))
+					matchWord = bit32.bor(matchWord, rowBit)
+					nextMatch = position
 				end
-				if hit or pending[position] then
+				if nextMatch <= ends[position] then
 					local parent = parents[position]
 					if not layout.Positions then
 						positions[node] = position
 					end
-					contextWord = bit32.bor(contextWord, bit32.lshift(1, (position - 1) % 32))
+					contextWord = bit32.bor(contextWord, rowBit)
 					if parent == 0 then
 						top[#top + 1] = position
 					end
-					maxDepth = math.max(maxDepth, depths[position])
-					width = math.max(width, node.NameWidth or math.min(100, #name) * 14)
-					if parent > 0 then
-						pending[parent] = true
-					end
+					local depth = depths[position]
+					if depth > maxDepth then maxDepth = depth end
+					local nameWidth = node.NameWidth or math.min(100, #name) * 14
+					if nameWidth > width then width = nameWidth end
 				end
 				if (position - 1) % 32 == 0 then
 					local offset = (position - 1) // 32 * 4
@@ -525,6 +529,10 @@ local function Main()
 		local allowed = {}
 		function result:Contains(node)
 			return allContext:Has(positions[node])
+		end
+		function result:HasChildren(node)
+			local at = positions[node]
+			return at ~= nil and contextRows:Has(at) and contextRows:Rank(ends[at]) > contextRows:Rank(at)
 		end
 		function result:Remove(node)
 			if self:Contains(node) and not self.Removed[node] then

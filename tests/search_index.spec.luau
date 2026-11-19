@@ -2,6 +2,30 @@
 
 -- Indexed text results must match the general predicate scanner exactly.
 do
+	local index = Apps.SearchNameIndex.Create()
+	local root = {}
+	for i = 1, 160 do
+		local parent = { Obj = { Name = "NeedleParent" .. i }, Parent = root }
+		parent[1] = { Obj = { Name = "NeedleChild" .. i }, Parent = parent }
+		root[i] = parent
+	end
+	assert(index.Scan({ root }, "absent", 1, {}, {}, {}, nil, true))
+	for _, query in { "needle", "needlep", "needle" } do
+		local results, matches, expanded = {}, {}, {}
+		assert(index.Scan({ root }, query, 1, results, matches, expanded, nil, true))
+		for _, parent in root do
+			assert(matches[parent], "matching parents stay in the result set")
+			if query == "needle" then
+				assert(expanded[parent] == true and matches[parent[1]], "child-first matches must retain the parent's expand arrow")
+			else
+				assert(expanded[parent] == 0, "filtered leaves do not get an empty expand arrow")
+			end
+		end
+	end
+	print("PASS: grouped and cached search preserves parent arrows regardless of match order")
+end
+
+do
 	local root, secondRoot = {}, {}
 	local parent = { Obj = { Name = "Nested" }, Parent = root }
 	root[1] = parent

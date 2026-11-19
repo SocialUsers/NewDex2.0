@@ -215,13 +215,22 @@ local function CreateModule()
 	local visibleIndices = {}
 	local selectingRow = false
 	local normalTree, normalIndices = tree, visibleIndices
+	local expanded
 	local function rowIndex(node)
 		return searchView and searchView:IndexOf(node) or visibleIndices[node]
+	end
+	Explorer.HasChildren = function(node)
+		if not node or node.Del then
+			return false
+		end
+		if searchView then
+			return searchView:HasChildren(node)
+		end
+		return #node > 0 and (expanded ~= Explorer.SearchExpanded or expanded[node] ~= 0)
 	end
 	projection = Apps.ExplorerProjection.Create(tree, visibleIndices)
 	Explorer.ProjectionStats = projection.Stats
 	Explorer.VisibleProjection = projection
-	local expanded
 	local treeFrame, toolBar, descendantAddedCon, descendantRemovingCon, itemChangedCon
 	local ffa = game.FindFirstAncestorWhichIsA
 	local getDescendants = game.GetDescendants
@@ -2032,7 +2041,7 @@ local function CreateModule()
 			local node = displayedNodes[newEntry]
 			if
 				not node
-				or #node == 0
+				or not Explorer.HasChildren(node)
 				or displayedRowAt(Main.Mouse.Y) ~= newEntry
 				or not Lib.CheckMouseInGui(newEntry.Indent.Expand)
 			then
@@ -2051,7 +2060,7 @@ local function CreateModule()
 		newEntry.Indent.Expand.MouseEnter:Connect(function()
 			local value = Explorer.ExpandSweepValue
 			local node = displayedNodes[newEntry]
-			if value == nil or not node or node.Del or #node == 0 or Explorer.ExpandSweepVisited[node] then
+			if value == nil or not Explorer.HasChildren(node) or Explorer.ExpandSweepVisited[node] then
 				return
 			end
 			Explorer.ExpandSweepVisited[node] = true
@@ -2292,7 +2301,7 @@ local function CreateModule()
 					state.expandHovered = not hoverBlocked and Lib.CheckMouseInGui(entry.Indent.Expand)
 					state.guideCount = Settings.Explorer.IndentGuides and math.max(0, nodeDepth) or 0
 					state.expanded = expanded[node] and expanded[node] ~= 0
-					state.hasChildren = #node > 0 and expanded[node] ~= 0
+					state.hasChildren = Explorer.HasChildren(node)
 					state.renaming = node == renamingNode
 					state.selectedWithin = hiddenSelectionParents[node] and true or false
 					state.hoveredWithin = hoveredWithin and hoverNode == node or false
@@ -4811,6 +4820,7 @@ return search]==]
 	characterSearch.Context = {
 		Name = coldName,
 		Children = coldChildren,
+		VisibleOnly = true,
 		Object = Apps.SearchQuery.Object,
 		Visible = function(node)
 			return node == nilNode or Apps.ServiceVisibility.IsVisible(node.Obj)
@@ -5262,6 +5272,11 @@ return search]==]
 			end
 			return complete
 		end
+		if large and terms and not refreshing and not layout and characterSearch.UnstableAt then
+			if os.clock() - characterSearch.UnstableAt < 1 then
+				return fallback()
+			end
+		end
 		local ready = engine:Ready()
 		if
 			large
@@ -5315,8 +5330,13 @@ return search]==]
 						view:Remove(node)
 					end
 					view.TreeVersion = version
+					characterSearch.UnstableAt = nil
 					engine.LastResult, engine.LastTerms = view, terms
 					return publishSearchView(view, query, current, started)
+				end
+				if not ok and view == changed and not refreshing then
+					characterSearch.UnstableAt = os.clock()
+					return fallback()
 				end
 				if not ok and view ~= changed then
 					break
@@ -5450,7 +5470,7 @@ return search]==]
 	end
 
 	Explorer.SetExpanded = function(node, value, recursive)
-		if not node or #node == 0 or expanded[node] == 0 then
+		if not Explorer.HasChildren(node) then
 			return
 		end
 		expanded[node] = value
@@ -6117,7 +6137,7 @@ return search]==]
 						)
 					then
 						ScriptViewer.ViewScript(node.Obj)
-					elseif #node > 0 and expanded[node] ~= 0 then
+					elseif Explorer.HasChildren(node) then
 						Explorer.SetExpanded(node, not expanded[node], false)
 						Explorer.Update(true)
 						Explorer.Refresh()

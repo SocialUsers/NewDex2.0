@@ -432,7 +432,10 @@ local function Main()
 						end
 					end
 
-					expanded[node], results[node], matches[node] = 0, true, true
+					if expanded[node] == nil then
+						expanded[node] = 0
+					end
+					results[node], matches[node] = true, true
 					local ancestor = node.Parent
 					while ancestor and (not results[ancestor] or expanded[ancestor] == 0) do
 						expanded[ancestor], results[ancestor] = true, true

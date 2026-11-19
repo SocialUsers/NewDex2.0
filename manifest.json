@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "b09a8f76370ece403920",
+  "release": "cd83868c639e0ac44810",
   "entry": "main.lua",
   "assets": "studio_assets.lua",
   "react": "src/Packages/React/Loader.luau",
@@ -444,9 +444,9 @@
       "sha256": "4b4451cfdf32edf710eccc6079fd34fdb7194bc6b46455c62abad0b1ee4cd609"
     },
     "src/Apps/Explorer/Explorer.lua": {
-      "bytes": 190724,
-      "checksum": 4093349042,
-      "sha256": "897dc9a12664921a27ebda755dd6b74753cb523706d7df069dfa086c55452bde"
+      "bytes": 191333,
+      "checksum": 3033880754,
+      "sha256": "310a0dc89f5c81eefdf7e0a296d537472185cf1fc7f534870a8f51ec81c16c0e"
     },
     "src/Apps/Explorer/ExplorerPolicy.lua": {
       "bytes": 7173,
@@ -504,9 +504,9 @@
       "sha256": "22f7b45e7d27d5e9d8cf60adb76017c8dbcab66125e04f9d9655ac6bc78e8e53"
     },
     "src/Apps/Explorer/Services/SearchNameIndex.lua": {
-      "bytes": 12886,
-      "checksum": 882201598,
-      "sha256": "19d0091d03e46e1240a1e3536fbf9e40a8522509736b37c6a5b32e64a467eda2"
+      "bytes": 12936,
+      "checksum": 2477547562,
+      "sha256": "c54126cf6391c93e7edcf8b2280357b1c55e4af9c6fff68faa0c251edb45c15d"
     },
     "src/Apps/Explorer/Services/SearchPostings.lua": {
       "bytes": 5453,
@@ -514,9 +514,9 @@
       "sha256": "6da4f20218f456ed9df7e52955b32da2f905a3a7e587199e97033f2a5919820a"
     },
     "src/Apps/Explorer/Services/SearchResults.lua": {
-      "bytes": 20621,
-      "checksum": 1470300802,
-      "sha256": "46d9c54ba851274bb4ae573b67d5ca23e08bb1c3cd9efa66718691dfe9f034bf"
+      "bytes": 21080,
+      "checksum": 3554056159,
+      "sha256": "69fd7bc41c216b38c1d057fc8924011212f3adec9b5802e89c2daf2afc3796bd"
     },
     "src/Apps/Explorer/Services/SearchSnapshot.lua": {
       "bytes": 16439,
@@ -524,9 +524,9 @@
       "sha256": "0a58c69cb83658e2a73fb54d99b7dfa4b0340f618fc87b7140629192ac12b735"
     },
     "src/Apps/Explorer/Services/SearchTreeResults.lua": {
-      "bytes": 19856,
-      "checksum": 188527079,
-      "sha256": "c905e614b511cd5faa6ebce397b14a90dba33fefaded312d322006f54ee075a7"
+      "bytes": 20467,
+      "checksum": 905146961,
+      "sha256": "b8db923b2bd3301ce540b57ef68fa6a95c305519049c3ea09f8bd0f0a8f1608f"
     },
     "src/Apps/Explorer/Services/SelectionService.lua": {
       "bytes": 2400,

@@ -95,6 +95,42 @@ local function add(parent, name)
 end
 do
 	local testRoot = {}
+	local parent = add(testRoot, "NeedleParent")
+	local child = add(parent, "NeedleChild")
+	local context = {
+		Name = function(node) return node.Obj.Name end,
+		Children = function(node) return node end,
+		Visible = function() return true end,
+		Roots = function() return { testRoot } end,
+		Sorting = function() return false end,
+		Scope = function() return 1 end,
+		Alive = function() return true end,
+		Wait = function() end,
+		Read = function(node) return node.Obj.Name, "Folder", 0, node.Key end,
+	}
+	local engine = Apps.ExplorerSearch.Create(context)
+	local views = {
+		Apps.SearchResults.CreateCold({ testRoot }, { "needle" }, context, function() end),
+		engine:Search(nil, { "needle" }, function() return true end),
+	}
+	parent[1] = nil
+	for _, view in views do
+		assert(view:HasChildren(parent) and not view:HasChildren(child), "arrows use the displayed snapshot during live hierarchy changes")
+		view.Expanded[parent] = false
+		view:Reflow(function() end)
+		assert(view:HasChildren(parent) and not view:IndexOf(child), "collapsed snapshots retain their expand arrows")
+		view.Expanded[parent] = true
+		view:Reflow(function() end)
+		assert(view:IndexOf(child), "snapshot descendants can expand while live children are changing")
+		view:Remove(child)
+		view:Reflow(function() end)
+		assert(not view:HasChildren(parent) and not view:IndexOf(child), "removing the final search child removes the arrow")
+	end
+	parent[1] = child
+	print("PASS: snapshot-stable arrows, collapse/expand and last-child removal")
+end
+do
+	local testRoot = {}
 	local visible = add(testRoot, "Visible")
 	local hidden = add(testRoot, "Hidden")
 	add(visible, "Piece")
@@ -119,9 +155,15 @@ do
 	}
 	local function checkpoint() end
 	local roots = { testRoot }
+	local firstLayout = Apps.SearchResults.CreateLayout(roots, context, checkpoint)
+	assert(#firstLayout.Nodes == 2 and hiddenReads == 0, "filtered searches and character preparation skip hidden service trees")
 	local first = Apps.SearchResults.CreateCold(roots, { "piece" }, context, checkpoint)
 	assert(#first.MatchList == 1 and #first.ColdLayout.Nodes == 2 and hiddenReads == 0)
 	shown = true
+	assert(not Apps.SearchResults.MatchesVisibility(firstLayout, context.Visible), "showing a service invalidates the pruned layout")
+	local nextLayout = Apps.SearchResults.CreateLayout(roots, context, checkpoint)
+	assert(#nextLayout.Nodes == 103 and hiddenReads == 100, "showing services restores their full searchable hierarchy")
+	hiddenReads = 0
 	assert(not Apps.SearchResults.MatchesVisibility(first.ColdLayout, context.Visible))
 	local second = Apps.SearchResults.CreateCold(roots, { "piece" }, context, checkpoint, first.ColdLayout)
 	assert(#second.MatchList == 101 and hiddenReads == 100, "showing services must restore every hidden match")

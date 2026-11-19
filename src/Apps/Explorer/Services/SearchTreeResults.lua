@@ -362,9 +362,24 @@ local function Main()
 			OverrideRevision = 0,
 			Allowed = {},
 		}
+		local function contextItem(node)
+			local id = state.Ids[node]
+			if not id then
+				return nil
+			end
+			local item = result.ContextItems and result.ContextItems[id]
+			if item ~= nil then
+				return item or nil
+			end
+			return seed.Map[id]
+		end
 		function result:Contains(node)
 			local id = state.Ids[node]
 			return id and seed.Map[id] ~= nil or false
+		end
+		function result:HasChildren(node)
+			local item = contextItem(node)
+			return item ~= nil and #item.Children > 0
 		end
 		function result:NameOf(node)
 			local id = state.Ids[node]
@@ -415,7 +430,7 @@ local function Main()
 				end
 				local id = state.Ids[node]
 				local entry = id and state.Entries[id]
-				local item = id and seed.Map[id]
+				local item = contextItem(node)
 				if entry and not entry.Display then
 					return true
 				end
@@ -468,6 +483,7 @@ local function Main()
 				return
 			end
 			local removedPaths, visiblePaths = {}, {}
+			local contextItems = {}
 			local hasCollapsed = false
 			local work = 0
 			local function tick()
@@ -507,6 +523,9 @@ local function Main()
 				end
 				local entry = state.Entries[item.Id]
 				if self.Removed[entry.Node] then
+					if not collapse then
+						contextItems[item.Id] = false
+					end
 					return nil
 				end
 				local children = {}
@@ -519,7 +538,11 @@ local function Main()
 						end
 					end
 				end
-				return record(item.Id, entry, item.Hit, children, collapse, check)
+				local updated = record(item.Id, entry, item.Hit, children, collapse, check)
+				if not collapse then
+					contextItems[item.Id] = updated or false
+				end
+				return updated
 			end
 			local visibleRoots, matchRoots = {}, {}
 			for _, item in ipairs(baseRoots) do
@@ -536,6 +559,7 @@ local function Main()
 				end
 			end
 			self.VisibleRoots, self.MatchRoots = visibleRoots, matchRoots
+			self.ContextItems = contextItems
 			self.RowEnds, self.RootIndices, self.Count = offsets(visibleRoots, false)
 			self.MatchEnds, self.MatchRootIndices, self.MatchCount = offsets(matchRoots, true)
 			self.Width, self.Depth = 0, 1

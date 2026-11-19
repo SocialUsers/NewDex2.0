@@ -442,3 +442,66 @@ do
 	flushTasks()
 	print("PASS: stale broad cold searches skip index rebuilding, retain duplicate order, reuse layouts and invalidate renamed siblings")
 end
+
+do
+	Explorer.ClearSearch()
+	local previousSize, previousWait = Explorer.InitialObjectCount, task.wait
+	Explorer.InitialObjectCount = 38000
+	local host = Instance.new("Folder", workspace)
+	host.Name = "FallbackNeedleParent"
+	local children = {}
+	for index = 1, 100 do
+		local child = Instance.new("Folder", host)
+		child.Name = string.format("FallbackNeedle%03d", index)
+		children[index] = child
+	end
+	local outside = Instance.new("Folder", workspace)
+	outside.Name = "OutsideMarker"
+	Explorer.SyncHistoryObject(host)
+	Explorer.SyncHistoryObject(outside)
+	local original = Apps.SearchResults.CreateCold
+	local scans, changed = 0, false
+	Apps.SearchResults.CreateCold = function(roots, terms, context, checkpoint, layout)
+		scans += 1
+		local name, first = context.Name, true
+		context.Name = function(node)
+			if first then
+				first = false
+				local deadline = os.clock() + .008
+				repeat until os.clock() >= deadline
+			end
+			return name(node)
+		end
+		return original(roots, terms, context, checkpoint, layout)
+	end
+	task.wait = function()
+		if not changed then
+			changed = true
+			children[1].Name = "FallbackNeedleRenamed"
+			game.ItemChanged:Fire(children[1], "Name")
+		end
+		return 0
+	end
+	assert(Explorer.DoSearch("fallbackneedle") and changed and scans == 1, "a changing game does not repeat the failed cold scan")
+	assert(#Explorer.MatchList == 101, "fallback retains every matching object")
+	assert(Explorer.HasChildren(nodes[host]), "fallback parent arrows remain available")
+	Explorer.SetExpanded(nodes[host], false)
+	Explorer.Update()
+	assert(not Explorer.IsNodeVisible(nodes[children[2]]) and #Explorer.MatchList == 101, "fallback collapse preserves all matches")
+	assert(Explorer.DoSearch("fallbackneedle00") and #Explorer.MatchList == 8 and scans == 1, "the next query skips another doomed scan without losing matches")
+	assert(Explorer.DoSearch("outsidemarker") and Explorer.Matches[nodes[outside]], "query replacement keeps complete game coverage")
+	assert(Explorer.DoSearch("no such marker anywhere") and #Explorer.MatchList == 0, "empty fallback is valid")
+	Apps.SearchResults.CreateCold = original
+	task.wait = previousWait
+	Explorer.InitialObjectCount = previousSize
+	Explorer.ClearSearch()
+	host.Parent, outside.Parent = nil, nil
+	Explorer.SyncHistoryObject(host)
+	Explorer.SyncHistoryObject(outside)
+	host:Destroy()
+	outside:Destroy()
+	Explorer.CleanDeletedChildren()
+	Explorer.ForceUpdate()
+	flushTasks()
+	print("PASS: changing-game fallback skips repeated work, keeps full results, arrows, collapse and cross-query coverage")
+end
